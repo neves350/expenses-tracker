@@ -1,8 +1,8 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
 	"files": {
-    "ignoreUnknown": false
-  },
+		"ignoreUnknown": false
+	},
 	"vcs": {
 		"enabled": false,
 		"clientKind": "git",
@@ -17,7 +17,10 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"style": {
+				"useImportType": "error"
+			}
 		}
 	},
 	"javascript": {
