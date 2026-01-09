@@ -1,5 +1,5 @@
 import { PrismaNeon } from '@prisma/adapter-neon'
-import { PrismaClient } from 'src/generated/prisma/client'
+import { PrismaClient } from '../src/generated/prisma/client'
 import { Categories } from './categories'
 
 const connectionString = `${process.env.DATABASE_URL}`
@@ -20,9 +20,15 @@ async function seed() {
 			},
 		})
 	}
+
+	console.log('Database seeded')
 }
 
-seed().then(() => {
-	console.log('Database seeded!')
-	prisma.$disconnect()
-})
+seed()
+	.catch((e) => {
+		console.error(e)
+		process.exit(1)
+	})
+	.finally(async () => {
+		await prisma.$disconnect()
+	})

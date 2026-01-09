@@ -19,7 +19,7 @@
 		"rules": {
 			"recommended": true,
 			"style": {
-				"useImportType": "error"
+				"useImportType": "off"
 			}
 		}
 	},
