@@ -14,49 +14,62 @@ datasource db {
 }
 
 model User {
-  id           String  @id @default(uuid())
-  email        String  @unique
+  id           String   @id @default(uuid())
+  email        String   @unique
   name         String
-  passwordHash String  @map("password_hash")
-  avatarUrl    String? @default("default") @map("avatar_url")
+  passwordHash String   @map("password_hash")
+  avatarUrl    String?  @default("default") @map("avatar_url")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
+  token   Token[]
   goals   Goal[]
   wallets Wallet[]
 
   @@map("users")
 }
 
-model Goal {
-  id       String   @id @default(uuid())
-  title    String
-  amount   Decimal
-  deadline DateTime
+enum TokenType {
+  PASSWORD_RECOVER
+}
 
+model Token {
+  id        String    @id @default(uuid())
+  type      TokenType
+  userId    String    @map("user_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tokens")
+}
+
+model Goal {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  title     String
+  amount    Decimal
+  deadline  DateTime
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("goals")
 }
 
 model Wallet {
-  id       String   @id @default(uuid())
-  name     String
-  currency Currency @default(EUR)
-  balance  Decimal
-
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  name      String
+  currency  Currency @default(EUR)
+  balance   Decimal
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   transactions Transaction[]
 
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("wallets")
 }
@@ -67,11 +80,10 @@ enum Currency {
 }
 
 model Category {
-  id    String @id @default(uuid())
-  icon  String
-  title String
-  type  Type
-
+  id        String   @id @default(uuid())
+  icon      String
+  title     String
+  type      Type
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -81,19 +93,17 @@ model Category {
 }
 
 model Transaction {
-  id     String   @id @default(uuid())
-  type   Type
-  amount Decimal
-  date   DateTime
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  walletId String @map("wallet_id")
-  wallet   Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
-
+  id         String   @id @default(uuid())
+  walletId   String   @map("wallet_id")
   categoryId String   @map("category_id")
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  type       Type
+  amount     Decimal
+  date       DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  wallet   Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@map("transactions")
 }
