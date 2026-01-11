@@ -1,10 +1,12 @@
 import {
 	ConflictException,
 	Injectable,
+	NotFoundException,
 	UnauthorizedException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
+import { UsersService } from 'src/users/users.service'
 import { PrismaService } from '../db/prisma.service'
 import type { User } from '../generated/prisma/client'
 import { LoginUserDTO, RegisterUserDTO } from './dto/auth.dto'
@@ -15,6 +17,7 @@ export class AuthService {
 	constructor(
 		private prisma: PrismaService,
 		private jwtService: JwtService,
+		private usersService: UsersService,
 	) {}
 
 	async register(registerUserDto: RegisterUserDTO): Promise<User> {
@@ -61,5 +64,15 @@ export class AuthService {
 		const token = this.jwtService.sign(payload) // generate jwt token
 
 		return { token }
+	}
+
+	async getProfile(userId: string) {
+		const user = await this.usersService.findById(userId)
+
+		if (!user) {
+			throw new NotFoundException('User not found')
+		}
+
+		return user
 	}
 }

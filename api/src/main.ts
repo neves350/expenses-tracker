@@ -13,11 +13,7 @@ async function bootstrap() {
 			'API for tracking personal and business expenses, managing budgets, and generating financial reports',
 		)
 		.setVersion('1.0.0')
-		.addTag('expenses')
-		.addTag('categories')
-		.addTag('budgets')
-		.addTag('reports')
-		.addTag('users')
+		.addBearerAuth()
 		.build()
 	const documentFactory = () => SwaggerModule.createDocument(app, config)
 	SwaggerModule.setup('api', app, documentFactory)
@@ -25,6 +21,7 @@ async function bootstrap() {
 	app.use(
 		'/docs',
 		apiReference({
+			theme: 'alternate',
 			content: documentFactory,
 		}),
 	)

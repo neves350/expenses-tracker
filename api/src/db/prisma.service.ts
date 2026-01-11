@@ -12,7 +12,6 @@ export class PrismaService
 	implements OnModuleInit, OnModuleDestroy
 {
 	constructor() {
-		console.log('DATABASE_URL:', process.env.DATABASE_URL)
 		const adapter = new PrismaNeon({
 			connectionString: process.env.DATABASE_URL as string,
 		})
