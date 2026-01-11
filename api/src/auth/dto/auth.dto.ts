@@ -10,7 +10,7 @@ export class LoginUserDTO {
 	@IsString()
 	@MinLength(6)
 	@ApiProperty()
-	passwordHash: string
+	password: string
 }
 
 export class RegisterUserDTO {
@@ -27,7 +27,7 @@ export class RegisterUserDTO {
 	@IsString()
 	@MinLength(6)
 	@ApiProperty()
-	passwordHash: string
+	password: string
 }
 
 export class UpdatePasswordDTO {
