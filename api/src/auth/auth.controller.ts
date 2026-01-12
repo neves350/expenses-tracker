@@ -9,20 +9,20 @@ import { ResetPasswordDto } from './dto/reset-password.dto'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 
 @ApiTags('Auth')
-@Controller('auth')
+@Controller()
 export class AuthController {
 	constructor(private authService: AuthService) {}
 	
-	@Post('register')
-	@ApiOperation({ summary: 'Register new user' })
+	@Post('users')
+	@ApiOperation({ summary: 'Create a new account' })
 	@ApiCreateResponse()
 	@ApiBadRequestResponse()
 	async register(@Body() payload: RegisterUserDto) {
 	  return this.authService.register(payload)
 	}
 
-	@Post('login')
-	@ApiOperation({ summary: 'User login' })
+	@Post('sessions/password')
+	@ApiOperation({ summary: 'Authenticate with e-mail & password' })
 	@ApiAuthSuccessResponse()
 	@ApiBadRequestResponse()
 	@ApiUnauthorizedResponse()

@@ -21,12 +21,12 @@ async function bootstrap() {
 	app.use(
 		'/docs',
 		apiReference({
-			theme: 'alternate',
+			theme: 'deepSpace',
 			content: documentFactory,
 		}),
 	)
 
 	await app.listen(process.env.PORT ?? 3000)
-	Logger.log('🚀 Api is running!')
+	Logger.log('🚀 HTTP Server Running!')
 }
 bootstrap()
