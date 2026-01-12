@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common'
+import { Logger, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { apiReference } from '@scalar/nestjs-api-reference'
@@ -25,6 +25,8 @@ async function bootstrap() {
 			content: documentFactory,
 		}),
 	)
+
+	app.useGlobalPipes(new ValidationPipe())
 
 	await app.listen(process.env.PORT ?? 3000)
 	Logger.log('🚀 HTTP Server Running!')
