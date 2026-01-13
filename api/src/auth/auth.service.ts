@@ -10,9 +10,9 @@ import { MailService } from 'src/mail/mail.service'
 import { UsersService } from 'src/users/users.service'
 import { PrismaService } from '../db/prisma.service'
 import type { User } from '../generated/prisma/client'
-import { LoginUserDto, RegisterUserDto } from './dto/auth.dto'
-import { ResetPasswordDto } from './dto/reset-password.dto'
-import { AuthEntity } from './entity/auth.entity'
+import { LoginUserDto, RegisterUserDto } from './dtos/auth.dto'
+import { ResetPasswordDto } from './dtos/reset-password.dto'
+import { AuthEntity } from './entities/auth.entity'
 
 @Injectable()
 export class AuthService {

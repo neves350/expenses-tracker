@@ -21,7 +21,7 @@ async function bootstrap() {
 	app.use(
 		'/docs',
 		apiReference({
-			theme: 'deepSpace',
+			theme: 'elysiajs',
 			content: documentFactory,
 		}),
 	)
