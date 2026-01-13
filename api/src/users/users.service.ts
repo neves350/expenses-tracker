@@ -105,4 +105,15 @@ export class UsersService {
 			success: true,
 		}
 	}
+
+	async delete(id: string) {
+		await this.prisma.user.delete({
+			where: { id },
+		})
+
+		return {
+			message: 'Profile deleted successfully',
+			success: true,
+		}
+	}
 }

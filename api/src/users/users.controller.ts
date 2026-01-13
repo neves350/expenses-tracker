@@ -1,7 +1,8 @@
-import { Body, Controller, ForbiddenException, Get, Param, Patch, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { ApiChangePasswordResponses } from 'src/decorators/api-responses/users-change-password.decorator'
+import { ApiDeleteResponses } from 'src/decorators/api-responses/users-delete-res.dto'
 import { ApiFindByIdResponses } from 'src/decorators/api-responses/users-response.decorator'
 import { ApiUpdateByIdResponses } from 'src/decorators/api-responses/users-update-response.decorator'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
@@ -48,5 +49,16 @@ export class UsersController {
     if (id !== user.userId) throw new ForbiddenException('You can only access your own data')
     
     return this.usersService.changePassword(id, changePasswordDto)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @ApiBearerAuth() 
+  @ApiOperation({ summary: 'Delete user by id' })
+  @ApiDeleteResponses()
+  async delete(@Param('id') id: string, @CurrentUser() user) {
+    if (id !== user.userId) throw new ForbiddenException('You can only access your own data')
+    
+    return this.usersService.delete(id)
   }
 }
