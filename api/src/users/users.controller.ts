@@ -1,8 +1,10 @@
-import { Controller, ForbiddenException, Get, Param, UseGuards } from '@nestjs/common'
+import { Body, Controller, ForbiddenException, Get, Param, Patch, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
-import { ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiUnauthorizedResponse } from 'src/decorators/api-responses/users-response.decorator'
+import { ApiFindByIdResponses } from 'src/decorators/api-responses/users-response.decorator'
+import { ApiUpdateByIdResponses } from 'src/decorators/api-responses/users-update-response.decorator'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
+import { UpdateUserDto } from './dtos/update-user.dto'
 import { UsersService } from './users.service'
 
 @ApiTags('Users')
@@ -12,16 +14,26 @@ export class UsersController {
 
 	@UseGuards(JwtAuthGuard)
 	@Get(':id')
-  @ApiBearerAuth('JWT-auth') 
+  @ApiBearerAuth() 
   @ApiOperation({ summary: 'Get user by id' })
-  @ApiOkResponse()
-  @ApiUnauthorizedResponse()
-  @ApiForbiddenResponse()
-  @ApiNotFoundResponse()
+  @ApiFindByIdResponses()
 	async findById(@Param('id') id: string, @CurrentUser() user) {
     // verify if user can access own data
     if (id !== user.userId) throw new ForbiddenException('You can only access your own data')
 
 		return await this.usersService.findById(id)
 	}
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  @ApiBearerAuth() 
+  @ApiOperation({ summary: 'Update user by id' })
+  @ApiUpdateByIdResponses()
+  async updateById(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @CurrentUser() user) {
+    if (id !== user.userId) {
+      throw new ForbiddenException('You can only access your own data')
+    }
+    
+    return this.usersService.updateById(id, updateUserDto);
+  }
 }

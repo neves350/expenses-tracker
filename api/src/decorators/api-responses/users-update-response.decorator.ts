@@ -1,33 +1,35 @@
 import { applyDecorators } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 
-export function ApiFindByIdResponses() {
+export function ApiUpdateByIdResponses() {
 	return applyDecorators(
 		ApiResponse({
 			status: 200,
-			description: 'User found successfully',
+			description: 'User successfully updated',
 			schema: {
 				example: {
 					id: 'f93fc60c-4018-4ac0-8606-efd160076df6',
-					name: 'John Doe',
-					avatarUrl: 'default.png',
-					email: 'john@example.com',
-					createdAt: '2024-01-15T10:30:00Z',
-					updatedAt: '2024-01-15T10:30:00Z',
+					name: 'John Doe Updated',
+					avatarUrl: 'new-avatar.png',
+					email: 'newemail@example.com',
 				},
 			},
 		}),
 		ApiResponse({
 			status: 401,
-			description: 'Not authenticated or invalid token',
+			description: 'Invalid or missing token',
 		}),
 		ApiResponse({
 			status: 403,
-			description: 'Cannot access data from other users',
+			description: 'You can only update your own profile',
 		}),
 		ApiResponse({
 			status: 404,
 			description: 'User not found',
+		}),
+		ApiResponse({
+			status: 409,
+			description: 'Email already exists',
 		}),
 	)
 }
