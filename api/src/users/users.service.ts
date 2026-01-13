@@ -1,9 +1,13 @@
 import {
+	BadRequestException,
 	ConflictException,
 	Injectable,
 	NotFoundException,
+	UnauthorizedException,
 } from '@nestjs/common'
+import * as bcrypt from 'bcrypt'
 import { PrismaService } from 'src/db/prisma.service'
+import { ChangePasswordDto } from './dtos/change-password.dto'
 import { UpdateUserDto } from './dtos/update-user.dto'
 
 @Injectable()
@@ -53,5 +57,52 @@ export class UsersService {
 			},
 			data: updateUserDto,
 		})
+	}
+
+	async changePassword(id: string, changePasswordDto: ChangePasswordDto) {
+		const { currentPassword, newPassword, confirmPassword } = changePasswordDto
+
+		const existingUser = await this.prisma.user.findUnique({
+			where: { id },
+		})
+
+		if (!existingUser) throw new NotFoundException('User not found')
+
+		// newPassword is equal to the confirmPassword
+		if (newPassword !== confirmPassword) {
+			throw new BadRequestException(
+				'New password and confirmation do not match',
+			)
+		}
+
+		// newPassword needs to be different from currentPassword
+		if (currentPassword === newPassword) {
+			throw new BadRequestException(
+				'New password must be different from current password',
+			)
+		}
+
+		const isPasswordValid = await bcrypt.compare(
+			currentPassword,
+			existingUser.passwordHash,
+		)
+
+		if (!isPasswordValid) throw new UnauthorizedException('Invalid password')
+
+		// creates new password hash
+		const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+		await this.prisma.user.update({
+			where: { id },
+			data: {
+				passwordHash: hashedPassword,
+				updatedAt: new Date(),
+			},
+		})
+
+		return {
+			message: 'Password changed successfully',
+			success: true,
+		}
 	}
 }
