@@ -4,7 +4,8 @@ import {
 	NotFoundException,
 	UnauthorizedException,
 } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
+import { ConfigService } from '@nestjs/config'
+import { JwtService, type JwtSignOptions } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { MailService } from 'src/mail/mail.service'
 import { UsersService } from 'src/users/users.service'
@@ -21,6 +22,7 @@ export class AuthService {
 		private jwtService: JwtService,
 		private usersService: UsersService,
 		private mailService: MailService,
+		private configService: ConfigService,
 	) {}
 
 	async register(registerUserDto: RegisterUserDto): Promise<User> {
@@ -65,10 +67,45 @@ export class AuthService {
 			email: user.email,
 		}
 
-		const acessToken = this.jwtService.sign(payload, { expiresIn: '15m' }) // generate jwt token
-		const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' })
+		// generate jwt token
+		const accessToken = this.jwtService.sign(payload, {
+			secret: this.configService.getOrThrow<string>('JWT_SECRET'),
+			expiresIn: this.configService.getOrThrow<string>('JWT_EXPIRE_IN'),
+		} as JwtSignOptions)
+		const refreshToken = this.jwtService.sign(payload, {
+			secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+			expiresIn: this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRE_IN'),
+		} as JwtSignOptions)
 
-		return { acessToken, refreshToken }
+		return { accessToken, refreshToken }
+	}
+
+	async refresh(refreshToken: string): Promise<AuthEntity> {
+		const payload = this.jwtService.verify(refreshToken, {
+			secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+		})
+
+		const user = await this.prisma.user.findUnique({
+			where: { id: payload.sub },
+		})
+
+		if (!user) throw new UnauthorizedException('User not found')
+
+		const newPayload = {
+			sub: user.id,
+			email: user.email,
+		}
+
+		const accessToken = this.jwtService.sign(newPayload, {
+			secret: this.configService.getOrThrow<string>('JWT_SECRET'),
+			expiresIn: this.configService.getOrThrow<string>('JWT_EXPIRE_IN'),
+		} as JwtSignOptions)
+		const newRefreshToken = this.jwtService.sign(newPayload, {
+			secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+			expiresIn: this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRE_IN'),
+		} as JwtSignOptions)
+
+		return { accessToken, refreshToken: newRefreshToken }
 	}
 
 	async getProfile(userId: string) {
