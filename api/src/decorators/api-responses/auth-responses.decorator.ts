@@ -1,6 +1,9 @@
 import { applyDecorators } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 
+/**
+ * Register
+ */
 export function ApiCreateUserResponses() {
 	return applyDecorators(
 		ApiResponse({
@@ -25,6 +28,9 @@ export function ApiCreateUserResponses() {
 	)
 }
 
+/**
+ * Login
+ */
 export function ApiLoginUserResponses() {
 	return applyDecorators(
 		ApiResponse({
@@ -44,6 +50,26 @@ export function ApiLoginUserResponses() {
 	)
 }
 
+/**
+ * Refresh
+ */
+export function ApiRefreshResponses() {
+	return applyDecorators(
+		ApiResponse({
+			status: 200,
+			description:
+				'Tokens refreshed successfully. New tokens sent as httpOnly cookies.',
+		}),
+		ApiResponse({
+			status: 401,
+			description: 'Unauthorized',
+		}),
+	)
+}
+
+/**
+ * Profile
+ */
 export function ApiProfileUserResponses() {
 	return applyDecorators(
 		ApiResponse({
@@ -67,6 +93,9 @@ export function ApiProfileUserResponses() {
 	)
 }
 
+/**
+ * Request Password Recover
+ */
 export function ApiRequestPasswordRecoverResponses() {
 	return applyDecorators(
 		ApiResponse({
@@ -84,6 +113,9 @@ export function ApiRequestPasswordRecoverResponses() {
 	)
 }
 
+/**
+ * Reset Password
+ */
 export function ApiResetPasswordResponses() {
 	return applyDecorators(
 		ApiResponse({
@@ -98,6 +130,18 @@ export function ApiResetPasswordResponses() {
 		ApiResponse({
 			status: 401,
 			description: 'Unauthorized',
+		}),
+	)
+}
+
+/**
+ * Logout
+ */
+export function ApiLogoutResponses() {
+	return applyDecorators(
+		ApiResponse({
+			status: 200,
+			description: 'User logged out successfully. Cookies cleared.',
 		}),
 	)
 }

@@ -14,7 +14,9 @@ import type { Request, Response } from 'express'
 import {
 	ApiCreateUserResponses,
 	ApiLoginUserResponses,
+	ApiLogoutResponses,
 	ApiProfileUserResponses,
+	ApiRefreshResponses,
 	ApiRequestPasswordRecoverResponses,
 	ApiResetPasswordResponses,
 } from 'src/decorators/api-responses/auth-responses.decorator'
@@ -72,6 +74,7 @@ export class AuthController {
 	@Post('refresh')
 	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Refresh access token' })
+	@ApiRefreshResponses()
 	async refresh(
 		@Req() req: Request,
 		@Res({ passthrough: true }) res: Response,
@@ -128,6 +131,7 @@ export class AuthController {
 
 	@Post('logout')
 	@ApiOperation({ summary: 'Logout user' })
+	@ApiLogoutResponses()
 	async logout(@Res({ passthrough: true }) res: Response) {
 		res.clearCookie('accessToken')
 		res.clearCookie('refreshToken')
