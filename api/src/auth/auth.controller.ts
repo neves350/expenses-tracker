@@ -36,14 +36,20 @@ export class AuthController {
 	) {}
 
 	@Post('users')
-	@ApiOperation({ summary: 'Create a new account' })
+	@ApiOperation({
+		summary: 'Create a new account',
+		description: 'Creates a new user account with email and password.',
+	})
 	@ApiCreateUserResponses()
 	async register(@Body() payload: RegisterUserDto) {
 		return this.authService.register(payload)
 	}
 
 	@Post('sessions/password')
-	@ApiOperation({ summary: 'Authenticate with e-mail & password' })
+	@ApiOperation({
+		summary: 'Authenticate with e-mail & password',
+		description: 'uthenticates user with email and password credentials.',
+	})
 	@ApiLoginUserResponses()
 	async login(
 		@Body() loginUserDto: LoginUserDto,
@@ -56,13 +62,13 @@ export class AuthController {
 		res.cookie('accessToken', accessToken, {
 			httpOnly: true,
 			secure: this.configService.getOrThrow<boolean>('USE_SECURE_COOKIES'),
-			sameSite: 'strict',
+			sameSite: 'lax',
 			maxAge: 15 * 60 * 1000, // 15 min
 		})
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			secure: this.configService.getOrThrow<boolean>('USE_SECURE_COOKIES'),
-			sameSite: 'strict',
+			sameSite: 'lax',
 			maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 		})
 
@@ -72,8 +78,11 @@ export class AuthController {
 	}
 
 	@Post('refresh')
-	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Refresh access token' })
+	@ApiOperation({
+		summary: 'Refresh access token',
+		description:
+			'Validates the refresh token and issues new access and refresh tokens.',
+	})
 	@ApiRefreshResponses()
 	async refresh(
 		@Req() req: Request,
@@ -109,28 +118,41 @@ export class AuthController {
 	@UseGuards(JwtAuthGuard)
 	@Get('profile')
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Get current user profile' })
+	@ApiOperation({
+		summary: 'Get current user profile',
+		description: 'Returns authenticated user profile information.',
+	})
 	@ApiProfileUserResponses()
 	async getProfile(@CurrentUser() user) {
 		return this.authService.getProfile(user.userId)
 	}
 
 	@Post('password/recover')
-	@ApiOperation({ summary: 'Recover password via email' })
+	@ApiOperation({
+		summary: 'Request password recovery',
+		description: 'Sends password recovery code to user email.',
+	})
 	@ApiRequestPasswordRecoverResponses()
 	async requestPasswordRecover(@Body() forgotPasswordDto: ForgotPasswordDto) {
 		return this.authService.requestPasswordRecover(forgotPasswordDto.email)
 	}
 
 	@Post('password/reset')
-	@ApiOperation({ summary: 'Reset password with code' })
+	@ApiOperation({
+		summary: 'Reset password with recovery code',
+		description: 'Resets user password using the code sent via email.',
+	})
 	@ApiResetPasswordResponses()
 	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
 		return this.authService.resetPassword(resetPasswordDto)
 	}
 
 	@Post('logout')
-	@ApiOperation({ summary: 'Logout user' })
+	@ApiOperation({
+		summary: 'Logout user',
+		description:
+			'Clears authentication cookies. Works even with expired tokens.',
+	})
 	@ApiLogoutResponses()
 	async logout(@Res({ passthrough: true }) res: Response) {
 		res.clearCookie('accessToken')
