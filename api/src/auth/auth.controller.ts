@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import type { Response } from 'express'
 import { ApiCreateUserResponses, ApiLoginUserResponses, ApiProfileUserResponses, ApiRequestPasswordRecoverResponses, ApiResetPasswordResponses, } from 'src/decorators/api-responses/auth-responses.decorator'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { AuthService } from './auth.service'
@@ -23,8 +24,24 @@ export class AuthController {
 	@Post('sessions/password')
 	@ApiOperation({ summary: 'Authenticate with e-mail & password' })
 	@ApiLoginUserResponses()
-	async login(@Body() payload: LoginUserDto) {
-		return this.authService.login(payload)
+	async login(@Body() loginUserDto: LoginUserDto, @Res({ passthrough: true }) res: Response) {
+		const { acessToken, refreshToken } = await this.authService.login(loginUserDto)
+
+		// send the token to client
+		res.cookie('acessToken', acessToken, {
+			httpOnly: true,
+			sameSite: 'strict',
+			maxAge: 15 * 60 * 1000 // 15 min
+		})
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			sameSite: 'strict',
+			maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+		})
+
+		return {
+			message: 'Login successful'
+		}
 	}
 
 	@UseGuards(JwtAuthGuard)
