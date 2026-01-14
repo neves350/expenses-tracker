@@ -65,9 +65,10 @@ export class AuthService {
 			email: user.email,
 		}
 
-		const token = this.jwtService.sign(payload) // generate jwt token
+		const acessToken = this.jwtService.sign(payload, { expiresIn: '30s' }) // generate jwt token
+		const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' })
 
-		return { token }
+		return { acessToken, refreshToken }
 	}
 
 	async getProfile(userId: string) {
