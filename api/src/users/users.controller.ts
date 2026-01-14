@@ -29,7 +29,10 @@ export class UsersController {
 	@UseGuards(JwtAuthGuard)
 	@Get(':id')
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Get user by id' })
+	@ApiOperation({
+		summary: 'Get user by id',
+		description: 'Retrieves the authenticated user data by ID.',
+	})
 	@ApiFindByIdResponses()
 	async findById(@Param('id') id: string, @CurrentUser() user) {
 		// verify if user can access own data
@@ -42,7 +45,10 @@ export class UsersController {
 	@UseGuards(JwtAuthGuard)
 	@Patch(':id')
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Update user by id' })
+	@ApiOperation({
+		summary: 'Update user by id',
+		description: 'Updates the authenticated user information.',
+	})
 	@ApiUpdateByIdResponses()
 	async updateById(
 		@Param('id') id: string,
@@ -59,7 +65,10 @@ export class UsersController {
 	@UseGuards(JwtAuthGuard)
 	@Patch(':id/password')
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Update user password by id' })
+	@ApiOperation({
+		summary: 'Update user password by id',
+		description: 'Updates the authenticated user password.',
+	})
 	@ApiChangePasswordResponses()
 	async changePassword(
 		@Param('id') id: string,
@@ -75,7 +84,10 @@ export class UsersController {
 	@UseGuards(JwtAuthGuard)
 	@Delete(':id')
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Delete user by id' })
+	@ApiOperation({
+		summary: 'Delete user by id',
+		description: 'Deletes the authenticated user account.',
+	})
 	@ApiDeleteResponses()
 	async delete(@Param('id') id: string, @CurrentUser() user) {
 		if (id !== user.userId)
