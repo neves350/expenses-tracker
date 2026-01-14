@@ -22,7 +22,7 @@ async function bootstrap() {
 	app.use(
 		'/docs',
 		apiReference({
-			theme: 'elysiajs',
+			theme: 'kepler',
 			content: documentFactory,
 		}),
 	)
@@ -32,6 +32,7 @@ async function bootstrap() {
 	app.use(cookieParser())
 
 	await app.listen(process.env.PORT ?? 3000)
-	Logger.log('🚀 HTTP Server Running!')
+	Logger.log('[INFO] Server listening at http://localhost:3000')
+	Logger.log('[INFO] API Reference available at http://localhost:3000/docs')
 }
 bootstrap()
