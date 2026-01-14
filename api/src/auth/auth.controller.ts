@@ -125,4 +125,15 @@ export class AuthController {
 	async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
 		return this.authService.resetPassword(resetPasswordDto)
 	}
+
+	@Post('logout')
+	@ApiOperation({ summary: 'Logout user' })
+	async logout(@Res({ passthrough: true }) res: Response) {
+		res.clearCookie('accessToken')
+		res.clearCookie('refreshToken')
+
+		return {
+			message: 'Logout successful',
+		}
+	}
 }
