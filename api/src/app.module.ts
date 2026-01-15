@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module'
 import { PrismaModule } from './db/prisma.module'
 import { MailModule } from './mail/mail.module'
 import { UsersModule } from './users/users.module'
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
 	imports: [
@@ -12,6 +13,7 @@ import { UsersModule } from './users/users.module'
 		UsersModule,
 		PrismaModule,
 		MailModule,
+		WalletModule,
 	],
 	controllers: [],
 	providers: [],
