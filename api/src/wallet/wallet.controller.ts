@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Patch,
+	Post,
+	UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { CreateWalletDto } from './dtos/create-wallet.dto'
+import { UpdateWalletDto } from './dtos/update-wallet.dto'
 import { WalletService } from './wallet.service'
 
 @ApiTags('Wallets')
@@ -50,5 +59,26 @@ export class WalletController {
 		const wallet = await this.walletService.findOne(id, user.sub)
 
 		return { wallet }
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Patch('wallets/:id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Update wallet by id',
+		description: 'Updates the wallet information.',
+	})
+	async updateById(
+		@Param('id') id: string,
+		@Body() updateWalletDto: UpdateWalletDto,
+		@CurrentUser() user,
+	) {
+		const updatedWallet = await this.walletService.updateById(
+			id,
+			user.sub,
+			updateWalletDto,
+		)
+
+		return { updatedWallet }
 	}
 }
