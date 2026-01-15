@@ -5,6 +5,7 @@ import { PrismaModule } from './db/prisma.module'
 import { MailModule } from './mail/mail.module'
 import { UsersModule } from './users/users.module'
 import { WalletModule } from './wallet/wallet.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
 	imports: [
@@ -14,6 +15,7 @@ import { WalletModule } from './wallet/wallet.module';
 		PrismaModule,
 		MailModule,
 		WalletModule,
+		CategoryModule,
 	],
 	controllers: [],
 	providers: [],
