@@ -6,6 +6,7 @@ import { MailModule } from './mail/mail.module'
 import { UsersModule } from './users/users.module'
 import { WalletModule } from './wallet/wallet.module';
 import { CategoryModule } from './category/category.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
 	imports: [
@@ -16,6 +17,7 @@ import { CategoryModule } from './category/category.module';
 		MailModule,
 		WalletModule,
 		CategoryModule,
+		TransactionModule,
 	],
 	controllers: [],
 	providers: [],
