@@ -48,7 +48,7 @@ export class AuthController {
 	@Post('sessions/password')
 	@ApiOperation({
 		summary: 'Authenticate with e-mail & password',
-		description: 'uthenticates user with email and password credentials.',
+		description: 'Authenticates user with email and password credentials.',
 	})
 	@ApiLoginUserResponses()
 	async login(
