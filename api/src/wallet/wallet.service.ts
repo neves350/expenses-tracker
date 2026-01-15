@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/db/prisma.service'
 import { CreateWalletDto } from './dtos/create-wallet.dto'
 
@@ -28,5 +28,18 @@ export class WalletService {
 				userId,
 			},
 		})
+	}
+
+	async findOne(walletId: string, userId: string) {
+		const wallet = await this.prisma.wallet.findFirst({
+			where: {
+				id: walletId,
+				userId,
+			},
+		})
+
+		if (!wallet) throw new NotFoundException('Wallet not found')
+
+		return wallet
 	}
 }
