@@ -1,9 +1,10 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { CategoryService } from './category.service'
 import { CreateCategory } from './dtos/create-category.dto'
+import { QueryCategoryDto } from './dtos/query-category.dto'
 
 @ApiTags('Categories')
 @Controller()
@@ -28,5 +29,17 @@ export class CategoryController {
 			category,
 			message: 'Category created successfull',
 		}
+	}
+
+	// query params - type=ICONME EXPENSE
+	@UseGuards(JwtAuthGuard)
+	@Get('categories')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get all categories',
+		description: 'Get all categories from user.',
+	})
+	async findAll(@CurrentUser() user, @Query() query: QueryCategoryDto) {
+		return this.categoryService.findAll(user.userId, query.type)
 	}
 }

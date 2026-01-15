@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/db/prisma.service'
 import { CreateCategory } from './dtos/create-category.dto'
+import type { CategoryType } from './dtos/query-category.dto'
 
 @Injectable()
 export class CategoryService {
@@ -22,5 +23,17 @@ export class CategoryService {
 		})
 
 		return category
+	}
+
+	async findAll(userId: string, type?: CategoryType) {
+		return this.prisma.category.findMany({
+			where: {
+				OR: [
+					{ userId: null }, // default categories
+					{ userId }, // custom categories
+				],
+				...(type && { type }), // add filter if exists
+			},
+		})
 	}
 }
