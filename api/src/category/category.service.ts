@@ -85,4 +85,29 @@ export class CategoryService {
 
 		return updatedCategory
 	}
+
+	async delete(categoryId: string, userId: string) {
+		const category = await this.prisma.category.findUnique({
+			where: { id: categoryId },
+		})
+
+		if (!category) {
+			throw new NotFoundException('Category not found')
+		}
+
+		if (category.userId === null)
+			throw new ForbiddenException('Cannot delete default categories')
+
+		if (category.userId !== userId)
+			throw new ForbiddenException('You can only delete your own categories')
+
+		await this.prisma.category.delete({
+			where: { id: categoryId },
+		})
+
+		return {
+			message: 'Category deleted successfully',
+			success: true,
+		}
+	}
 }
