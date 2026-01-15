@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
@@ -24,5 +24,18 @@ export class WalletController {
 			wallet,
 			message: 'Wallet created successfull',
 		}
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get('wallets')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get all wallets',
+		description: 'Get all wallets from user.',
+	})
+	async findAll(@CurrentUser() user) {
+		const wallets = await this.walletService.findAll(user.userId)
+
+		return wallets
 	}
 }

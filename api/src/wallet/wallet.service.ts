@@ -21,4 +21,12 @@ export class WalletService {
 
 		return wallet
 	}
+
+	async findAll(userId: string) {
+		return this.prisma.wallet.findMany({
+			where: {
+				userId,
+			},
+		})
+	}
 }
