@@ -69,4 +69,15 @@ export class WalletService {
 
 		return updatedWallet
 	}
+
+	async delete(id: string) {
+		await this.prisma.wallet.delete({
+			where: { id },
+		})
+
+		return {
+			message: 'Wallet deleted successfully',
+			success: true,
+		}
+	}
 }

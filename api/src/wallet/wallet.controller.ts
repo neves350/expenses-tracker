@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Patch,
@@ -80,5 +81,16 @@ export class WalletController {
 		)
 
 		return { updatedWallet }
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Delete('wallets/:id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Delete wallet by id',
+		description: 'Deletes the wallet information.',
+	})
+	async delete(@Param('id') id: string, @CurrentUser() _user) {
+		return this.walletService.delete(id)
 	}
 }
