@@ -12,6 +12,13 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
+import {
+	ApiCreateResponses,
+	ApiDeleteResponses,
+	ApiFindAllResponses,
+	ApiFindOneResponses,
+	ApiUpdateResponses,
+} from '../decorators/api-responses/category-responses.decorator'
 import { CategoryService } from './category.service'
 import { CreateCategory } from './dtos/create-category.dto'
 import { QueryCategoryDto } from './dtos/query-category.dto'
@@ -30,6 +37,7 @@ export class CategoryController {
 		description:
 			'Creates a new category with title, type, icon and icon color.',
 	})
+	@ApiCreateResponses()
 	async create(@Body() createCategory: CreateCategory, @CurrentUser() user) {
 		const category = await this.categoryService.create(
 			createCategory,
@@ -49,6 +57,7 @@ export class CategoryController {
 		summary: 'Get all categories',
 		description: 'Get all categories from user.',
 	})
+	@ApiFindAllResponses()
 	async findAll(@CurrentUser() user, @Query() query: QueryCategoryDto) {
 		return this.categoryService.findAll(user.userId, query.type)
 	}
@@ -60,6 +69,7 @@ export class CategoryController {
 		summary: 'Get category by id',
 		description: 'Get category for the user.',
 	})
+	@ApiFindOneResponses()
 	async findOne(@Param('id') id: string, @CurrentUser() user) {
 		return this.categoryService.findOne(id, user.sub)
 	}
@@ -71,6 +81,7 @@ export class CategoryController {
 		summary: 'Update category by id',
 		description: 'Updates the category information.',
 	})
+	@ApiUpdateResponses()
 	async update(
 		@Param('id') id: string,
 		@Body() updateCategoryDto: UpdateCategoryDto,
@@ -86,6 +97,7 @@ export class CategoryController {
 		summary: 'Delete category by id',
 		description: 'Deletes the category information.',
 	})
+	@ApiDeleteResponses()
 	async delete(@Param('id') id: string, @CurrentUser() user) {
 		return this.categoryService.delete(id, user.userId)
 	}
