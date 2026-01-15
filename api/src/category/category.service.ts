@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/db/prisma.service'
 import { CreateCategory } from './dtos/create-category.dto'
 import type { CategoryType } from './dtos/query-category.dto'
@@ -35,5 +35,18 @@ export class CategoryService {
 				...(type && { type }), // add filter if exists
 			},
 		})
+	}
+
+	async findOne(categoryId: string, userId: string) {
+		const category = await this.prisma.category.findFirst({
+			where: {
+				id: categoryId,
+				userId,
+			},
+		})
+
+		if (!category) throw new NotFoundException('Category not found')
+
+		return category
 	}
 }
