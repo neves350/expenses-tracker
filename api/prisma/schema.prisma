@@ -22,9 +22,10 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  token   Token[]
-  goals   Goal[]
-  wallets Wallet[]
+  token      Token[]
+  goals      Goal[]
+  wallets    Wallet[]
+  categories Category[]
 
   @@map("users")
 }
@@ -89,14 +90,18 @@ enum WalletType {
 }
 
 model Category {
-  id        String   @id @default(uuid())
-  icon      String
-  title     String
-  type      Type
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
+  id           String        @id @default(uuid())
+  userId       String?       @map("user_id")
+  title        String
+  icon         String
+  iconColor    String        @default("#1e40af") @map("icon_color")
+  isDefault    Boolean       @default(false) @map("is_default")
+  type         Type
   transactions Transaction[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("categories")
 }
