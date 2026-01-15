@@ -59,13 +59,14 @@ model Goal {
 }
 
 model Wallet {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
+  id        String     @id @default(uuid())
+  userId    String     @map("user_id")
   name      String
-  currency  Currency @default(EUR)
-  balance   Decimal
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  type      WalletType
+  currency  Currency
+  balance   Decimal    @db.Decimal(12, 2)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
 
   transactions Transaction[]
 
@@ -77,6 +78,14 @@ model Wallet {
 enum Currency {
   EUR
   USD
+}
+
+enum WalletType {
+  CASH
+  BANK_ACCOUNT
+  CREDIT_CARD
+  DIGITAL_WALLET
+  INVESTMENT
 }
 
 model Category {
