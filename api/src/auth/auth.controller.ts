@@ -41,8 +41,30 @@ export class AuthController {
 		description: 'Creates a new user account with email and password.',
 	})
 	@ApiCreateUserResponses()
-	async register(@Body() payload: RegisterUserDto) {
-		return this.authService.register(payload)
+	async register(
+		@Body() registerUserDto: RegisterUserDto,
+		@Res({ passthrough: true }) res: Response,
+	) {
+		const { user, tokens } = await this.authService.register(registerUserDto)
+
+		// send the token to client
+		res.cookie('accessToken', tokens.accessToken, {
+			httpOnly: true,
+			secure: this.configService.getOrThrow<boolean>('USE_SECURE_COOKIES'),
+			sameSite: 'lax',
+			maxAge: 15 * 60 * 1000, // 15 min
+		})
+		res.cookie('refreshToken', tokens.refreshToken, {
+			httpOnly: true,
+			secure: this.configService.getOrThrow<boolean>('USE_SECURE_COOKIES'),
+			sameSite: 'lax',
+			maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+		})
+
+		return {
+			user,
+			message: 'Register successful',
+		}
 	}
 
 	@Post('sessions/password')

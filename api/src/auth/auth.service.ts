@@ -10,10 +10,10 @@ import * as bcrypt from 'bcrypt'
 import { MailService } from 'src/mail/mail.service'
 import { UsersService } from 'src/users/users.service'
 import { PrismaService } from '../db/prisma.service'
-import type { User } from '../generated/prisma/client'
 import { LoginUserDto, RegisterUserDto } from './dtos/auth.dto'
 import { ResetPasswordDto } from './dtos/reset-password.dto'
 import { AuthEntity } from './entities/auth.entity'
+import type { RegisterResponse } from './interfaces/register-response.interface'
 
 @Injectable()
 export class AuthService {
@@ -25,7 +25,7 @@ export class AuthService {
 		private configService: ConfigService,
 	) {}
 
-	async register(registerUserDto: RegisterUserDto): Promise<User> {
+	async register(registerUserDto: RegisterUserDto): Promise<RegisterResponse> {
 		const { name, email, password } = registerUserDto
 
 		// check if user already exists
@@ -46,7 +46,25 @@ export class AuthService {
 			},
 		})
 
-		return user
+		const payload = {
+			sub: user.id,
+			email: user.email,
+		}
+
+		// generate jwt token
+		const accessToken = this.jwtService.sign(payload, {
+			secret: this.configService.getOrThrow<string>('JWT_SECRET'),
+			expiresIn: this.configService.getOrThrow<string>('JWT_EXPIRE_IN'),
+		} as JwtSignOptions)
+		const refreshToken = this.jwtService.sign(payload, {
+			secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+			expiresIn: this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRE_IN'),
+		} as JwtSignOptions)
+
+		return {
+			user,
+			tokens: { accessToken, refreshToken },
+		}
 	}
 
 	async login(loginUserDto: LoginUserDto): Promise<AuthEntity> {
