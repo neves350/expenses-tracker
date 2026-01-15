@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	ForbiddenException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { PrismaService } from 'src/db/prisma.service'
 import { CreateCategory } from './dtos/create-category.dto'
 import type { CategoryType } from './dtos/query-category.dto'
+import { UpdateCategoryDto } from './dtos/update-category.dto'
 
 @Injectable()
 export class CategoryService {
@@ -48,5 +53,36 @@ export class CategoryService {
 		if (!category) throw new NotFoundException('Category not found')
 
 		return category
+	}
+
+	async update(
+		categoryId: string,
+		userId: string,
+		updateCategoryDto: UpdateCategoryDto,
+	) {
+		// check if category is own userId
+		const category = await this.prisma.category.findFirst({
+			where: {
+				id: categoryId,
+			},
+		})
+
+		if (!category) throw new NotFoundException('Category not found')
+
+		if (category.userId === null)
+			throw new ForbiddenException('Cannot edit default categories')
+
+		if (category.userId !== userId)
+			throw new ForbiddenException('You can only edit your own categories')
+
+		// update category
+		const updatedCategory = await this.prisma.category.update({
+			where: {
+				id: categoryId,
+			},
+			data: updateCategoryDto,
+		})
+
+		return updatedCategory
 	}
 }

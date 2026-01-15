@@ -3,6 +3,7 @@ import {
 	Controller,
 	Get,
 	Param,
+	Patch,
 	Post,
 	Query,
 	UseGuards,
@@ -13,6 +14,7 @@ import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { CategoryService } from './category.service'
 import { CreateCategory } from './dtos/create-category.dto'
 import { QueryCategoryDto } from './dtos/query-category.dto'
+import { UpdateCategoryDto } from './dtos/update-category.dto'
 
 @ApiTags('Categories')
 @Controller()
@@ -59,5 +61,20 @@ export class CategoryController {
 	})
 	async findOne(@Param('id') id: string, @CurrentUser() user) {
 		return this.categoryService.findOne(id, user.sub)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Patch('categories/:id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Update category by id',
+		description: 'Updates the category information.',
+	})
+	async update(
+		@Param('id') id: string,
+		@Body() updateCategoryDto: UpdateCategoryDto,
+		@CurrentUser() user,
+	) {
+		return this.categoryService.update(id, user.userId, updateCategoryDto)
 	}
 }
