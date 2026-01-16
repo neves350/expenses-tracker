@@ -11,6 +11,13 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import {
+	ApiCreateTransactionResponses,
+	ApiDeleteTransactionResponses,
+	ApiFindAllTransactionsResponses,
+	ApiFindOneTransactionResponses,
+	ApiUpdateTransactionResponses,
+} from 'src/decorators/api-responses/transaction-responses.decorator'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { CreateTransactionDto } from './dtos/create-transaction.dto'
 import { QueryTransactionDto } from './dtos/query-transaction.dto'
@@ -29,6 +36,7 @@ export class TransactionController {
 		summary: 'Create a new transaction',
 		description: 'Creates a new transaction with title, type, amount and date.',
 	})
+	@ApiCreateTransactionResponses()
 	async create(
 		@Body() createTransactionDto: CreateTransactionDto,
 		@CurrentUser() user,
@@ -51,6 +59,7 @@ export class TransactionController {
 		summary: 'Get all transactions',
 		description: 'Get all transactions with optional filters.',
 	})
+	@ApiFindAllTransactionsResponses()
 	async findAll(@Query() query: QueryTransactionDto, @CurrentUser() user) {
 		return this.transactionService.findAll(query, user.userId)
 	}
@@ -62,6 +71,7 @@ export class TransactionController {
 		summary: 'Get transaction by id',
 		description: 'Get one transaction for the user.',
 	})
+	@ApiFindOneTransactionResponses()
 	async findOne(@Param('id') id: string, @CurrentUser() user) {
 		return this.transactionService.findOne(id, user.categoryId)
 	}
@@ -73,6 +83,7 @@ export class TransactionController {
 		summary: 'Update transaction by id',
 		description: 'Updates the transaction information.',
 	})
+	@ApiUpdateTransactionResponses()
 	async update(
 		@Param('id') id: string,
 		@Body() dto: UpdateTransactionDto,
@@ -88,6 +99,7 @@ export class TransactionController {
 		summary: 'Delete category by id',
 		description: 'Deletes the category information.',
 	})
+	@ApiDeleteTransactionResponses()
 	async delete(@Param('id') id: string, @CurrentUser() user) {
 		return this.transactionService.delete(id, user.userId)
 	}
