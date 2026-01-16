@@ -3,6 +3,7 @@ import {
 	Controller,
 	Get,
 	Param,
+	Patch,
 	Post,
 	Query,
 	UseGuards,
@@ -12,6 +13,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { CreateTransactionDto } from './dtos/create-transaction.dto'
 import { QueryTransactionDto } from './dtos/query-transaction.dto'
+import { UpdateTransactionDto } from './dtos/update-transaction.dto'
 import { TransactionService } from './transaction.service'
 
 @ApiTags('Transactions')
@@ -61,5 +63,20 @@ export class TransactionController {
 	})
 	async findOne(@Param('id') id: string, @CurrentUser() user) {
 		return this.transactionService.findOne(id, user.categoryId)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Patch('transactions/:id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Update transaction by id',
+		description: 'Updates the transaction information.',
+	})
+	async update(
+		@Param('id') id: string,
+		@Body() dto: UpdateTransactionDto,
+		@CurrentUser() user,
+	) {
+		return this.transactionService.update(id, user.userId, dto)
 	}
 }

@@ -8,6 +8,7 @@ import { Prisma, type Transaction } from 'src/generated/prisma/client'
 import { CreateTransactionDto } from './dtos/create-transaction.dto'
 import { PaginatedResult } from './dtos/paginated-result.dto'
 import { QueryTransactionDto } from './dtos/query-transaction.dto'
+import { UpdateTransactionDto } from './dtos/update-transaction.dto'
 
 @Injectable()
 export class TransactionService {
@@ -145,5 +146,43 @@ export class TransactionService {
 		if (!transaction) throw new NotFoundException('Transaction not found')
 
 		return transaction
+	}
+
+	async update(
+		transactionId: string,
+		_userId: string,
+		dto: UpdateTransactionDto,
+	) {
+		const amount = new Prisma.Decimal(dto.amount)
+
+		const delta = dto.type === 'INCOME' ? amount : amount.negated()
+
+		return this.prisma.$transaction(async (tx) => {
+			const transaction = await tx.transaction.findFirst({
+				where: {
+					id: transactionId,
+				},
+			})
+
+			if (!transaction) throw new NotFoundException('Transaction not found')
+
+			const updatedTransaction = await tx.transaction.update({
+				where: { id: transactionId },
+				data: dto,
+			})
+
+			await tx.wallet.update({
+				where: {
+					id: dto.walletId,
+				},
+				data: {
+					balance: {
+						increment: delta,
+					},
+				},
+			})
+
+			return updatedTransaction
+		})
 	}
 }
