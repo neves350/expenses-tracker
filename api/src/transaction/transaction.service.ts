@@ -133,4 +133,17 @@ export class TransactionService {
 			},
 		}
 	}
+
+	async findOne(transactionId: string, walletId: string) {
+		const transaction = await this.prisma.transaction.findFirst({
+			where: {
+				id: transactionId,
+				walletId,
+			},
+		})
+
+		if (!transaction) throw new NotFoundException('Transaction not found')
+
+		return transaction
+	}
 }

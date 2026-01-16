@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Query,
+	UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
@@ -42,5 +50,16 @@ export class TransactionController {
 	})
 	async findAll(@Query() query: QueryTransactionDto, @CurrentUser() user) {
 		return this.transactionService.findAll(query, user.userId)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get('transactions/:id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get transaction by id',
+		description: 'Get one transaction for the user.',
+	})
+	async findOne(@Param('id') id: string, @CurrentUser() user) {
+		return this.transactionService.findOne(id, user.categoryId)
 	}
 }
