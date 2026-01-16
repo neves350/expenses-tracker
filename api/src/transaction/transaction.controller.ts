@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Patch,
@@ -78,5 +79,16 @@ export class TransactionController {
 		@CurrentUser() user,
 	) {
 		return this.transactionService.update(id, user.userId, dto)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Delete('transactions/:id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Delete category by id',
+		description: 'Deletes the category information.',
+	})
+	async delete(@Param('id') id: string, @CurrentUser() user) {
+		return this.transactionService.delete(id, user.userId)
 	}
 }

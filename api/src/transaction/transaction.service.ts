@@ -185,4 +185,40 @@ export class TransactionService {
 			return updatedTransaction
 		})
 	}
+
+	async delete(transactionId: string, userId: string) {
+		return this.prisma.$transaction(async (tx) => {
+			const transaction = await tx.transaction.findFirst({
+				where: { id: transactionId },
+				include: {
+					wallet: {
+						select: { id: true, userId: true, balance: true },
+					},
+				},
+			})
+
+			if (!transaction) throw new NotFoundException('Transaction not found')
+
+			if (transaction.wallet.userId !== userId)
+				throw new ForbiddenException('You cannot delete this transaction')
+
+			const delta =
+				transaction.type === 'INCOME'
+					? transaction.amount.negated()
+					: transaction.amount
+
+			await tx.wallet.update({
+				where: { id: transaction.walletId },
+				data: {
+					balance: { increment: delta },
+				},
+			})
+
+			await tx.transaction.delete({
+				where: { id: transactionId },
+			})
+
+			return { message: 'Transaction deleted successfully' }
+		})
+	}
 }
