@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	ForbiddenException,
 	Injectable,
 	NotFoundException,
@@ -17,6 +18,14 @@ export class TransactionService {
 	async create(dto: CreateTransactionDto, userId: string) {
 		const { title, type, date, walletId, categoryId } = dto
 
+		// validate amount > 0
+		if (dto.amount <= 0)
+			throw new BadRequestException('Amount must be greater than 0')
+
+		// validate date is not in the future
+		if (new Date(date) > new Date())
+			throw new BadRequestException('Date cannot be in the future')
+
 		// converts number to decimal
 		const amount = new Prisma.Decimal(dto.amount)
 
@@ -34,6 +43,16 @@ export class TransactionService {
 
 			if (!wallet)
 				throw new ForbiddenException('Wallet does not belong to user')
+
+			// validate balance won't go negative for expenses
+			if (type === 'EXPENSE') {
+				const newBalance = wallet.balance.minus(amount)
+
+				if (newBalance.isNegative())
+					throw new BadRequestException(
+						`Insufficient balance. Current: ${wallet.balance}, Required: ${amount}`,
+					)
+			}
 
 			// validate category
 			const category = await tx.category.findFirst({
