@@ -108,6 +108,21 @@ export class TransactionService {
 			select: { id: true },
 		})
 
+		// handle edge case when user as no wallets
+		if (userWallets.length === 0) {
+			return {
+				data: [],
+				meta: {
+					total: 0,
+					lastPage: 0,
+					currentPage: page,
+					perPage: limit,
+					prev: null,
+					next: null,
+				},
+			}
+		}
+
 		const walletIds = userWallets.map((wallet) => wallet.id)
 
 		// builds dynamically filter
@@ -133,6 +148,14 @@ export class TransactionService {
 			skip: (page - 1) * limit,
 			take: limit,
 			orderBy: { date: 'desc' },
+			include: {
+				wallet: {
+					select: { id: true, name: true },
+				},
+				category: {
+					select: { id: true, title: true, type: true },
+				},
+			},
 		})
 
 		// calculate metadata
