@@ -135,11 +135,26 @@ export class TransactionService {
 		}
 	}
 
-	async findOne(transactionId: string, walletId: string) {
+	async findOne(transactionId: string, userId: string) {
+		const userWallets = await this.prisma.wallet.findMany({
+			where: { userId },
+			select: { id: true },
+		})
+
+		const walletIds = userWallets.map((w) => w.id)
+
 		const transaction = await this.prisma.transaction.findFirst({
 			where: {
 				id: transactionId,
-				walletId,
+				walletId: { in: walletIds },
+			},
+			include: {
+				wallet: {
+					select: { id: true, name: true },
+				},
+				category: {
+					select: { id: true, title: true, type: true },
+				},
 			},
 		})
 

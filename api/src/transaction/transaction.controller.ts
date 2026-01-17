@@ -73,7 +73,7 @@ export class TransactionController {
 	})
 	@ApiFindOneTransactionResponses()
 	async findOne(@Param('id') id: string, @CurrentUser() user) {
-		return this.transactionService.findOne(id, user.categoryId)
+		return this.transactionService.findOne(id, user.userId)
 	}
 
 	@UseGuards(JwtAuthGuard)
