@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module'
 import { WalletModule } from './wallet/wallet.module';
 import { CategoryModule } from './category/category.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { StatisticModule } from './statistic/statistic.module';
 
 @Module({
 	imports: [
@@ -18,6 +19,7 @@ import { TransactionModule } from './transaction/transaction.module';
 		WalletModule,
 		CategoryModule,
 		TransactionModule,
+		StatisticModule,
 	],
 	controllers: [],
 	providers: [],
