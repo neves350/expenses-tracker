@@ -8,6 +8,7 @@ import { WalletModule } from './wallet/wallet.module';
 import { CategoryModule } from './category/category.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { StatisticModule } from './statistic/statistic.module';
+import { ExportModule } from './export/export.module';
 
 @Module({
 	imports: [
@@ -20,6 +21,7 @@ import { StatisticModule } from './statistic/statistic.module';
 		CategoryModule,
 		TransactionModule,
 		StatisticModule,
+		ExportModule,
 	],
 	controllers: [],
 	providers: [],
