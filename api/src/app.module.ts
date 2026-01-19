@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { AuthModule } from './auth/auth.module'
-import { PrismaModule } from './db/prisma.module'
-import { MailModule } from './mail/mail.module'
-import { UsersModule } from './users/users.module'
-import { WalletModule } from './wallet/wallet.module';
-import { CategoryModule } from './category/category.module';
-import { TransactionModule } from './transaction/transaction.module';
-import { StatisticModule } from './statistic/statistic.module';
-import { ExportModule } from './export/export.module';
-import { GoalModule } from './goal/goal.module';
+import { PrismaModule } from './infrastructure/db/prisma.module'
+import { MailModule } from './infrastructure/mail/mail.module'
+import { AuthModule } from './modules/auth/auth.module'
+import { CategoryModule } from './modules/category/category.module'
+import { ExportModule } from './modules/export/export.module'
+import { GoalModule } from './modules/goal/goal.module'
+import { StatisticModule } from './modules/statistic/statistic.module'
+import { TransactionModule } from './modules/transaction/transaction.module'
+import { UsersModule } from './modules/users/users.module'
+import { WalletModule } from './modules/wallet/wallet.module'
 
 @Module({
 	imports: [
