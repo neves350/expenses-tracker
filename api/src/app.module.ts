@@ -9,6 +9,7 @@ import { CategoryModule } from './category/category.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { StatisticModule } from './statistic/statistic.module';
 import { ExportModule } from './export/export.module';
+import { GoalModule } from './goal/goal.module';
 
 @Module({
 	imports: [
@@ -22,6 +23,7 @@ import { ExportModule } from './export/export.module';
 		TransactionModule,
 		StatisticModule,
 		ExportModule,
+		GoalModule,
 	],
 	controllers: [],
 	providers: [],
