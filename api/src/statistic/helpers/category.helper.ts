@@ -1,15 +1,18 @@
+import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/db/prisma.service'
 import { Type } from 'src/generated/prisma/enums'
 import { CategoryBreakdownItem } from '../dtos/category-breakdown.dto'
 import { NumberHelper } from './number.helper'
 
-export class CategoryHelper {
-	static async getCategoryBreakdown(
-		prisma: PrismaService,
+@Injectable()
+export class CategoryService {
+	constructor(private readonly prisma: PrismaService) {}
+
+	async getCategoryBreakdown(
 		filters: any,
 		type: Type,
 	): Promise<CategoryBreakdownItem[]> {
-		const grouped = await prisma.transaction.groupBy({
+		const grouped = await this.prisma.transaction.groupBy({
 			by: ['categoryId'],
 			where: { ...filters, type },
 			_sum: { amount: true },
@@ -24,7 +27,7 @@ export class CategoryHelper {
 
 		const categoriesWithDetails = await Promise.all(
 			grouped.map(async (item) => {
-				const category = await prisma.category.findUnique({
+				const category = await this.prisma.category.findUnique({
 					where: { id: item.categoryId },
 					select: { title: true, icon: true, iconColor: true },
 				})
@@ -47,12 +50,11 @@ export class CategoryHelper {
 		return categoriesWithDetails
 	}
 
-	static async getTopExpenseCategories(
-		prisma: PrismaService,
+	async getTopExpenseCategories(
 		filters: any,
 		totalExpenses: number,
 	): Promise<CategoryBreakdownItem[]> {
-		const topCategories = await prisma.transaction.groupBy({
+		const topCategories = await this.prisma.transaction.groupBy({
 			by: ['categoryId'],
 			where: { ...filters, type: Type.EXPENSE },
 			_sum: { amount: true },
@@ -63,7 +65,7 @@ export class CategoryHelper {
 
 		const categoriesWithDetails = await Promise.all(
 			topCategories.map(async (item) => {
-				const category = await prisma.category.findUnique({
+				const category = await this.prisma.category.findUnique({
 					where: { id: item.categoryId },
 					select: { title: true, icon: true, iconColor: true },
 				})

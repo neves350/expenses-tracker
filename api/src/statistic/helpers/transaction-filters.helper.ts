@@ -1,12 +1,14 @@
+import { Injectable } from '@nestjs/common'
 import { PeriodType, QueryStatisticsDto } from '../dtos/query-statistics.dto'
 
-export class TransactionFiltersHelper {
+@Injectable()
+export class TransactionFiltersService {
 	/**
 	 * @param userId
 	 * @param query
 	 * @returns Objeto WHERE para usar no Prisma
 	 */
-	static buildFilters(userId: string, query: QueryStatisticsDto) {
+	buildFilters(userId: string, query: QueryStatisticsDto) {
 		const filters: any = {
 			wallet: {
 				userId,
@@ -28,7 +30,7 @@ export class TransactionFiltersHelper {
 				filters.date.lte = new Date(`${query.endDate}T23:59:59.999Z`)
 			}
 		} else if (query.period) {
-			const dates = TransactionFiltersHelper.getPeriodDates(query.period)
+			const dates = this.getPeriodDates(query.period)
 			filters.date = {
 				gte: dates.start,
 				lte: dates.end,
@@ -38,7 +40,7 @@ export class TransactionFiltersHelper {
 		return filters
 	}
 
-	private static getPeriodDates(period: PeriodType): {
+	private getPeriodDates(period: PeriodType): {
 		start: Date
 		end: Date
 	} {

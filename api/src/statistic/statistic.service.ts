@@ -3,20 +3,24 @@ import { PrismaService } from 'src/db/prisma.service'
 import { Type } from 'src/generated/prisma/enums'
 import { OverviewResponseDto } from './dtos/overview-response.dto'
 import { QueryStatisticsDto } from './dtos/query-statistics.dto'
-import { CategoryHelper } from './helpers/category.helper'
+import { CategoryService } from './helpers/category.helper'
 import { NumberHelper } from './helpers/number.helper'
-import { TransactionFiltersHelper } from './helpers/transaction-filters.helper'
+import { TransactionFiltersService } from './helpers/transaction-filters.helper'
 
 @Injectable()
 export class StatisticService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly transactionFiltersService: TransactionFiltersService,
+		private readonly categoryService: CategoryService,
+	) {}
 
 	async getOverview(
 		userId: string,
 		query: QueryStatisticsDto,
 	): Promise<OverviewResponseDto> {
 		// build filters
-		const filters = TransactionFiltersHelper.buildFilters(userId, query)
+		const filters = this.transactionFiltersService.buildFilters(userId, query)
 
 		// get expenses stats
 		const expenseStats = await this.prisma.transaction.aggregate({
@@ -47,11 +51,8 @@ export class StatisticService {
 		const averageIncome = NumberHelper.toNumber(incomeStats._avg.amount)
 
 		// get top 3 categories
-		const topExpenseCategories = await CategoryHelper.getTopExpenseCategories(
-			this.prisma,
-			filters,
-			totalExpenses,
-		)
+		const topExpenseCategories =
+			await this.categoryService.getTopExpenseCategories(filters, totalExpenses)
 
 		return {
 			totalExpenses,
