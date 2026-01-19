@@ -5,9 +5,11 @@ import { ByCategoryQueryDto } from './dtos/by-category-query.dto'
 import { ByCategoryResponseDto } from './dtos/by-category-response.dto'
 import { OverviewResponseDto } from './dtos/overview-response.dto'
 import { QueryStatisticsDto } from './dtos/query-statistics.dto'
+import { TrendsResponseDto } from './dtos/trends-response-dto'
 import { CategoryService } from './helpers/category.helper'
 import { NumberHelper } from './helpers/number.helper'
 import { TransactionFiltersService } from './helpers/transaction-filters.helper'
+import { TrendsService } from './helpers/trends.helper'
 
 @Injectable()
 export class StatisticService {
@@ -15,6 +17,7 @@ export class StatisticService {
 		private readonly prisma: PrismaService,
 		private readonly transactionFiltersService: TransactionFiltersService,
 		private readonly categoryService: CategoryService,
+		private readonly trendsService: TrendsService,
 	) {}
 
 	async getOverview(
@@ -95,6 +98,82 @@ export class StatisticService {
 			totalAmount,
 			totalTransactions,
 			categories,
+		}
+	}
+
+	async getTrends(
+		userId: string,
+		query: QueryStatisticsDto,
+	): Promise<TrendsResponseDto> {
+		// get actual period data
+		const currentFilters = this.transactionFiltersService.buildFilters(
+			userId,
+			query,
+		)
+		const currentData = await this.getPeriodsStats(currentFilters)
+
+		// get last period data
+		const previousFilters =
+			this.trendsService.calculatePreviousPeriod(currentFilters)
+		const previousData = await this.getPeriodsStats(previousFilters)
+
+		// calculate percentual changes
+		const expensesChange = this.trendsService.calculatePercentageChange(
+			previousData.expenses,
+			currentData.expenses,
+		)
+		const incomeChange = this.trendsService.calculatePercentageChange(
+			previousData.income,
+			currentData.income,
+		)
+		const balanceChange = this.trendsService.calculatePercentageChange(
+			previousData.balance,
+			currentData.balance,
+		)
+
+		return {
+			current: {
+				period: this.trendsService.getPeriodLabel(currentFilters),
+				expenses: currentData.expenses,
+				income: currentData.income,
+				balance: currentData.balance,
+			},
+			previous: {
+				period: this.trendsService.getPeriodLabel(previousFilters),
+				expenses: previousData.expenses,
+				income: previousData.income,
+				balance: previousData.balance,
+			},
+			change: {
+				expenses: expensesChange,
+				income: incomeChange,
+				balance: balanceChange,
+			},
+		}
+	}
+
+	private async getPeriodsStats(filters: any) {
+		// Buscar despesas
+		const expenses = await this.prisma.transaction.aggregate({
+			where: { ...filters, type: Type.EXPENSE },
+			_sum: { amount: true },
+		})
+
+		// Buscar receitas
+		const income = await this.prisma.transaction.aggregate({
+			where: { ...filters, type: Type.INCOME },
+			_sum: { amount: true },
+		})
+
+		// Converter e calcular
+		const expensesTotal = Number(expenses._sum.amount || 0)
+		const incomeTotal = Number(income._sum.amount || 0)
+		const balance = incomeTotal - expensesTotal
+
+		return {
+			expenses: expensesTotal,
+			income: incomeTotal,
+			balance,
 		}
 	}
 }

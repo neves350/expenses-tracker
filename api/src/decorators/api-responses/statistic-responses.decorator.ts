@@ -2,6 +2,7 @@ import { applyDecorators } from '@nestjs/common'
 import { ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { ByCategoryResponseDto } from 'src/statistic/dtos/by-category-response.dto'
 import { OverviewResponseDto } from 'src/statistic/dtos/overview-response.dto'
+import { TrendsResponseDto } from 'src/statistic/dtos/trends-response-dto'
 
 /**
  * Overview
@@ -60,7 +61,7 @@ export function ApiTrendsResponses() {
 		ApiResponse({
 			status: 200,
 			description: 'Trends retrieved successfully',
-			// type: TrendsResponseDto,
+			type: TrendsResponseDto,
 		}),
 		ApiResponse({
 			status: 401,
