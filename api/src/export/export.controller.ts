@@ -1,7 +1,42 @@
-import { Controller } from '@nestjs/common'
+import { Controller, Get, Query, Res, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import type { Response } from 'express'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { CurrentUser } from 'src/decorators/current-user.decorator'
+import type { ExportTransactionsQueryDto } from './dtos/export-transactions-query.dto'
 import { ExportService } from './export.service'
 
+@ApiTags('Exports')
 @Controller('export')
 export class ExportController {
-	constructor(readonly _exportService: ExportService) {}
+	constructor(readonly exportService: ExportService) {}
+
+	@UseGuards(JwtAuthGuard)
+	@Get('transactions/csv')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Export transactions to CSV',
+		description:
+			'Downloads all transactions as CSV file. Supports filtering by wallet, date range, and transaction type.',
+	})
+	async exportTransactionsCsv(
+		@CurrentUser() user,
+		@Query() query: ExportTransactionsQueryDto,
+		@Res() res: Response,
+	) {
+		// generate csv
+		const csv = await this.exportService.exportTransactionToCsv(
+			user.userId,
+			query,
+		)
+
+		// configurate headers for download
+		const filename = `transactions_${new Date().toISOString().split('T')[0]}.csv`
+
+		res.setHeader('Content-Type', 'text/csv')
+		res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+
+		// send csv
+		res.send(csv)
+	}
 }
