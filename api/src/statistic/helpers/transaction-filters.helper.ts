@@ -1,4 +1,4 @@
-import { QueryStatisticsDto } from '../dtos/query-statistics.dto'
+import { PeriodType, QueryStatisticsDto } from '../dtos/query-statistics.dto'
 
 export class TransactionFiltersHelper {
 	/**
@@ -7,35 +7,55 @@ export class TransactionFiltersHelper {
 	 * @returns Objeto WHERE para usar no Prisma
 	 */
 	static buildFilters(userId: string, query: QueryStatisticsDto) {
-		// base filters for wallet transactions
 		const filters: any = {
 			wallet: {
 				userId,
 			},
 		}
 
-		// optional filter
 		if (query.walletId) {
 			filters.walletId = query.walletId
 		}
 
-		// optional filter
 		if (query.startDate || query.endDate) {
-			filters.date = {}
+			filters.date = {} // manual dates
 
 			if (query.startDate) {
-				// >= startDate (start day)
 				filters.date.gte = new Date(query.startDate)
 			}
 
 			if (query.endDate) {
-				// < endDate + 1 day (to include the entire day up to 23:59:59)
-				const endDate = new Date(query.endDate)
-				endDate.setDate(endDate.getDate() + 1)
-				filters.date.lt = endDate
+				filters.date.lte = new Date(`${query.endDate}T23:59:59.999Z`)
+			}
+		} else if (query.period) {
+			const dates = TransactionFiltersHelper.getPeriodDates(query.period)
+			filters.date = {
+				gte: dates.start,
+				lte: dates.end,
 			}
 		}
 
 		return filters
+	}
+
+	private static getPeriodDates(period: PeriodType): {
+		start: Date
+		end: Date
+	} {
+		const now = new Date()
+		const start = new Date()
+
+		if (period === PeriodType.WEEK) {
+			start.setDate(now.getDate() - 7) // last 7 days
+		} else if (period === PeriodType.MONTH) {
+			start.setDate(now.getDate() - 30) // last month
+		} else if (period === PeriodType.YEAR) {
+			start.setDate(now.getDate() - 365) // last year
+		}
+
+		return {
+			start,
+			end: now,
+		}
 	}
 }
