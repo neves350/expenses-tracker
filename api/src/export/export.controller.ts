@@ -2,6 +2,7 @@ import { Controller, Get, Query, Res, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { ApiExportCsvResponses } from 'src/decorators/api-responses/export-responses.decorator'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { ExportTransactionsQueryDto } from './dtos/export-transactions-query.dto'
 import { ExportService } from './export.service'
@@ -19,6 +20,7 @@ export class ExportController {
 		description:
 			'Downloads all transactions as CSV file. Supports filtering by wallet, date range, and transaction type.',
 	})
+	@ApiExportCsvResponses()
 	async exportTransactionsCsv(
 		@CurrentUser() user,
 		@Query() query: ExportTransactionsQueryDto,
