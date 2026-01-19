@@ -1,9 +1,9 @@
 import { Controller, Get, Query, Res, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import type { Response } from 'express'
+import { Response } from 'express'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
-import type { ExportTransactionsQueryDto } from './dtos/export-transactions-query.dto'
+import { ExportTransactionsQueryDto } from './dtos/export-transactions-query.dto'
 import { ExportService } from './export.service'
 
 @ApiTags('Exports')
