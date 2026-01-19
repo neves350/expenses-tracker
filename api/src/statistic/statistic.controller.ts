@@ -1,6 +1,10 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import {
+	ApiByCategoryResponses,
+	ApiOverviewResponses,
+} from 'src/decorators/api-responses/statistic-responses.decorator'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { ByCategoryQueryDto } from './dtos/by-category-query.dto'
 import { ByCategoryResponseDto } from './dtos/by-category-response.dto'
@@ -21,6 +25,7 @@ export class StatisticController {
 		description:
 			'Returns totals, averages, counters, and top 3 expense categories. Useful for main dashboards.',
 	})
+	@ApiOverviewResponses()
 	async overview(
 		@CurrentUser() user,
 		@Query() query: QueryStatisticsDto,
@@ -35,6 +40,7 @@ export class StatisticController {
 		summary: 'Breakdown by category',
 		description: 'Groups transactions by category with value and percentages.',
 	})
+	@ApiByCategoryResponses()
 	async byCategory(
 		@CurrentUser() user,
 		@Query() query: ByCategoryQueryDto,
