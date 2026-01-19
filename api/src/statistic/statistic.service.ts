@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/db/prisma.service'
 import { Type } from 'src/generated/prisma/enums'
+import { ByCategoryQueryDto } from './dtos/by-category-query.dto'
+import { ByCategoryResponseDto } from './dtos/by-category-response.dto'
 import { OverviewResponseDto } from './dtos/overview-response.dto'
 import { QueryStatisticsDto } from './dtos/query-statistics.dto'
 import { CategoryService } from './helpers/category.helper'
@@ -64,6 +66,35 @@ export class StatisticService {
 			averageExpense,
 			averageIncome,
 			topExpenseCategories,
+		}
+	}
+
+	async getByCategory(
+		userId: string,
+		query: ByCategoryQueryDto,
+	): Promise<ByCategoryResponseDto> {
+		// filters
+		const filters = this.transactionFiltersService.buildFilters(userId, query)
+		const type = query.type || Type.EXPENSE
+
+		// get categories
+		const categories = await this.categoryService.getCategoryBreakdown(
+			filters,
+			type,
+		)
+
+		// calculate total
+		const totalAmount = categories.reduce((sum, cat) => sum + cat.total, 0)
+		const totalTransactions = categories.reduce(
+			(sum, cat) => sum + cat.transactionCount,
+			0,
+		)
+
+		return {
+			type,
+			totalAmount,
+			totalTransactions,
+			categories,
 		}
 	}
 }
