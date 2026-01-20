@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { DeadlinePreset } from '../dtos/create-goal.dto'
+import { DeadlinePreset } from '../enums/deadline-preset.enum'
 
 @Injectable()
 export class DeadlineService {

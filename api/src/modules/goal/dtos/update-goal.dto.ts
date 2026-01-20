@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
 	IsDate,
@@ -12,27 +12,33 @@ import {
 } from 'class-validator'
 import { DeadlinePreset } from '../enums/deadline-preset.enum'
 
-export class CreateGoalDto {
+export class UpdateGoalDto {
 	@IsString()
-	@IsNotEmpty()
-	@ApiProperty({ example: 'Holidays 2026' })
-	title: string
+	@IsOptional()
+	@ApiPropertyOptional({ example: 'Holidays 2026', description: 'Goal title' })
+	title?: string
 
 	@IsNumber()
-	@IsNotEmpty()
+	@IsOptional()
 	@IsPositive({ message: 'Amount must be greater than 0' })
-	@ApiProperty({ example: 5000 })
-	amount: number
+	@ApiPropertyOptional({ example: 5000, description: 'Target amount to save' })
+	amount?: number
 
 	@IsEnum(DeadlinePreset)
 	@IsOptional()
-	@ApiPropertyOptional({ enum: DeadlinePreset })
+	@ApiPropertyOptional({
+		enum: DeadlinePreset,
+		description: 'Preset deadline or custom',
+	})
 	deadlinePreset?: DeadlinePreset
 
 	@Type(() => Date)
 	@IsDate()
 	@ValidateIf((o) => o.deadlinePreset === DeadlinePreset.CUSTOM)
 	@IsNotEmpty({ message: 'Custom deadline is required when preset is CUSTOM' })
-	@ApiPropertyOptional()
+	@ApiPropertyOptional({
+		description:
+			'Custom deadline (required if preset is CUSTOM, max 5 years from now)',
+	})
 	customDeadline?: Date
 }

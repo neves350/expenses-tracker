@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Patch,
+	Post,
+	UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { CreateGoalDto } from './dtos/create-goal.dto'
+import { UpdateGoalDto } from './dtos/update-goal.dto'
 import { GoalService } from './goal.service'
 
 @ApiTags('Goals')
@@ -31,9 +40,7 @@ export class GoalController {
 	@Get()
 	@ApiBearerAuth()
 	@ApiOperation({
-		summary: 'Get goal details',
-		description:
-			'Returns detailed goal information including heatmap data for deposit visualization',
+		summary: 'Get all goals with progress',
 	})
 	async findAll(@CurrentUser() user) {
 		return this.goalService.findAll(user.userId)
@@ -43,9 +50,31 @@ export class GoalController {
 	@Get(':id')
 	@ApiBearerAuth()
 	@ApiOperation({
-		summary: 'Get all goals with progress',
+		summary: 'Get goal details',
+		description:
+			'Returns detailed goal information including heatmap data for deposit visualization',
 	})
 	async findOne(@CurrentUser() user, @Param('id') id: string) {
 		return this.goalService.findOne(user.userId, id)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Patch(':id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Update a goal',
+		description: 'Updates goal details and recalculates savings breakdown',
+	})
+	async update(
+		@CurrentUser() user,
+		@Param('id') id: string,
+		@Body() dto: UpdateGoalDto,
+	) {
+		const goal = await this.goalService.update(user.userId, id, dto)
+
+		return {
+			goal,
+			message: 'Goal updated successfull',
+		}
 	}
 }
