@@ -38,4 +38,33 @@ export class GoalService {
 			savingsBreakdown,
 		}
 	}
+
+	async findAll(userId: string) {
+		const goals = this.prisma.goal.findMany({
+			where: {
+				userId,
+			},
+			include: {
+				_count: {
+					select: {
+						deposits: true,
+					},
+				},
+			},
+		})
+
+		return (await goals).map((goal) => {
+			// convert to number
+			const currentAmount = Number(goal.currentAmount)
+			const targetAmount = Number(goal.amount)
+
+			return {
+				...goal,
+				amount: targetAmount,
+				currentAmount: currentAmount,
+				progress: Number(((currentAmount / targetAmount) * 100).toFixed(2)),
+				isCompleted: currentAmount >= targetAmount,
+			}
+		})
+	}
 }

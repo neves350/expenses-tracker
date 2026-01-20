@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
@@ -25,5 +25,15 @@ export class GoalController {
 			goal,
 			message: 'Goal created successfull',
 		}
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get()
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get all goals with progress',
+	})
+	async findAll(@CurrentUser() user) {
+		return this.goalService.findAll(user.userId)
 	}
 }
