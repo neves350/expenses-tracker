@@ -175,4 +175,26 @@ export class GoalService {
 					: null,
 		}
 	}
+
+	async delete(userId: string, id: string) {
+		const goal = await this.prisma.goal.findFirst({
+			where: {
+				id,
+				userId,
+			},
+		})
+
+		if (!goal) throw new BadRequestException('Goal not found')
+
+		await this.prisma.goal.delete({
+			where: {
+				id,
+			},
+		})
+
+		return {
+			id,
+			message: 'Goal deleted successfully',
+		}
+	}
 }

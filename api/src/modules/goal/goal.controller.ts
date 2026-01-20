@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Patch,
@@ -76,5 +77,16 @@ export class GoalController {
 			goal,
 			message: 'Goal updated successfull',
 		}
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Delete(':id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Delete a goal',
+		description: 'Permanently deletes a goal and all associated deposits',
+	})
+	async delete(@CurrentUser() user, @Param('id') id: string) {
+		return this.goalService.delete(user.userId, id)
 	}
 }
