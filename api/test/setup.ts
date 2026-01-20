@@ -16,6 +16,7 @@ export async function createTestApp(): Promise<INestApplication> {
 
 export interface TestContext {
 	authToken?: string
+	cookies?: string[]
 	userId?: string
 	walletId?: string
 	categoryId?: string
