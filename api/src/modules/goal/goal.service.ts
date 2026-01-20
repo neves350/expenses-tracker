@@ -197,4 +197,68 @@ export class GoalService {
 			message: 'Goal deleted successfully',
 		}
 	}
+
+	async addDeposit(userId: string, goalId: string, amount: number) {
+		const goal = await this.prisma.goal.findFirst({
+			where: {
+				id: goalId,
+				userId,
+			},
+		})
+
+		if (!goal) throw new BadRequestException('Goal not found')
+
+		const currentAmount = Number(goal.currentAmount)
+		const targetAmount = Number(goal.amount)
+
+		// check if user get the goal
+		if (currentAmount >= targetAmount) {
+			throw new BadRequestException('Goal already completed')
+		}
+
+		// previne to pass the goal
+		const newTotal = currentAmount + amount
+		const actualDeposit =
+			newTotal > targetAmount ? targetAmount - currentAmount : amount
+
+		const [deposit, updatedGoal] = await this.prisma.$transaction([
+			this.prisma.deposit.create({
+				data: {
+					amount: actualDeposit,
+					goalId,
+				},
+			}),
+			this.prisma.goal.update({
+				where: {
+					id: goalId,
+				},
+				data: {
+					currentAmount: {
+						increment: actualDeposit,
+					},
+				},
+			}),
+		])
+
+		const finalAmount = Number(updatedGoal.currentAmount)
+		const finalTarget = Number(updatedGoal.amount)
+
+		return {
+			deposit: {
+				...deposit,
+				amount: Number(deposit.amount),
+			},
+			goal: {
+				...updatedGoal,
+				amount: finalTarget,
+				currentAmount: finalAmount,
+				progress: Number(((finalAmount / finalTarget) * 100).toFixed(2)),
+				isCompleted: finalAmount >= finalTarget,
+			},
+			message:
+				finalAmount >= finalTarget
+					? '🎉 Goal completed!'
+					: 'Deposit added successfully',
+		}
+	}
 }

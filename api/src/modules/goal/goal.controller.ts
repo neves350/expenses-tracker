@@ -11,6 +11,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { CreateDepositDto } from './dtos/create-deposit.dto'
 import { CreateGoalDto } from './dtos/create-goal.dto'
 import { UpdateGoalDto } from './dtos/update-goal.dto'
 import { GoalService } from './goal.service'
@@ -88,5 +89,21 @@ export class GoalController {
 	})
 	async delete(@CurrentUser() user, @Param('id') id: string) {
 		return this.goalService.delete(user.userId, id)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Post(':id/deposit')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Add deposit to goal',
+		description:
+			'Records a savings deposit and updates goal progress. Prevents exceeding target amount.',
+	})
+	async addDeposit(
+		@CurrentUser() user,
+		@Param('id') id: string,
+		@Body() dto: CreateDepositDto,
+	) {
+		return this.goalService.addDeposit(user.userId, id, dto.amount)
 	}
 }
