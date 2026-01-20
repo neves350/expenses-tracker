@@ -9,6 +9,15 @@ import {
 	UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+	ApiAddDepositResponses,
+	ApiCreateResponses,
+	ApiDeleteResponses,
+	ApiFindAllResponses,
+	ApiFindOneResponses,
+	ApiGetDepositsResponses,
+	ApiUpdateResponses,
+} from 'src/common/decorators/api-responses/goal-responses.decorator'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { CreateDepositDto } from './dtos/create-deposit.dto'
@@ -29,6 +38,7 @@ export class GoalController {
 		description:
 			'Creates a savings goal with automatic calculation of required savings',
 	})
+	@ApiCreateResponses()
 	async create(@CurrentUser() user, @Body() dto: CreateGoalDto) {
 		const goal = await this.goalService.create(user.userId, dto)
 
@@ -44,6 +54,7 @@ export class GoalController {
 	@ApiOperation({
 		summary: 'Get all goals with progress',
 	})
+	@ApiFindAllResponses()
 	async findAll(@CurrentUser() user) {
 		return this.goalService.findAll(user.userId)
 	}
@@ -56,6 +67,7 @@ export class GoalController {
 		description:
 			'Returns detailed goal information including heatmap data for deposit visualization',
 	})
+	@ApiFindOneResponses()
 	async findOne(@CurrentUser() user, @Param('id') id: string) {
 		return this.goalService.findOne(user.userId, id)
 	}
@@ -67,6 +79,7 @@ export class GoalController {
 		summary: 'Update a goal',
 		description: 'Updates goal details and recalculates savings breakdown',
 	})
+	@ApiUpdateResponses()
 	async update(
 		@CurrentUser() user,
 		@Param('id') id: string,
@@ -87,6 +100,7 @@ export class GoalController {
 		summary: 'Delete a goal',
 		description: 'Permanently deletes a goal and all associated deposits',
 	})
+	@ApiDeleteResponses()
 	async delete(@CurrentUser() user, @Param('id') id: string) {
 		return this.goalService.delete(user.userId, id)
 	}
@@ -99,6 +113,7 @@ export class GoalController {
 		description:
 			'Records a savings deposit and updates goal progress. Prevents exceeding target amount.',
 	})
+	@ApiAddDepositResponses()
 	async addDeposit(
 		@CurrentUser() user,
 		@Param('id') id: string,
@@ -114,6 +129,7 @@ export class GoalController {
 		summary: 'Get deposit history',
 		description: 'Returns all deposits made towards this goal ordered by date',
 	})
+	@ApiGetDepositsResponses()
 	async getDeposits(@CurrentUser() user, @Param('id') id: string) {
 		return this.goalService.getDeposits(user.userId, id)
 	}
