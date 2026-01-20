@@ -46,17 +46,27 @@ model Token {
 }
 
 model Goal {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  title     String
-  amount    Decimal
-  deadline  DateTime
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id            String    @id @default(uuid())
+  userId        String    @map("user_id")
+  title         String
+  amount        Decimal
+  currentAmount Float     @default(0) @map("current_amount")
+  deadline      DateTime
+  deposits      Deposit[]
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("goals")
+}
+
+model Deposit {
+  id        String   @id @default(uuid())
+  amount    Float
+  goalId    String   @map("goal_id")
+  goal      Goal     @relation(fields: [goalId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
 }
 
 model Wallet {
