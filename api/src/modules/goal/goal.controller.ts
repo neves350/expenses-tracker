@@ -106,4 +106,15 @@ export class GoalController {
 	) {
 		return this.goalService.addDeposit(user.userId, id, dto.amount)
 	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get(':id/deposits')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get deposit history',
+		description: 'Returns all deposits made towards this goal ordered by date',
+	})
+	async getDeposits(@CurrentUser() user, @Param('id') id: string) {
+		return this.goalService.getDeposits(user.userId, id)
+	}
 }

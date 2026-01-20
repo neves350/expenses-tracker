@@ -261,4 +261,34 @@ export class GoalService {
 					: 'Deposit added successfully',
 		}
 	}
+
+	async getDeposits(userId: string, goalId: string) {
+		const goal = await this.prisma.goal.findFirst({
+			where: {
+				id: goalId,
+				userId,
+			},
+		})
+
+		if (!goal) throw new BadRequestException('Goal not found')
+
+		const deposits = await this.prisma.deposit.findMany({
+			where: {
+				goalId,
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+		})
+
+		return {
+			goalId,
+			totalDeposits: deposits.length,
+			totalAmount: deposits.reduce((sum, d) => sum + Number(d.amount), 0),
+			deposits: deposits.map((d) => ({
+				...d,
+				amount: Number(d.amount),
+			})),
+		}
+	}
 }
