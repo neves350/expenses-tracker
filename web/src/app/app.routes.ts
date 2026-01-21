@@ -1,9 +1,13 @@
 import type { Routes } from '@angular/router'
-import { Login } from './pages/auth/login/login'
 
 export const routes: Routes = [
 	{
 		path: 'login',
-		component: Login,
+		loadComponent: () => import('./pages/login/login').then((m) => m.Login),
+	},
+	{
+		path: 'register',
+		loadComponent: () =>
+			import('./pages/register/register').then((m) => m.Register),
 	},
 ]
