@@ -53,7 +53,7 @@ export class Register {
 				this.router.navigateByUrl('/') // rediract to dashboard
 			},
 			error: (_error) => {
-				toast.error('Credentials invalids, please try again later.')
+				toast.error('Registration failed, please try again later.')
 			},
 		})
 	}

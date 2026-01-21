@@ -41,7 +41,7 @@ export class Login {
 				this.router.navigateByUrl('/') // rediract to dashboard
 			},
 			error: (_error) => {
-				toast.error('Credentials invalids, please try again later.')
+				toast.error('Login failed, please try again later.')
 			},
 		})
 	}

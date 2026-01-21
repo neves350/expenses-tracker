@@ -28,9 +28,6 @@ export class AuthService {
 		return this.authApi.login(credentials).pipe(
 			tap(() => {
 				this.isAuthenticated.set(true)
-
-				// get user profile after login
-				this.loadUserProfile()
 			}),
 			catchError((error) => {
 				this.isLoading.set(false)
@@ -47,7 +44,7 @@ export class AuthService {
 
 		return this.authApi.register(data).pipe(
 			tap(() => {
-				this.isLoading.set(false)
+				this.isAuthenticated.set(true)
 			}),
 			catchError((error) => {
 				this.isLoading.set(false)
