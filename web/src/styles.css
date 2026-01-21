@@ -1,3 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "tailwindcss";
+
+:root {
+	/* Primary (Green) */
+	--primary-50: #ecfdf5;
+	--primary-100: #d1fae5;
+	--primary-500: #059669;
+	--primary-600: #047857;
+	--primary-700: #065f46;
+	--primary-900: #064e3b;
+
+	/* Gray */
+	--gray-50: #f9fafb;
+	--gray-100: #f3f4f6;
+	--gray-300: #d1d5db;
+	--gray-500: #6b7280;
+	--gray-700: #374151;
+	--gray-900: #111827;
+
+	/* States */
+	--success: #16a34a;
+	--danger: #dc2626;
+	--warning: #f59e0b;
+}
+
+/* Dark mode */
+.dark {
+	--background: #0d0d14;
+	--foreground: #ffffff;
+}
+
+:root {
+	--background: #ffffff;
+	--foreground: #0d0d14;
+}
