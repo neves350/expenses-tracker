@@ -33,9 +33,9 @@ export class Login {
 	})
 
 	onSubmit() {
-		const { email, password } = this.form.getRawValue()
+		const credentials = this.form.getRawValue()
 
-		this.loginApi.signIn(email, password).subscribe({
+		this.loginApi.login(credentials).subscribe({
 			next: (res) => {
 				console.log('RESPONSE:', res)
 				this.router.navigateByUrl('/')

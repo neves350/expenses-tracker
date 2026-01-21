@@ -1,16 +1,21 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
+import { environment } from '../../../../environments/environment'
+import type { AuthResponse } from './types/auth-response.type'
+import type { LoginRequest } from './types/login-request.type'
 
 @Injectable({
 	providedIn: 'root',
 })
 export class LoginApi {
 	http = inject(HttpClient)
+	baseUrl = `${environment.apiUrl}`
 
-	signIn(email: string, password: string) {
-		return this.http.post<{ message: string }>(
-			'http://localhost:3000/sessions/password',
-			{ email, password },
+	login(credentials: LoginRequest) {
+		return this.http.post<AuthResponse>(
+			`${this.baseUrl}/sessions/password`,
+			credentials,
+			// { withCredentials: true },
 		)
 	}
 }
