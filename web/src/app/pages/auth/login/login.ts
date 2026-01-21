@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
-import { LoginApi } from '@core/api/auth/login-api'
+import { AuthApi } from '@core/api/auth/auth-api'
 
 import {
 	LockKeyholeIcon,
@@ -25,7 +25,7 @@ export class Login {
 	fb = inject(FormBuilder)
 	http = inject(HttpClient)
 	router = inject(Router)
-	loginApi = inject(LoginApi)
+	authApi = inject(AuthApi)
 
 	form = this.fb.nonNullable.group({
 		email: ['', [Validators.email, Validators.required]],
@@ -35,7 +35,7 @@ export class Login {
 	onSubmit() {
 		const credentials = this.form.getRawValue()
 
-		this.loginApi.login(credentials).subscribe({
+		this.authApi.login(credentials).subscribe({
 			next: (res) => {
 				console.log('RESPONSE:', res)
 				this.router.navigateByUrl('/')
