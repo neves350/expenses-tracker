@@ -2,18 +2,18 @@ import { HttpClient } from '@angular/common/http'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
-import { AuthApi } from '@core/api/auth/auth-api'
-
+import { AuthService } from '@core/services/auth/auth-service'
 import {
 	LockKeyholeIcon,
 	LucideAngularModule,
 	MailIcon,
 	WalletMinimalIcon,
 } from 'lucide-angular'
+import { NgxSonnerToaster, toast } from 'ngx-sonner'
 
 @Component({
 	selector: 'app-login',
-	imports: [LucideAngularModule, ReactiveFormsModule],
+	imports: [LucideAngularModule, ReactiveFormsModule, NgxSonnerToaster],
 	templateUrl: './login.html',
 	styleUrl: './login.css',
 })
@@ -21,11 +21,12 @@ export class Login {
 	readonly WalletMinimalIcon = WalletMinimalIcon
 	readonly MailIcon = MailIcon
 	readonly LockKeyholeIcon = LockKeyholeIcon
+	readonly toast = toast
 
 	fb = inject(FormBuilder)
 	http = inject(HttpClient)
 	router = inject(Router)
-	authApi = inject(AuthApi)
+	authService = inject(AuthService)
 
 	form = this.fb.nonNullable.group({
 		email: ['', [Validators.email, Validators.required]],
@@ -35,13 +36,12 @@ export class Login {
 	onSubmit() {
 		const credentials = this.form.getRawValue()
 
-		this.authApi.login(credentials).subscribe({
-			next: (res) => {
-				console.log('RESPONSE:', res)
-				this.router.navigateByUrl('/')
+		this.authService.login(credentials).subscribe({
+			next: (_res) => {
+				this.router.navigateByUrl('/') // rediract to dashboard
 			},
-			error: (error) => {
-				console.log('ERROR:', error)
+			error: (_error) => {
+				toast.error('Credentials invalids, please try again later.')
 			},
 		})
 	}
