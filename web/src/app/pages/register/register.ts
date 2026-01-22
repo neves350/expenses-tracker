@@ -1,8 +1,12 @@
-import { HttpClient } from '@angular/common/http'
-import { Component, inject } from '@angular/core'
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	signal,
+} from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { Router } from '@angular/router'
-import { AuthService } from '@core/services/auth/auth-service'
+import { Router, RouterLink } from '@angular/router'
+import { AuthService } from '@core/services/auth/auth.service'
 import {
 	EyeIcon,
 	EyeOffIcon,
@@ -15,7 +19,13 @@ import { NgxSonnerToaster, toast } from 'ngx-sonner'
 
 @Component({
 	selector: 'app-register',
-	imports: [LucideAngularModule, ReactiveFormsModule, NgxSonnerToaster],
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	imports: [
+		LucideAngularModule,
+		ReactiveFormsModule,
+		NgxSonnerToaster,
+		RouterLink,
+	],
 	templateUrl: './register.html',
 	styleUrl: './register.css',
 })
@@ -28,10 +38,9 @@ export class Register {
 
 	readonly toast = toast
 
-	fb = inject(FormBuilder)
-	http = inject(HttpClient)
-	router = inject(Router)
-	authService = inject(AuthService)
+	private readonly fb = inject(FormBuilder)
+	private readonly router = inject(Router)
+	private readonly authService = inject(AuthService)
 
 	form = this.fb.nonNullable.group({
 		name: ['', [Validators.required]],
@@ -39,20 +48,20 @@ export class Register {
 		password: ['', [Validators.minLength(6), Validators.required]],
 	})
 
-	showPassword = false
+	showPassword = signal(false)
 
 	togglePassword() {
-		this.showPassword = !this.showPassword
+		this.showPassword.update((v) => !v)
 	}
 
 	onSubmit() {
 		const credentials = this.form.getRawValue()
 
 		this.authService.register(credentials).subscribe({
-			next: (_res) => {
-				this.router.navigateByUrl('/') // rediract to dashboard
+			next: () => {
+				this.router.navigateByUrl('/dashboard')
 			},
-			error: (_error) => {
+			error: () => {
 				toast.error('Registration failed, please try again later.')
 			},
 		})

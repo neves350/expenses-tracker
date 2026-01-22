@@ -21,7 +21,7 @@
           <div class="p-4 text-center">
             <p class="text-sm text-gray-500">
               Already have an account?
-              <a href="#" class="text-emerald-700 font-bold hover:text-emerald-600 transition">
+              <a routerLink="/login" class="text-emerald-700 font-bold hover:text-emerald-600 transition">
                 Sign in
               </a>
             </p>
@@ -105,7 +105,7 @@
               </span>
 
               <input
-                [type]="showPassword ? 'text' : 'password'"
+                [type]="showPassword() ? 'text' : 'password'"
                 placeholder="********"
                 formControlName="password"
                 required
@@ -118,7 +118,7 @@
               />
 
               <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer select-none" (click)="togglePassword()">
-                <i-lucide [img]="showPassword ? EyeIcon : EyeOffIcon" class="my-icon" />
+                <i-lucide [img]="showPassword() ? EyeIcon : EyeOffIcon" class="my-icon" />
               </span>
             </div>
             @if (form.get('password')?.touched && form.get('password')?.errors?.['required']) {

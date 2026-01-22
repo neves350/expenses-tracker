@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http'
-import { Component, inject } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { Router } from '@angular/router'
-import { AuthService } from '@core/services/auth/auth-service'
+import { Router, RouterLink } from '@angular/router'
+import { AuthService } from '@core/services/auth/auth.service'
 import {
 	LockKeyholeIcon,
 	LucideAngularModule,
@@ -13,7 +12,13 @@ import { NgxSonnerToaster, toast } from 'ngx-sonner'
 
 @Component({
 	selector: 'app-login',
-	imports: [LucideAngularModule, ReactiveFormsModule, NgxSonnerToaster],
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	imports: [
+		LucideAngularModule,
+		ReactiveFormsModule,
+		NgxSonnerToaster,
+		RouterLink,
+	],
 	templateUrl: './login.html',
 	styleUrl: './login.css',
 })
@@ -23,10 +28,9 @@ export class Login {
 	readonly LockKeyholeIcon = LockKeyholeIcon
 	readonly toast = toast
 
-	fb = inject(FormBuilder)
-	http = inject(HttpClient)
-	router = inject(Router)
-	authService = inject(AuthService)
+	private readonly fb = inject(FormBuilder)
+	private readonly router = inject(Router)
+	private readonly authService = inject(AuthService)
 
 	form = this.fb.nonNullable.group({
 		email: ['', [Validators.email, Validators.required]],
@@ -37,10 +41,10 @@ export class Login {
 		const credentials = this.form.getRawValue()
 
 		this.authService.login(credentials).subscribe({
-			next: (_res) => {
-				this.router.navigateByUrl('/') // rediract to dashboard
+			next: () => {
+				this.router.navigateByUrl('/dashboard')
 			},
-			error: (_error) => {
+			error: () => {
 				toast.error('Login failed, please try again later.')
 			},
 		})
