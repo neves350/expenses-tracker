@@ -67,7 +67,7 @@ export class AuthService {
 		}
 	}
 
-	async login(loginUserDto: LoginUserDto): Promise<AuthEntity> {
+	async login(loginUserDto: LoginUserDto): Promise<RegisterResponse> {
 		const { email, password } = loginUserDto
 
 		const user = await this.prisma.user.findUnique({
@@ -95,7 +95,10 @@ export class AuthService {
 			expiresIn: this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRE_IN'),
 		} as JwtSignOptions)
 
-		return { accessToken, refreshToken }
+		return {
+			user,
+			tokens: { accessToken, refreshToken },
+		}
 	}
 
 	async refresh(refreshToken: string): Promise<AuthEntity> {

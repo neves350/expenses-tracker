@@ -77,17 +77,16 @@ export class AuthController {
 		@Body() loginUserDto: LoginUserDto,
 		@Res({ passthrough: true }) res: Response,
 	) {
-		const { accessToken, refreshToken } =
-			await this.authService.login(loginUserDto)
+		const { user, tokens } = await this.authService.login(loginUserDto)
 
 		// send the token to client
-		res.cookie('accessToken', accessToken, {
+		res.cookie('accessToken', tokens.accessToken, {
 			httpOnly: true,
 			secure: this.configService.getOrThrow<boolean>('USE_SECURE_COOKIES'),
 			sameSite: 'lax',
 			maxAge: 15 * 60 * 1000, // 15 min
 		})
-		res.cookie('refreshToken', refreshToken, {
+		res.cookie('refreshToken', tokens.refreshToken, {
 			httpOnly: true,
 			secure: this.configService.getOrThrow<boolean>('USE_SECURE_COOKIES'),
 			sameSite: 'lax',
@@ -95,6 +94,7 @@ export class AuthController {
 		})
 
 		return {
+			user,
 			message: 'Login successful',
 		}
 	}
