@@ -20,6 +20,18 @@ export const routes: Routes = [
 			import('./pages/register/register').then((m) => m.Register),
 	},
 	{
+		path: 'password/recover',
+		canActivate: [guestGuard],
+		loadComponent: () =>
+			import('./pages/password/recover/recover').then((m) => m.Recover),
+	},
+	{
+		path: 'password/reset',
+		canActivate: [guestGuard],
+		loadComponent: () =>
+			import('./pages/password/reset/reset').then((m) => m.Reset),
+	},
+	{
 		path: 'dashboard',
 		canActivate: [authGuard],
 		loadComponent: () =>
