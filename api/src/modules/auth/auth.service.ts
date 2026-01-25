@@ -149,23 +149,36 @@ export class AuthService {
 				'If email exists, you will receive a recover link',
 			)
 
+		// Generate 5-character alphanumeric code
+		const code = this.generateRecoveryCode()
+
 		const token = await this.prisma.token.create({
 			data: {
 				type: 'PASSWORD_RECOVER',
+				code,
 				userId: userFromEmail.id,
 			},
 		})
 
-		// Send e-mail with password recover link
+		// Send e-mail with password recover code
 		await this.mailService.sendPasswordResetEmail(
 			userFromEmail.email,
-			token.id,
+			token.code,
 			userFromEmail.name,
 		)
 
 		return {
-			message: 'If email exists, you will receive a recover link',
+			message: 'If email exists, you will receive a recover code',
 		}
+	}
+
+	private generateRecoveryCode(): string {
+		const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+		let code = ''
+		for (let i = 0; i < 5; i++) {
+			code += chars.charAt(Math.floor(Math.random() * chars.length))
+		}
+		return code
 	}
 
 	async resetPassword(resetPasswordDto: ResetPasswordDto) {
@@ -173,7 +186,7 @@ export class AuthService {
 
 		const tokenFromCode = await this.prisma.token.findUnique({
 			where: {
-				id: code,
+				code,
 			},
 			include: {
 				user: true,
@@ -181,14 +194,19 @@ export class AuthService {
 		})
 
 		if (!tokenFromCode || tokenFromCode.type !== 'PASSWORD_RECOVER') {
-			throw new UnauthorizedException('Invalid link')
+			throw new UnauthorizedException('Invalid code')
 		}
 
-		// create password
+		// Check if code is expired (1 hour)
+		const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
+		if (tokenFromCode.createdAt < oneHourAgo) {
+			await this.prisma.token.delete({ where: { code } })
+			throw new UnauthorizedException('Code expired')
+		}
+
 		const hashedPassword = await bcrypt.hash(newPassword, 10)
 
 		await this.prisma.$transaction([
-			// update user
 			this.prisma.user.update({
 				where: {
 					id: tokenFromCode.userId,
@@ -197,17 +215,15 @@ export class AuthService {
 					passwordHash: hashedPassword,
 				},
 			}),
-
-			// delete token
 			this.prisma.token.delete({
 				where: {
-					id: code,
+					code,
 				},
 			}),
 		])
 
 		return {
-			message: 'Success on password reset',
+			message: 'Password reset successfully',
 		}
 	}
 }

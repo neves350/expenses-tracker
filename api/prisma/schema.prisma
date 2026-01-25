@@ -37,6 +37,7 @@ enum TokenType {
 model Token {
   id        String    @id @default(uuid())
   type      TokenType
+  code      String    @unique @db.VarChar(5)
   userId    String    @map("user_id")
   createdAt DateTime  @default(now()) @map("created_at")
 
