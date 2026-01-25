@@ -73,6 +73,18 @@ export class AuthService {
 		)
 	}
 
+	requestPasswordRecover(email: string): Observable<string> {
+		return this.authApi
+			.requestPasswordRecover(email)
+			.pipe(map((response) => response.message))
+	}
+
+	resetPassword(code: string, newPassword: string): Observable<string> {
+		return this.authApi
+			.resetPassword(code, newPassword)
+			.pipe(map((response) => response.message))
+	}
+
 	logout(): void {
 		this.authApi.logout().subscribe({
 			complete: () => {

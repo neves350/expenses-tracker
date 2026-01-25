@@ -56,6 +56,25 @@ export class AuthApi {
 	}
 
 	/**
+	 * REQUEST PASSWORD RECOVERY
+	 */
+	requestPasswordRecover(email: string): Observable<AuthResponse> {
+		return this.http.post<AuthResponse>(`${this.baseUrl}/password/recover`, {
+			email,
+		})
+	}
+
+	/**
+	 * RESET PASSWORD WITH CODE
+	 */
+	resetPassword(code: string, newPassword: string): Observable<AuthResponse> {
+		return this.http.post<AuthResponse>(`${this.baseUrl}/password/reset`, {
+			code,
+			newPassword,
+		})
+	}
+
+	/**
 	 * LOGOUT
 	 */
 	logout(): Observable<AuthResponse> {
