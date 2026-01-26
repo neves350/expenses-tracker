@@ -1,13 +1,11 @@
-import { ZardDropdownMenuItemComponent } from '@/shared/components/dropdown/dropdown-item.component';
-import { ZardDropdownMenuContentComponent } from '@/shared/components/dropdown/dropdown-menu-content.component';
-import { ZardDropdownDirective } from '@/shared/components/dropdown/dropdown-trigger.directive';
-import { ZardDropdownMenuComponent } from '@/shared/components/dropdown/dropdown.component';
-import { ZardMenuLabelComponent } from '@/shared/components/menu/menu-label.component';
+import { ZardDropdownMenuItemComponent } from './dropdown-item.component';
+import { ZardDropdownMenuContentComponent } from './dropdown-menu-content.component';
+import { ZardDropdownDirective } from './dropdown-trigger.directive';
+import { ZardDropdownMenuComponent } from './dropdown.component';
 
 export const ZardDropdownImports = [
   ZardDropdownMenuComponent,
   ZardDropdownMenuItemComponent,
-  ZardMenuLabelComponent,
   ZardDropdownMenuContentComponent,
   ZardDropdownDirective,
 ] as const;

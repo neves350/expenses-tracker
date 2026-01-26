@@ -10,7 +10,7 @@ import {
 
 import type { ClassValue } from 'clsx';
 
-import { dropdownContentVariants } from '@/shared/components/dropdown/dropdown.variants';
+import { dropdownContentVariants } from './dropdown.variants';
 import { mergeClasses } from '@/shared/utils/merge-classes';
 
 @Component({
