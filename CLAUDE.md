@@ -255,6 +255,11 @@ Request → 401 Error → authInterceptor
 
 - Uses Vitest (configured in Angular 21)
 - Tests alongside components: `*.spec.ts`
+- Run single test file: `npm test -- <pattern>` (e.g., `npm test -- auth`)
+
+**Note:** Workspace-specific CLAUDE.md files exist for detailed conventions:
+- `api/CLAUDE.md` - NestJS patterns and API conventions
+- `web/CLAUDE.md` - Angular 21 patterns and component conventions
 
 ## Key Technologies
 
@@ -281,7 +286,8 @@ Request → 401 Error → authInterceptor
 - TypeScript strict mode enabled
 - Tabs for indentation (width: 2)
 - Line width: 80 characters
-- Single quotes, semicolons as needed
+- Single quotes, semicolons as needed (ASI)
+- Import organization handled by Biome assist
 
 ## Important Notes
 
