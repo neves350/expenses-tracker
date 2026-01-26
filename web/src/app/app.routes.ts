@@ -1,6 +1,7 @@
 import type { Routes } from '@angular/router'
 import { authGuard } from '@core/guards/auth.guard'
 import { guestGuard } from '@core/guards/guest.guard'
+import { Layout } from './shared/components/layout/layout'
 
 export const routes: Routes = [
 	{
@@ -32,10 +33,28 @@ export const routes: Routes = [
 			import('./pages/password/reset/reset').then((m) => m.Reset),
 	},
 	{
-		path: 'dashboard',
+		path: '',
+		component: Layout,
 		canActivate: [authGuard],
-		loadComponent: () =>
-			import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
+		children: [
+			{
+				path: 'dashboard',
+				loadComponent: () =>
+					import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
+			},
+			{
+				path: 'wallets',
+				loadComponent: () =>
+					import('./pages/wallets/wallets').then((m) => m.Wallets),
+			},
+			{
+				path: 'profile',
+				loadComponent: () =>
+					import('./pages/user-profile/user-profile').then(
+						(m) => m.UserProfile,
+					),
+			},
+		],
 	},
 	{
 		path: '**',
