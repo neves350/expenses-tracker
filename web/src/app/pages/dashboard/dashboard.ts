@@ -1,22 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
-import { AuthService } from '@core/services/auth/auth.service'
-import { LogOutIcon, LucideAngularModule } from 'lucide-angular'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 @Component({
 	selector: 'app-dashboard',
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	imports: [LucideAngularModule],
+	imports: [],
 	templateUrl: './dashboard.html',
 	styleUrl: './dashboard.css',
 })
-export class Dashboard {
-	readonly LogOutIcon = LogOutIcon
-
-	private readonly authService = inject(AuthService)
-
-	readonly currentUser = this.authService.currentUser
-
-	logout() {
-		this.authService.logout()
-	}
-}
+export class Dashboard {}
