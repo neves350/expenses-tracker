@@ -1,3 +1,4 @@
+import { provideZard } from '@/shared/core/provider/providezard';
 import {
 	provideHttpClient,
 	withFetch,
@@ -16,5 +17,6 @@ export const appConfig: ApplicationConfig = {
 		provideBrowserGlobalErrorListeners(),
 		provideRouter(routes),
 		provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+		provideZard(),
 	],
 }
