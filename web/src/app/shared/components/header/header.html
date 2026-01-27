@@ -1,17 +1,17 @@
-<div class="mx-auto flex max-w-[2400px] items-center justify-between">
-  <div class="flex items-center gap-3">
-    <z-avatar
-      zSrc="image.png"
-      zAlt="Application logo"
-      zSize="sm"
-    />
-    <z-divider zOrientation="vertical" class="h-5" /> 
-    <app-tabs />
-  </div>
+<div class="flex flex-1 items-center justify-between gap-4">
 
-  <div class="flex items-center gap-4">
-    <app-theme />
-    <z-divider zOrientation="vertical" class="h-5" />
-    <app-profile-button />
-  </div>
+  <!-- Page icon and title (only shown when sidebar is collapsed) -->
+  @if (showPageInfo()) {
+    <div class="flex items-center gap-2">
+      <z-divider zOrientation="vertical" class="h-5" />
+
+      <i-lucide [img]="pageInfo().icon" class="size-5 text-accent-foreground" />
+      <h1 class="text-accent-foreground font-semibold">{{ pageInfo().title }}</h1>
+    </div>
+  } @else {
+    <div></div>
+  }
+
+  <!-- Theme toggle -->
+  <app-theme />
 </div>
