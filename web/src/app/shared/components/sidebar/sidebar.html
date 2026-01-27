@@ -1,0 +1,22 @@
+<hlm-sidebar collapsible="icon">
+    <hlm-sidebar-header class="flex flex-row items-center gap-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
+      <z-avatar
+        zSrc="image.png"
+        zAlt="Application logo"
+        zSize="sm"
+      />
+      <span class="font-semibold group-data-[collapsible=icon]:hidden">
+        Expense Tracker
+      </span>
+    </hlm-sidebar-header>
+
+    <hlm-sidebar-content>
+      <app-sidebar-group />
+    </hlm-sidebar-content>
+
+    <z-divider zOrientation="horizontal" class="group-data-[collapsible=icon]:hidden" />
+
+    <hlm-sidebar-footer>
+      <app-profile-button />
+    </hlm-sidebar-footer>
+  </hlm-sidebar>

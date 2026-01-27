@@ -1,0 +1,23 @@
+<hlm-sidebar-group>
+  <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden">
+    Main Menu
+  </div>
+  <div hlmSidebarGroupContent>
+    <ul hlmSidebarMenu>
+      @for (item of items; track item.title) {
+        <li hlmSidebarMenuItem>
+          <a
+            hlmSidebarMenuButton
+            [routerLink]="item.url"
+            [tooltip]="item.title"
+            [tooltipDisabled]="!isCollapsed()"
+            routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground"
+          >
+            <i-lucide [img]="item.icon" class="size-4" />
+            <span>{{ item.title }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</hlm-sidebar-group>
