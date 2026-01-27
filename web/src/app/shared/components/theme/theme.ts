@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { LucideAngularModule, MoonIcon, SunIcon } from 'lucide-angular'
+import { ZardDarkMode } from '@/shared/services/dark-mode'
 import { ZardButtonComponent } from '../ui/button'
 
 @Component({
@@ -12,16 +13,14 @@ import { ZardButtonComponent } from '../ui/button'
 export class Theme {
 	darkMode = localStorage.getItem('theme') === 'dark'
 
+	private readonly darkModeService = inject(ZardDarkMode)
+
 	readonly SunIcon = SunIcon
 	readonly MoonIcon = MoonIcon
-
-	constructor() {
-		document.documentElement.classList.toggle('dark', this.darkMode)
-	}
 
 	toggleTheme() {
 		this.darkMode = !this.darkMode
 		localStorage.setItem('theme', this.darkMode ? 'dark' : 'light')
-		document.documentElement.classList.toggle('dark', this.darkMode)
+		this.darkModeService.toggleTheme()
 	}
 }
