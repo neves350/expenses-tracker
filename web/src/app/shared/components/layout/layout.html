@@ -1,7 +1,16 @@
-<div class="pt-6">
-  <app-header />
-  
-  <main class="mx-auto w-full max-w-[1200px] py-4">
-    <router-outlet />
+<hlm-sidebar-wrapper>
+  <app-sidebar />
+
+  <main hlmSidebarInset>
+    <header class="flex h-14 items-center gap-2 border-b px-4">
+      <button hlmSidebarTrigger>
+        <span class="sr-only">Toggle Sidebar</span>
+      </button>
+      <app-header />
+    </header>
+
+    <div class="flex-1 p-4">
+      <router-outlet />
+    </div>
   </main>
-</div>
+</hlm-sidebar-wrapper>
