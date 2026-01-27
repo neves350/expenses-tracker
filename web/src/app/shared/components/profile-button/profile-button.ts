@@ -3,14 +3,11 @@ import {
 	Component,
 	computed,
 	inject,
-	signal,
 } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { AuthService } from '@core/services/auth/auth.service'
 import {
-	CheckIcon,
-	ChevronDownIcon,
-	CoinsIcon,
+	ChevronsUpDownIcon,
 	LogOutIcon,
 	LucideAngularModule,
 	UserIcon,
@@ -18,10 +15,6 @@ import {
 import { ZardAvatarComponent } from '../ui/avatar'
 import { ZardDividerComponent } from '../ui/divider'
 import { ZardDropdownImports } from '../ui/dropdown'
-
-type Currency = 'USD' | 'EUR'
-
-const CURRENCY_KEY = 'currency'
 
 @Component({
 	selector: 'app-profile-button',
@@ -40,14 +33,10 @@ export class ProfileButton {
 	private readonly authService = inject(AuthService)
 
 	readonly user = this.authService.currentUser
-	readonly ChevronDownIcon = ChevronDownIcon
+
 	readonly UserIcon = UserIcon
 	readonly LogOutIcon = LogOutIcon
-	readonly CoinsIcon = CoinsIcon
-	readonly CheckIcon = CheckIcon
-
-	readonly currency = signal<Currency>(this.getStoredCurrency())
-	readonly currencies: Currency[] = ['USD', 'EUR']
+	readonly ChevronsUpDownIcon = ChevronsUpDownIcon
 
 	readonly initials = computed(() => {
 		const name = this.user()?.name
@@ -59,17 +48,7 @@ export class ProfileButton {
 			.join('')
 	})
 
-	setCurrency(currency: Currency) {
-		this.currency.set(currency)
-		localStorage.setItem(CURRENCY_KEY, currency)
-	}
-
 	logout() {
 		this.authService.logout()
-	}
-
-	private getStoredCurrency(): Currency {
-		const stored = localStorage.getItem(CURRENCY_KEY)
-		return stored === 'EUR' ? 'EUR' : 'USD'
 	}
 }

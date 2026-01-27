@@ -1,7 +1,8 @@
 @if (user(); as user) {
+  <!-- User Button -->
   <button
     type="button"
-    class="flex cursor-pointer items-center gap-3 outline-none"
+    class="flex w-full cursor-pointer items-center justify-center outline-none group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-0"
     z-dropdown
     [zDropdownMenu]="menu"
   >
@@ -10,38 +11,23 @@
       [zFallback]="initials()"
       [zAlt]="user.name"
       [zSize]="'sm'"
+      class="shrink-0 cursor-pointer"
     />
 
-    <div class="flex flex-col items-end">
-      <span class="text-sm font-medium">{{ user.name }}</span>
+    <div class="ml-2 grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+      <span class="truncate text-sm font-medium">{{ user.name }}</span>
+      <span class="truncate text-xs text-muted-foreground">{{ user.email }}</span>
     </div>
 
-    <i-lucide [img]="ChevronDownIcon" class="text-muted-foreground size-4" />
+    <i-lucide [img]="ChevronsUpDownIcon" class="text-muted-foreground size-4 ml-auto group-data-[collapsible=icon]:hidden" />
   </button>
 
+  <!-- Dropdown Menu -->
   <z-dropdown-menu-content #menu="zDropdownMenuContent" class="w-56">
     <z-dropdown-menu-item routerLink="/profile">
       <i-lucide [img]="UserIcon" class="mr-2 size-4" />
       Profile
     </z-dropdown-menu-item>
-
-    <z-divider class="-mx-1 my-1" />
-
-    <!-- Currency selector -->
-    <div class="text-muted-foreground px-2 py-1.5 text-xs font-medium">
-      <i-lucide [img]="CoinsIcon" class="mr-1 inline size-3" />
-      Currency
-    </div>
-    @for (curr of currencies; track curr) {
-      <z-dropdown-menu-item (click)="setCurrency(curr)">
-        @if (currency() === curr) {
-          <i-lucide [img]="CheckIcon" class="mr-2 size-4" />
-        } @else {
-          <span class="mr-2 size-4"></span>
-        }
-        {{ curr }}
-      </z-dropdown-menu-item>
-    }
 
     <z-divider class="-mx-1 my-1" />
 
