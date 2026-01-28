@@ -1,5 +1,5 @@
 <hlm-sidebar collapsible="icon">
-    <hlm-sidebar-header class="flex flex-row items-center gap-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
+    <hlm-sidebar-header class="flex flex-row items-center gap-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 m-1.5 mb-[-15px]">
       <z-avatar
         zSrc="image.png"
         zAlt="Application logo"
@@ -10,11 +10,13 @@
       </span>
     </hlm-sidebar-header>
 
+    <z-divider zOrientation="horizontal" />
+
     <hlm-sidebar-content>
       <app-sidebar-group />
     </hlm-sidebar-content>
 
-    <z-divider zOrientation="horizontal" class="group-data-[collapsible=icon]:hidden" />
+    <z-divider zOrientation="horizontal" />
 
     <hlm-sidebar-footer>
       <app-profile-button />
