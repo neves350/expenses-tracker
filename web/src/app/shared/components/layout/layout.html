@@ -1,15 +1,15 @@
-<hlm-sidebar-wrapper>
+<hlm-sidebar-wrapper sidebarWidthIcon="70px">
   <app-sidebar />
 
   <main hlmSidebarInset>
-    <header class="flex h-14 items-center gap-2 border-b px-4">
-      <button hlmSidebarTrigger>
+    <header class="flex h-14 items-center gap-2 border-b px-6">
+      <button hlmSidebarTrigger class="cursor-pointer">
         <span class="sr-only">Toggle Sidebar</span>
       </button>
       <app-header />
     </header>
 
-    <div class="flex-1 p-4">
+    <div class="flex-1 p-6">
       <router-outlet />
     </div>
   </main>
