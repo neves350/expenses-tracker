@@ -1,45 +1,67 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "ES2022",
-    "module": "preserve",
-    "paths": {
-      "@core/*": [
-        "./src/app/core/*"
-      ],
-      "@pages/*": [
-        "./src/app/pages/*"
-      ],
-      "@/*": [
-        "src/app/*"
-      ]
-    },
-    "baseUrl": "./"
-  },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  },
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
+	"compileOnSave": false,
+	"compilerOptions": {
+		"strict": true,
+		"noImplicitOverride": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"experimentalDecorators": true,
+		"importHelpers": true,
+		"target": "ES2022",
+		"module": "preserve",
+		"paths": {
+			"@core/*": ["src/app/core/*"],
+			"@pages/*": ["src/app/pages/*"],
+			"@/*": ["src/app/*"],
+			"@spartan-ng/helm/sidebar": [
+				"src/app/shared/components/ui/spartan/sidebar/src/index.ts"
+			],
+			"@spartan-ng/helm/utils": [
+				"src/app/shared/components/ui/spartan/utils/src/index.ts"
+			],
+			"@spartan-ng/helm/button": [
+				"src/app/shared/components/ui/spartan/button/src/index.ts"
+			],
+			"@spartan-ng/helm/icon": [
+				"src/app/shared/components/ui/spartan/icon/src/index.ts"
+			],
+			"@spartan-ng/helm/input": [
+				"src/app/shared/components/ui/spartan/input/src/index.ts"
+			],
+			"@spartan-ng/helm/separator": [
+				"src/app/shared/components/ui/spartan/separator/src/index.ts"
+			],
+			"@spartan-ng/helm/sheet": [
+				"src/app/shared/components/ui/spartan/sheet/src/index.ts"
+			],
+			"@spartan-ng/helm/skeleton": [
+				"src/app/shared/components/ui/spartan/skeleton/src/index.ts"
+			],
+			"@spartan-ng/helm/tooltip": [
+				"src/app/shared/components/ui/spartan/tooltip/src/index.ts"
+			],
+			"@spartan-ng/helm/collapsible": [
+				"src/app/shared/components/ui/spartan/collapsible/src/index.ts"
+			]
+		},
+		"baseUrl": "./"
+	},
+	"angularCompilerOptions": {
+		"enableI18nLegacyMessageIdFormat": false,
+		"strictInjectionParameters": true,
+		"strictInputAccessModifiers": true,
+		"strictTemplates": true
+	},
+	"files": [],
+	"references": [
+		{
+			"path": "./tsconfig.app.json"
+		},
+		{
+			"path": "./tsconfig.spec.json"
+		}
+	]
 }
