@@ -19,7 +19,6 @@ import { NewPasswordDialog } from '@/shared/components/new-password-dialog/new-p
 import { ZardAvatarComponent } from '@/shared/components/ui/avatar'
 import { ZardBadgeComponent } from '@/shared/components/ui/badge'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
-import { ZardCardComponent } from '@/shared/components/ui/card'
 import { ZardDialogService } from '@/shared/components/ui/dialog'
 import { ZardDividerComponent } from '@/shared/components/ui/divider'
 
@@ -37,7 +36,6 @@ interface StatBadge {
 		LucideAngularModule,
 		DatePipe,
 		ZardBadgeComponent,
-		ZardCardComponent,
 		ZardButtonComponent,
 	],
 	templateUrl: './user-profile.html',
