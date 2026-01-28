@@ -6,6 +6,7 @@ import {
 	inject,
 } from '@angular/core'
 import { AuthService } from '@core/services/auth/auth.service'
+import { UsersService } from '@core/services/users.service'
 import {
 	CalendarIcon,
 	LucideAngularModule,
@@ -13,8 +14,13 @@ import {
 	TargetIcon,
 	WalletIcon,
 } from 'lucide-angular'
+import { toast } from 'ngx-sonner'
+import { NewPasswordDialog } from '@/shared/components/new-password-dialog/new-password-dialog'
 import { ZardAvatarComponent } from '@/shared/components/ui/avatar'
 import { ZardBadgeComponent } from '@/shared/components/ui/badge'
+import { ZardButtonComponent } from '@/shared/components/ui/button'
+import { ZardCardComponent } from '@/shared/components/ui/card'
+import { ZardDialogService } from '@/shared/components/ui/dialog'
 import { ZardDividerComponent } from '@/shared/components/ui/divider'
 
 interface StatBadge {
@@ -31,6 +37,8 @@ interface StatBadge {
 		LucideAngularModule,
 		DatePipe,
 		ZardBadgeComponent,
+		ZardCardComponent,
+		ZardButtonComponent,
 	],
 	templateUrl: './user-profile.html',
 	styleUrl: './user-profile.css',
@@ -38,6 +46,8 @@ interface StatBadge {
 })
 export class UserProfile {
 	private readonly authService = inject(AuthService)
+	private readonly usersService = inject(UsersService)
+	private readonly dialogService = inject(ZardDialogService)
 
 	readonly user = this.authService.currentUser
 	readonly WalletIcon = WalletIcon
@@ -61,4 +71,48 @@ export class UserProfile {
 		{ label: 'Categories', value: 12, icon: TagIcon },
 		{ label: 'Goals', value: 2, icon: TargetIcon },
 	]
+
+	openDialog() {
+		const dialogRef = this.dialogService.create({
+			zTitle: 'Change Password',
+			zDescription: 'Verify your current password and enter a new one.',
+			zContent: NewPasswordDialog,
+			zCustomClasses: 'dialog-center-layout',
+			zOkText: 'Update',
+			zOnOk: (instance) => {
+				if (!instance.isFormValid()) {
+					instance.form.markAllAsTouched()
+					return false
+				}
+
+				const userId = this.user()?.id
+				if (!userId) {
+					toast.error('User not found')
+					return false
+				}
+
+				const { currentPassword, newPassword, confirmPassword } =
+					instance.form.value
+
+				this.usersService
+					.changePassword(userId, {
+						currentPassword: currentPassword ?? '',
+						newPassword: newPassword ?? '',
+						confirmPassword: confirmPassword ?? '',
+					})
+					.subscribe({
+						next: (message) => {
+							toast.success(message)
+							dialogRef.close()
+						},
+						error: (err) => {
+							toast.error(err.error?.message || 'Failed to change password')
+						},
+					})
+
+				return false
+			},
+			zWidth: '425px',
+		})
+	}
 }
