@@ -1,0 +1,22 @@
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
+  <app-balance-card
+    [balance]="balanceData.balance"
+    [percentageChange]="balanceData.percentageChange"
+  />
+
+  <app-income-card
+    [income]="incomeData.income"
+    [percentageChange]="incomeData.percentageChange"
+  />
+
+  <app-expense-card
+    [expense]="expenseData.expense"
+    [percentageChange]="expenseData.percentageChange"
+  />
+
+  <app-goal-card
+    [goalName]="goalData.name"
+    [currentAmount]="goalData.currentAmount"
+    [targetAmount]="goalData.targetAmount"
+  />
+</div>
