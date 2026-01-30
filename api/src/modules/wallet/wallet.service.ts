@@ -8,12 +8,14 @@ export class WalletService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async create(createWalletDto: CreateWalletDto, userId: string) {
-		const { name, type, currency, balance } = createWalletDto
+		const { name, type, currency, balance, color, lastFour } = createWalletDto
 
 		const wallet = await this.prisma.wallet.create({
 			data: {
 				name,
+				color,
 				type,
+				lastFour,
 				currency,
 				balance,
 				userId,

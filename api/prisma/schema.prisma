@@ -73,20 +73,33 @@ model Deposit {
 }
 
 model Wallet {
-  id        String     @id @default(uuid())
-  userId    String     @map("user_id")
+  id        String      @id @default(uuid())
+  userId    String      @map("user_id")
   name      String
   type      WalletType
   currency  Currency
-  balance   Decimal    @db.Decimal(12, 2)
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
+  balance   Decimal     @db.Decimal(12, 2)
+  color     WalletColor @default(GRAY)
+  lastFour  String?     @map("last_four") @db.VarChar(4)
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
 
   transactions Transaction[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("wallets")
+}
+
+enum WalletColor {
+  GRAY
+  RED
+  GREEN
+  BLUE
+  PURPLE
+  ORANGE
+  YELLOW
+  PINK
 }
 
 enum Currency {

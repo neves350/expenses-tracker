@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator'
+import {
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+} from 'class-validator'
 
 enum CurrencyType {
 	EUR = 'EUR',
@@ -14,11 +20,38 @@ enum WalletType {
 	INVESTMENT = 'INVESTMENT',
 }
 
+enum WalletColor {
+	GRAY = 'GRAY',
+	RED = 'RED',
+	GREEN = 'GREEN',
+	BLUE = 'BLUE',
+	PURPLE = 'PURPLE',
+	ORANGE = 'ORANGE',
+	YELLOW = 'YELLOW',
+	PINK = 'PINK',
+}
+
 export class CreateWalletDto {
 	@IsString()
 	@IsNotEmpty()
 	@ApiProperty()
 	name: string
+
+	@IsEnum(WalletColor)
+	@IsNotEmpty()
+	@ApiProperty({
+		enum: [
+			'GRAY',
+			'RED',
+			'GREEN',
+			'BLUE',
+			'PURPLE',
+			'ORANGE',
+			'YELLOW',
+			'PINK',
+		],
+	})
+	color: WalletColor
 
 	@IsEnum(WalletType)
 	@IsNotEmpty()
@@ -32,6 +65,11 @@ export class CreateWalletDto {
 		],
 	})
 	type: WalletType
+
+	@IsString()
+	@IsOptional()
+	@ApiProperty()
+	lastFour?: string
 
 	@IsEnum(CurrencyType)
 	@IsNotEmpty()

@@ -14,11 +14,39 @@ enum WalletType {
 	INVESTMENT = 'INVESTMENT',
 }
 
+enum WalletColor {
+	GRAY = 'GRAY',
+	RED = 'RED',
+	GREEN = 'GREEN',
+	BLUE = 'BLUE',
+	PURPLE = 'PURPLE',
+	ORANGE = 'ORANGE',
+	YELLOW = 'YELLOW',
+	PINK = 'PINK',
+}
+
 export class UpdateWalletDto {
 	@IsString()
 	@IsOptional()
 	@ApiProperty({ required: false })
 	name?: string
+
+	@IsEnum(WalletColor)
+	@IsOptional()
+	@ApiProperty({
+		enum: [
+			'GRAY',
+			'RED',
+			'GREEN',
+			'BLUE',
+			'PURPLE',
+			'ORANGE',
+			'YELLOW',
+			'PINK',
+		],
+		required: false,
+	})
+	color?: WalletColor
 
 	@IsEnum(WalletType)
 	@IsOptional()
@@ -33,6 +61,11 @@ export class UpdateWalletDto {
 		required: false,
 	})
 	type?: WalletType
+
+	@IsString()
+	@IsOptional()
+	@ApiProperty()
+	lastFour?: string
 
 	@IsEnum(CurrencyType)
 	@IsOptional()
