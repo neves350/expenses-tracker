@@ -3,7 +3,7 @@
       Main Menu
     </div>
   <div hlmSidebarGroupContent>
-    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+    <ul hlmSidebarMenu class="p-2 mr-2 gap-3">
       @for (item of items; track item.title) {
         <li hlmSidebarMenuItem>
           <a
@@ -13,7 +13,7 @@
             [tooltipDisabled]="!isCollapsed()"
             routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground"
           >
-            <i-lucide [img]="item.icon" class="size-5.5" />
+            <i-lucide [img]="item.icon" class="size-5" />
             @if (!isCollapsed()) {
               <span class="m-4">{{ item.title }}</span>
             }

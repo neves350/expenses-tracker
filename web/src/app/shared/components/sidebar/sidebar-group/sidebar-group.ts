@@ -3,13 +3,16 @@ import { RouterLink, RouterLinkActive } from '@angular/router'
 import {
 	ArrowRightLeftIcon,
 	ChartAreaIcon,
+	CreditCardIcon,
 	GoalIcon,
 	LayoutDashboardIcon,
 	LucideAngularModule,
 	type LucideIconData,
-	WalletCardsIcon,
 } from 'lucide-angular'
-import { HlmSidebarImports, HlmSidebarService } from '../../ui/spartan/sidebar/src'
+import {
+	HlmSidebarImports,
+	HlmSidebarService,
+} from '../../ui/spartan/sidebar/src'
 
 interface MenuItem {
 	title: string
@@ -31,7 +34,9 @@ interface MenuItem {
 export class SidebarGroup {
 	private readonly sidebarService = inject(HlmSidebarService)
 
-	readonly isCollapsed = computed(() => this.sidebarService.state() === 'collapsed')
+	readonly isCollapsed = computed(
+		() => this.sidebarService.state() === 'collapsed',
+	)
 
 	readonly items: MenuItem[] = [
 		{
@@ -40,9 +45,9 @@ export class SidebarGroup {
 			icon: LayoutDashboardIcon,
 		},
 		{
-			title: 'Wallets',
-			url: '/wallets',
-			icon: WalletCardsIcon,
+			title: 'Cards',
+			url: '/cards',
+			icon: CreditCardIcon,
 		},
 		{
 			title: 'Transactions',

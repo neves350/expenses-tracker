@@ -43,9 +43,8 @@ export const routes: Routes = [
 					import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
 			},
 			{
-				path: 'wallets',
-				loadComponent: () =>
-					import('./pages/wallets/wallets').then((m) => m.Wallets),
+				path: 'cards',
+				loadComponent: () => import('./pages/cards/cards').then((m) => m.Cards),
 			},
 			{
 				path: 'profile',
