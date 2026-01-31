@@ -1,0 +1,46 @@
+<z-card class="mb-2 space-y-4">
+  <div class="flex items-start justify-between">
+    <div
+      class="size-10 flex items-center justify-center rounded-lg text-white"
+      [class]="bgColorClass()"
+    >
+      <i-lucide [img]="cardIcon()" class="size-5" />
+    </div>
+
+    <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
+      <span class="truncate text-sm font-medium">
+        {{ card().name }}
+      </span>
+      <span class="truncate text-xs text-muted-foreground">
+        {{ typeLabel() }}
+        @if (card().lastFour) {
+        <span> **** {{ card().lastFour }}</span>
+        }
+      </span>
+    </div>
+
+    <!-- Edit & Delete Buttons -->
+    <div class="flex items-center gap-1">
+      <z-button zType="ghost" zSize="sm">
+        <i-lucide [img]="SquarePenIcon" class="size-5" />
+      </z-button>
+      <z-button zType="ghost" zSize="sm" (click)="deleteWallet()">
+        <i-lucide [img]="Trash2Icon" class="size-5 text-destructive" />
+      </z-button>
+    </div>
+  </div>
+
+  <!-- Month Expenses -->
+  <div class="mt-6">
+    <p class="text-xs text-muted-foreground mb-1">Month expenses</p>
+    <span class="text-xl font-bold" [class]="textColorClass()">{{ formattedBalance() }}</span>
+  </div>
+
+  <!-- See Details -->
+  <div class="space-y-2 mt-6">
+    <z-button class="cursor-pointer" zType="outline" zFull>
+      See details
+      <i-lucide [img]="ArrowRightIcon" />
+    </z-button>
+  </div>
+</z-card>

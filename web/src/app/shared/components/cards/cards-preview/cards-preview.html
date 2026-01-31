@@ -1,0 +1,30 @@
+<z-card class="transition-all duration-200" [class]="bgColorClass()">
+  <div class="flex w-full items-center outline-none p-4">
+    <div class="size-12 flex items-center justify-center rounded-xl text-white transition-colors">
+      <i-lucide [img]="cardIcon()" class="size-5" />
+    </div>
+
+    <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
+      <span class="truncate text-sm font-medium">
+        {{ cardName() }}
+      </span>
+      <span class="truncate text-xs text-muted-foreground">
+        {{ typeLabel() }}
+        @if (lastFour()) {
+        <span class="truncate text-xs text-muted-foreground"> **** **** **** {{ lastFour() }}</span>
+        } @else {
+        <span class="truncate text-xs text-muted-foreground">**** **** **** ****</span>
+        }
+      </span>
+    </div>
+
+    <div class="ml-4 grid flex-1 text-right text-sm leading-tight">
+      <span class="truncate text-sm font-semibold">
+        {{ formattedBalance() }}
+      </span>
+      <span class="truncate text-xs text-muted-foreground">
+        {{ currency() }}
+      </span>
+    </div>
+  </div>
+</z-card>
