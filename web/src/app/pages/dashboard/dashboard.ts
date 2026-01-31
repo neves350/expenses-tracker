@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { DashboardCard } from '@/shared/components/dashboard/dashboard-card/dashboard-card'
+import { DashboardCards } from '@/shared/components/dashboard/dashboard-cards/dashboard-cards'
 import { DashboardChart } from '@/shared/components/dashboard/dashboard-chart/dashboard-chart'
 import { DashboardTransactions } from '@/shared/components/dashboard/dashboard-transactions/dashboard-transactions'
-import { DashboardWallets } from '@/shared/components/dashboard/dashboard-wallets/dashboard-wallets'
 
 @Component({
 	selector: 'app-dashboard',
@@ -10,7 +10,7 @@ import { DashboardWallets } from '@/shared/components/dashboard/dashboard-wallet
 	imports: [
 		DashboardCard,
 		DashboardChart,
-		DashboardWallets,
+		DashboardCards,
 		DashboardTransactions,
 	],
 	templateUrl: './dashboard.html',
