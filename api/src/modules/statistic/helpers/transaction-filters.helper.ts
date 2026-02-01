@@ -10,13 +10,13 @@ export class TransactionFiltersService {
 	 */
 	buildFilters(userId: string, query: QueryStatisticsDto) {
 		const filters: any = {
-			wallet: {
+			card: {
 				userId,
 			},
 		}
 
-		if (query.walletId) {
-			filters.walletId = query.walletId
+		if (query.cardId) {
+			filters.cardId = query.cardId
 		}
 
 		if (query.startDate || query.endDate) {

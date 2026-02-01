@@ -18,7 +18,7 @@ export class ExportController {
 	@ApiOperation({
 		summary: 'Export transactions to CSV',
 		description:
-			'Downloads all transactions as CSV file. Supports filtering by wallet, date range, and transaction type.',
+			'Downloads all transactions as CSV file. Supports filtering by card, date range, and transaction type.',
 	})
 	@ApiExportCsvResponses()
 	async exportTransactionsCsv(

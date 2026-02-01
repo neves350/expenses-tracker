@@ -15,7 +15,7 @@ export class ExportService {
 	): Promise<string> {
 		// filters
 		const filters = TransactionQueryHelper.buildTransactionFilters(userId, {
-			walletId: query.walletId,
+			cardId: query.cardId,
 			type: query.type,
 			startDate: query.startDate,
 			endDate: query.endDate,
@@ -30,7 +30,7 @@ export class ExportService {
 						title: true,
 					},
 				},
-				wallet: {
+				card: {
 					select: {
 						name: true,
 					},

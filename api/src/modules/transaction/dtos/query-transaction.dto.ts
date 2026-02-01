@@ -19,7 +19,7 @@ export class QueryTransactionDto {
 	@IsOptional()
 	@IsString()
 	@ApiPropertyOptional()
-	walletId?: string
+	cardId?: string
 
 	@IsOptional()
 	@IsString()
