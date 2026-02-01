@@ -3,13 +3,13 @@ import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from './infrastructure/db/prisma.module'
 import { MailModule } from './infrastructure/mail/mail.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { CardModule } from './modules/card/card.module'
 import { CategoryModule } from './modules/category/category.module'
 import { ExportModule } from './modules/export/export.module'
 import { GoalModule } from './modules/goal/goal.module'
 import { StatisticModule } from './modules/statistic/statistic.module'
 import { TransactionModule } from './modules/transaction/transaction.module'
 import { UsersModule } from './modules/users/users.module'
-import { WalletModule } from './modules/wallet/wallet.module'
 
 @Module({
 	imports: [
@@ -18,7 +18,7 @@ import { WalletModule } from './modules/wallet/wallet.module'
 		UsersModule,
 		PrismaModule,
 		MailModule,
-		WalletModule,
+		CardModule,
 		CategoryModule,
 		TransactionModule,
 		StatisticModule,
