@@ -44,7 +44,7 @@ export class UpdateTransactionDto {
 	@IsUUID()
 	@IsOptional()
 	@ApiPropertyOptional()
-	walletId: string
+	cardId: string
 
 	@IsString()
 	@IsUUID()

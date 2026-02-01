@@ -4,7 +4,7 @@ export class CsvTransformerHelper {
 			Date: CsvTransformerHelper.formatDate(t.date),
 			Title: t.title,
 			Category: t.category?.title || 'Unknown',
-			Wallet: t.wallet?.name || 'Unknown',
+			Card: t.card?.name || 'Unknown',
 			Type: t.type,
 			Amount: Number(t.amount).toFixed(2),
 		}))

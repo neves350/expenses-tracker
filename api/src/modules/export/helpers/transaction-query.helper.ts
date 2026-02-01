@@ -4,20 +4,20 @@ export class TransactionQueryHelper {
 	static buildTransactionFilters(
 		userId: string,
 		options: {
-			walletId?: string
+			cardId?: string
 			type?: Type
 			startDate?: string
 			endDate?: string
 		} = {},
 	) {
 		const filters: any = {
-			wallet: {
+			card: {
 				userId,
 			},
 		}
 
-		if (options.walletId) {
-			filters.walletId = options.walletId
+		if (options.cardId) {
+			filters.cardId = options.cardId
 		}
 
 		if (options.type) {

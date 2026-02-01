@@ -17,7 +17,7 @@ export class TransactionService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async create(dto: CreateTransactionDto, userId: string) {
-		const { title, type, date, walletId, categoryId } = dto
+		const { title, type, date, cardId, categoryId } = dto
 
 		// validate amount > 0
 		if (dto.amount <= 0)
@@ -30,62 +30,34 @@ export class TransactionService {
 		// converts number to decimal
 		const amount = new Prisma.Decimal(dto.amount)
 
-		// calculate new balance
-		// transaction = income, balance increase
-		// transaction = expense, balance decrease
-		const delta = type === 'INCOME' ? amount : amount.negated()
+		// validate user card
+		const card = await this.prisma.card.findFirst({
+			where: { id: cardId, userId },
+			select: { id: true },
+		})
 
-		return this.prisma.$transaction(async (tx) => {
-			// validate user wallet
-			const wallet = await tx.wallet.findFirst({
-				where: { id: walletId, userId },
-				select: { id: true, balance: true },
-			})
+		if (!card) throw new ForbiddenException('Card does not belong to user')
 
-			if (!wallet)
-				throw new ForbiddenException('Wallet does not belong to user')
+		// validate category
+		const category = await this.prisma.category.findFirst({
+			where: {
+				id: categoryId,
+				OR: [{ isDefault: true }, { userId: userId }],
+			},
+			select: { id: true },
+		})
 
-			// validate balance won't go negative for expenses
-			if (type === 'EXPENSE') {
-				const newBalance = wallet.balance.minus(amount)
+		if (!category) throw new NotFoundException('Category not found')
 
-				if (newBalance.isNegative())
-					throw new BadRequestException(
-						`Insufficient balance. Current: ${wallet.balance}, Required: ${amount}`,
-					)
-			}
-
-			// validate category
-			const category = await tx.category.findFirst({
-				where: {
-					id: categoryId,
-					OR: [{ isDefault: true }, { userId: userId }],
-				},
-				select: { id: true },
-			})
-
-			if (!category) throw new NotFoundException('Category not found')
-
-			const transaction = await tx.transaction.create({
-				data: {
-					title,
-					type,
-					amount,
-					date,
-					wallet: { connect: { id: walletId } },
-					category: { connect: { id: categoryId } },
-				},
-			})
-
-			// update wallet balance
-			await tx.wallet.update({
-				where: { id: walletId },
-				data: {
-					balance: { increment: delta },
-				},
-			})
-
-			return transaction
+		return this.prisma.transaction.create({
+			data: {
+				title,
+				type,
+				amount,
+				date,
+				card: { connect: { id: cardId } },
+				category: { connect: { id: categoryId } },
+			},
 		})
 	}
 
@@ -94,7 +66,7 @@ export class TransactionService {
 		userId: string,
 	): Promise<PaginatedResult<Transaction>> {
 		const {
-			walletId,
+			cardId,
 			categoryId,
 			type,
 			startDate,
@@ -103,14 +75,14 @@ export class TransactionService {
 			limit = 20,
 		} = dto
 
-		// search for user wallets
-		const userWallets = await this.prisma.wallet.findMany({
+		// search for user cards
+		const userCards = await this.prisma.card.findMany({
 			where: { userId },
 			select: { id: true },
 		})
 
-		// handle edge case when user as no wallets
-		if (userWallets.length === 0) {
+		// handle edge case when user has no cards
+		if (userCards.length === 0) {
 			return {
 				data: [],
 				meta: {
@@ -124,12 +96,12 @@ export class TransactionService {
 			}
 		}
 
-		const walletIds = userWallets.map((wallet) => wallet.id)
+		const cardIds = userCards.map((card) => card.id)
 
 		// builds dynamically filter
-		const where: any = { walletId: { in: walletIds } }
+		const where: Prisma.TransactionWhereInput = { cardId: { in: cardIds } }
 
-		if (walletId) where.walletId = walletId
+		if (cardId) where.cardId = cardId
 		if (categoryId) where.categoryId = categoryId
 		if (type) where.type = type
 
@@ -150,7 +122,7 @@ export class TransactionService {
 			take: limit,
 			orderBy: { date: 'desc' },
 			include: {
-				wallet: {
+				card: {
 					select: { id: true, name: true },
 				},
 				category: {
@@ -160,7 +132,7 @@ export class TransactionService {
 		})
 
 		// calculate metadata
-		// Math.ceil() -> rounds a givem number op to the nearest integer
+		// Math.ceil() -> rounds a given number up to the nearest integer
 		const lastPage = Math.ceil(total / limit)
 		const prev = page > 1 ? page - 1 : null
 		const next = page < lastPage ? page + 1 : null
@@ -179,20 +151,20 @@ export class TransactionService {
 	}
 
 	async findOne(transactionId: string, userId: string) {
-		const userWallets = await this.prisma.wallet.findMany({
+		const userCards = await this.prisma.card.findMany({
 			where: { userId },
 			select: { id: true },
 		})
 
-		const walletIds = userWallets.map((w) => w.id)
+		const cardIds = userCards.map((c) => c.id)
 
 		const transaction = await this.prisma.transaction.findFirst({
 			where: {
 				id: transactionId,
-				walletId: { in: walletIds },
+				cardId: { in: cardIds },
 			},
 			include: {
-				wallet: {
+				card: {
 					select: { id: true, name: true },
 				},
 				category: {
@@ -208,75 +180,53 @@ export class TransactionService {
 
 	async update(
 		transactionId: string,
-		_userId: string,
+		userId: string,
 		dto: UpdateTransactionDto,
 	) {
-		const amount = new Prisma.Decimal(dto.amount)
+		// validate card belongs to user
+		const card = await this.prisma.card.findFirst({
+			where: { id: dto.cardId, userId },
+			select: { id: true },
+		})
 
-		const delta = dto.type === 'INCOME' ? amount : amount.negated()
+		if (!card) throw new ForbiddenException('Card does not belong to user')
 
-		return this.prisma.$transaction(async (tx) => {
-			const transaction = await tx.transaction.findFirst({
-				where: {
-					id: transactionId,
-				},
-			})
+		const transaction = await this.prisma.transaction.findFirst({
+			where: { id: transactionId, cardId: { in: [card.id] } },
+		})
 
-			if (!transaction) throw new NotFoundException('Transaction not found')
+		if (!transaction) throw new NotFoundException('Transaction not found')
 
-			const updatedTransaction = await tx.transaction.update({
-				where: { id: transactionId },
-				data: dto,
-			})
+		const amount = dto.amount ? new Prisma.Decimal(dto.amount) : undefined
 
-			await tx.wallet.update({
-				where: {
-					id: dto.walletId,
-				},
-				data: {
-					balance: {
-						increment: delta,
-					},
-				},
-			})
-
-			return updatedTransaction
+		return this.prisma.transaction.update({
+			where: { id: transactionId },
+			data: {
+				...dto,
+				amount,
+			},
 		})
 	}
 
 	async delete(transactionId: string, userId: string) {
-		return this.prisma.$transaction(async (tx) => {
-			const transaction = await tx.transaction.findFirst({
-				where: { id: transactionId },
-				include: {
-					wallet: {
-						select: { id: true, userId: true, balance: true },
-					},
+		const transaction = await this.prisma.transaction.findFirst({
+			where: { id: transactionId },
+			include: {
+				card: {
+					select: { id: true, userId: true },
 				},
-			})
-
-			if (!transaction) throw new NotFoundException('Transaction not found')
-
-			if (transaction.wallet.userId !== userId)
-				throw new ForbiddenException('You cannot delete this transaction')
-
-			const delta =
-				transaction.type === 'INCOME'
-					? transaction.amount.negated()
-					: transaction.amount
-
-			await tx.wallet.update({
-				where: { id: transaction.walletId },
-				data: {
-					balance: { increment: delta },
-				},
-			})
-
-			await tx.transaction.delete({
-				where: { id: transactionId },
-			})
-
-			return { message: 'Transaction deleted successfully' }
+			},
 		})
+
+		if (!transaction) throw new NotFoundException('Transaction not found')
+
+		if (transaction.card.userId !== userId)
+			throw new ForbiddenException('You cannot delete this transaction')
+
+		await this.prisma.transaction.delete({
+			where: { id: transactionId },
+		})
+
+		return { message: 'Transaction deleted successfully' }
 	}
 }

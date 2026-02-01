@@ -44,7 +44,7 @@ export class CreateTransactionDto {
 	@IsNotEmpty()
 	@IsUUID()
 	@ApiProperty()
-	walletId: string
+	cardId: string
 
 	@IsString()
 	@IsNotEmpty()
