@@ -22,10 +22,11 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  token      Token[]
-  goals      Goal[]
-  cards      Card[]
-  categories Category[]
+  token        Token[]
+  goals        Goal[]
+  cards        Card[]
+  bankAccounts BankAccount[]
+  categories   Category[]
 
   @@map("users")
 }
@@ -73,20 +74,22 @@ model Deposit {
 }
 
 model Card {
-  id           String        @id @default(uuid())
-  userId       String        @map("user_id")
-  name         String
-  color        CardColor     @default(GRAY)
-  type         CardType
-  lastFour     String?       @map("last_four") @db.VarChar(4)
-  creditLimit  Decimal?      @map("credit_limit") @db.Decimal(12, 2)
-  closingDay   Int?          @map("closing_day")
-  dueDay       Int?          @map("due_day")
-  transactions Transaction[]
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
+  id            String        @id @default(uuid())
+  userId        String        @map("user_id")
+  bankAccountId String        @map("bank_account_id")
+  name          String
+  color         CardColor     @default(GRAY)
+  type          CardType
+  lastFour      String?       @map("last_four") @db.VarChar(4)
+  creditLimit   Decimal?      @map("credit_limit") @db.Decimal(12, 2)
+  closingDay    Int?          @map("closing_day")
+  dueDay        Int?          @map("due_day")
+  transactions  Transaction[]
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccount BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
 
   @@map("cards")
 }
@@ -107,6 +110,35 @@ enum CardType {
   DEBIT_CARD
 }
 
+model BankAccount {
+  id           String        @id @default(uuid())
+  userId       String        @map("user_id")
+  name         String
+  type         BankType      @default(CHECKING)
+  currency     BankCurrency  @default(EUR)
+  balance      Decimal       @db.Decimal(12, 2)
+  cards        Card[]
+  transactions Transaction[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("bank_accounts")
+}
+
+enum BankType {
+  WALLET
+  CHECKING
+  SAVINGS
+  INVESTMENT
+}
+
+enum BankCurrency {
+  EUR
+  USD
+}
+
 model Category {
   id           String        @id @default(uuid())
   userId       String?       @map("user_id")
@@ -125,18 +157,20 @@ model Category {
 }
 
 model Transaction {
-  id         String   @id @default(uuid())
-  cardId     String   @map("card_id")
-  categoryId String   @map("category_id")
-  title      String
-  type       Type
-  amount     Decimal  @db.Decimal(12, 2)
-  date       DateTime
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  id            String   @id @default(uuid())
+  cardId        String   @map("card_id")
+  bankAccountId String?  @map("bank_account_id")
+  categoryId    String   @map("category_id")
+  title         String
+  type          Type
+  amount        Decimal  @db.Decimal(12, 2)
+  date          DateTime
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
-  card     Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  card        Card         @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  bankAccount BankAccount? @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
 
   @@map("transactions")
 }
