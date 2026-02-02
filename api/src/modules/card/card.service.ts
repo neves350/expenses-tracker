@@ -53,12 +53,17 @@ export class CardService {
 	}
 
 	async findAll(userId: string, bankAccountId?: string) {
-		return this.prisma.card.findMany({
+		const cards = await this.prisma.card.findMany({
 			where: {
 				userId,
 				...(bankAccountId && { bankAccountId }),
 			},
 		})
+
+		return {
+			cards,
+			total: cards.length,
+		}
 	}
 
 	async findOne(cardId: string, userId: string) {
