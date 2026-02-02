@@ -5,22 +5,14 @@ import {
 	inject,
 	input,
 } from '@angular/core'
-import {
-	Card,
-	CardColor,
-	CardType,
-	CurrencyType,
-} from '@core/api/cards.interface'
+import { Card, CardColor, CardType } from '@core/api/cards.interface'
 import { CardsService } from '@core/services/cards.service'
 import {
 	ArrowRightIcon,
-	BanknoteIcon,
 	CreditCardIcon,
 	LucideAngularModule,
-	SmartphoneIcon,
 	SquarePenIcon,
 	Trash2Icon,
-	TrendingUpIcon,
 	WalletIcon,
 } from 'lucide-angular'
 import { toast } from 'ngx-sonner'
@@ -28,27 +20,41 @@ import { lastValueFrom } from 'rxjs'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardCardComponent } from '../../ui/card'
 import { ZardDialogService } from '../../ui/dialog'
+import { ZardSheetService } from '../../ui/sheet'
+import { CardsForm } from '../cards-form/cards-form'
+import type { iSheetData } from '../cards-form/cards-form.interface'
+import { CardsLimitProgress } from '../cards-limit-progress/cards-limit-progress'
 
 @Component({
 	selector: 'app-cards-card',
-	imports: [ZardCardComponent, LucideAngularModule, ZardButtonComponent],
+	imports: [
+		ZardCardComponent,
+		LucideAngularModule,
+		ZardButtonComponent,
+		CardsLimitProgress,
+	],
 	templateUrl: './cards-card.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	host: {
+		class: 'block h-full',
+	},
 })
 export class CardsCard {
 	readonly card = input.required<Card>()
 
 	private readonly dialogService = inject(ZardDialogService)
+	private readonly sheetService = inject(ZardSheetService)
 	private readonly cardsService = inject(CardsService)
 
-	readonly BanknoteIcon = BanknoteIcon
 	readonly WalletIcon = WalletIcon
 	readonly CreditCardIcon = CreditCardIcon
-	readonly SmartphoneIcon = SmartphoneIcon
-	readonly TrendingUpIcon = TrendingUpIcon
 	readonly SquarePenIcon = SquarePenIcon
 	readonly Trash2Icon = Trash2Icon
 	readonly ArrowRightIcon = ArrowRightIcon
+
+	readonly isCreditCard = computed(
+		() => this.card().type === CardType.CREDIT_CARD,
+	)
 
 	private readonly colorClasses: Record<CardColor, string> = {
 		[CardColor.GRAY]: 'bg-zinc-700',
@@ -73,11 +79,8 @@ export class CardsCard {
 	}
 
 	private readonly typeLabels: Record<CardType, string> = {
-		[CardType.CASH]: 'Cash',
-		[CardType.BANK_ACCOUNT]: 'Bank Account',
 		[CardType.CREDIT_CARD]: 'Credit Card',
-		[CardType.DIGITAL_WALLET]: 'Digital Wallet',
-		[CardType.INVESTMENT]: 'Investment',
+		[CardType.DEBIT_CARD]: 'Debit Card',
 	}
 
 	readonly bgColorClass = computed(() => {
@@ -89,12 +92,9 @@ export class CardsCard {
 	})
 
 	readonly cardIcon = computed(() => {
-		const iconMap: Record<CardType, typeof BanknoteIcon> = {
-			[CardType.CASH]: this.BanknoteIcon,
-			[CardType.BANK_ACCOUNT]: this.WalletIcon,
+		const iconMap: Record<CardType, typeof CreditCardIcon> = {
 			[CardType.CREDIT_CARD]: this.CreditCardIcon,
-			[CardType.DIGITAL_WALLET]: this.SmartphoneIcon,
-			[CardType.INVESTMENT]: this.TrendingUpIcon,
+			[CardType.DEBIT_CARD]: this.WalletIcon,
 		}
 		return iconMap[this.card().type]
 	})
@@ -103,17 +103,36 @@ export class CardsCard {
 		return this.typeLabels[this.card().type]
 	})
 
-	readonly formattedBalance = computed(() => {
-		const balance = this.card().balance
-		const currency = this.card().currency
-		const formatted = Number(balance).toLocaleString('pt-PT', {
+	readonly formattedCreditLimit = computed(() => {
+		const creditLimit = this.card().creditLimit
+		if (!creditLimit) return null
+		return Number(creditLimit).toLocaleString('pt-PT', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		})
-		return currency === CurrencyType.EUR ? `${formatted}€` : `$${formatted}`
 	})
 
-	deleteWallet() {
+	updateCard() {
+		this.sheetService.create({
+			zTitle: 'Edit Card',
+			zContent: CardsForm,
+			zSide: 'right',
+			zWidth: '500px',
+			zHideFooter: true,
+			zData: {
+				id: this.card().id,
+				name: this.card().name,
+				color: this.card().color,
+				type: this.card().type,
+				lastFour: this.card().lastFour,
+				creditLimit: this.card().creditLimit,
+				closingDay: this.card().closingDay,
+				dueDay: this.card().dueDay,
+			} as iSheetData,
+		})
+	}
+
+	deleteCard() {
 		return this.dialogService.create({
 			zTitle: `Remove ${this.card().name}?`,
 			zDescription: 'This action cannot be undone.',
