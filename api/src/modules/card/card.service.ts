@@ -52,10 +52,11 @@ export class CardService {
 		return card
 	}
 
-	async findAll(userId: string) {
+	async findAll(userId: string, bankAccountId?: string) {
 		return this.prisma.card.findMany({
 			where: {
 				userId,
+				...(bankAccountId && { bankAccountId }),
 			},
 		})
 	}

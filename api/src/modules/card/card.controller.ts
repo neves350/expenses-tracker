@@ -55,8 +55,11 @@ export class CardController {
 		description: 'Get all cards from user.',
 	})
 	@ApiFindAllResponses()
-	async findAll(@CurrentUser() user) {
-		const cards = await this.cardService.findAll(user.userId)
+	async findAll(
+		@CurrentUser() user,
+		@Query('bankAccountId') bankAccountId?: string,
+	) {
+		const cards = await this.cardService.findAll(user.userId, bankAccountId)
 
 		return cards
 	}
