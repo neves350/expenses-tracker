@@ -11,7 +11,7 @@ import {
 	Min,
 	ValidateIf,
 } from 'class-validator'
-import { CardColor, CardType } from 'src/generated/prisma/client'
+import { CardColor, CardType, Type } from 'src/generated/prisma/client'
 
 export class CreateCardDto {
 	@ApiProperty({ example: 'Nubank Credit Card' })
@@ -41,7 +41,10 @@ export class CreateCardDto {
 	@IsOptional()
 	creditLimit?: number
 
-	@ApiPropertyOptional({ example: 15, description: 'Invoice closing day (1-31)' })
+	@ApiPropertyOptional({
+		example: 15,
+		description: 'Invoice closing day (1-31)',
+	})
 	@ValidateIf((o) => o.type === CardType.CREDIT_CARD)
 	@IsInt()
 	@Min(1)
