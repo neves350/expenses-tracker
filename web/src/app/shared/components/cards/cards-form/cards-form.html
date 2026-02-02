@@ -26,7 +26,7 @@
     <app-cards-color-picker formControlName="color" [colors]="colors" />
   </div>
 
-  <!-- Type Select (always visible, default CASH) -->
+  <!-- Type Select -->
   <div class="grid gap-2">
     <label for="type">Type</label>
     <z-select class="w-full" formControlName="type">
@@ -38,21 +38,6 @@
     </z-select>
     @if (form.controls.type.touched && form.controls.type.errors?.['required']) {
     <span class="text-xs text-destructive">Type is required</span>
-    }
-  </div>
-
-  <!-- Currency Select (always visible, default EUR) -->
-  <div class="grid gap-2">
-    <label for="currency">Currency</label>
-    <z-select class="w-full" formControlName="currency">
-      @for (curr of currencies; track curr) {
-      <z-select-item [zValue]="curr">
-        <span>{{ curr }}</span>
-      </z-select-item>
-      }
-    </z-select>
-    @if (form.controls.currency.touched && form.controls.currency.errors?.['required']) {
-    <span class="text-xs text-destructive">Currency is required</span>
     }
   </div>
 
@@ -68,28 +53,52 @@
     />
   </div>
 
-  <!-- Balance Input -->
+  <!-- Credit Limit (only for credit cards) -->
+  @if (form.controls.type.value === 'CREDIT_CARD') {
   <div class="grid gap-2">
-    <label for="balance">Initial Balance</label>
+    <label for="creditLimit">Credit Limit</label>
     <input
       z-input
       type="number"
       class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
-      formControlName="balance"
-      placeholder="0.00"
+      formControlName="creditLimit"
+      placeholder="5000"
     />
-    @if (form.controls.balance.touched && form.controls.balance.errors?.['required']) {
-    <span class="text-xs text-destructive">Balance is required</span>
-    }
-    @if (form.controls.balance.touched && form.controls.balance.errors?.['min']) {
-    <span class="text-xs text-destructive">Balance must be at least 0</span>
-    }
   </div>
+
+  <div class="grid grid-cols-2 gap-3">
+    <!-- Closing Day Select -->
+    <div class="flex flex-col gap-1">
+      <label for="closingDay">Closing Day</label>
+      <z-select class="w-full" formControlName="closingDay">
+        @for (day of days; track day) {
+        <z-select-item [zValue]="'' + day">
+          <span>{{ day }}</span>
+        </z-select-item>
+        }
+      </z-select>
+    </div>
+
+    <!-- Due Day Select -->
+    <div class="flex flex-col gap-1">
+      <label for="dueDay">Due Day</label>
+      <z-select class="w-full" formControlName="dueDay">
+        @for (day of days; track day) {
+        <z-select-item [zValue]="'' + day">
+          <span>{{ day }}</span>
+        </z-select-item>
+        }
+      </z-select>
+    </div>
+  </div>
+  }
 
   <z-divider />
 
   <!-- Submit Button -->
   <div>
-    <z-button class="w-full cursor-pointer" (click)="submit()">Create Card</z-button>
+    <z-button class="w-full cursor-pointer" (click)="submit()">{{
+      isEditMode() ? 'Save Changes' : 'Create Card'
+    }}</z-button>
   </div>
 </form>

@@ -12,7 +12,7 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms'
-import { CardColor, CardType, CurrencyType } from '@core/api/cards.interface'
+import { CardColor, CardType } from '@core/api/cards.interface'
 import { CardsService } from '@core/services/cards.service'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardDividerComponent } from '../../ui/divider'
@@ -47,16 +47,19 @@ export class CardsForm implements AfterViewInit {
 	form = this.fb.nonNullable.group({
 		name: ['', [Validators.required]],
 		color: [CardColor.GRAY, [Validators.required]],
-		type: [CardType.CASH, [Validators.required]],
+		type: [CardType.CREDIT_CARD, [Validators.required]],
 		lastFour: [''],
-		currency: [CurrencyType.EUR, [Validators.required]],
-		balance: [0, [Validators.required, Validators.min(0)]],
+		creditLimit: [0 as number | null],
+		closingDay: ['1'],
+		dueDay: ['10'],
 	})
+
+	readonly isEditMode = computed(() => !!this.zData?.id)
 
 	// Enum values for template
 	readonly cardTypes = Object.values(CardType)
-	readonly currencies = Object.values(CurrencyType)
 	readonly colors = Object.values(CardColor)
+	readonly days = Array.from({ length: 31 }, (_, i) => i + 1)
 
 	// Form values as signal for reactive preview
 	private readonly formValues = toSignal(this.form.valueChanges, {
@@ -67,24 +70,30 @@ export class CardsForm implements AfterViewInit {
 	readonly previewData = computed(() => ({
 		name: this.formValues()?.name || 'Card Name',
 		color: this.formValues()?.color || CardColor.GRAY,
-		type: this.formValues()?.type || CardType.CASH,
+		type: this.formValues()?.type || CardType.CREDIT_CARD,
 		lastFour: this.formValues()?.lastFour || '',
-		currency: this.formValues()?.currency || CurrencyType.EUR,
-		balance: this.formValues()?.balance || 0,
+		creditLimit: this.formValues()?.creditLimit ?? 0,
+		closingDay: this.formValues()?.closingDay
+			? Number(this.formValues()?.closingDay)
+			: undefined,
+		dueDay: this.formValues()?.dueDay
+			? Number(this.formValues()?.dueDay)
+			: undefined,
 	}))
 
 	// Type labels for display
 	readonly typeLabels: Record<CardType, string> = {
-		[CardType.CASH]: 'Cash',
-		[CardType.BANK_ACCOUNT]: 'Bank Account',
 		[CardType.CREDIT_CARD]: 'Credit Card',
-		[CardType.DIGITAL_WALLET]: 'Digital Wallet',
-		[CardType.INVESTMENT]: 'Investment',
+		[CardType.DEBIT_CARD]: 'Debit Card',
 	}
 
 	ngAfterViewInit(): void {
 		if (this.zData) {
-			this.form.patchValue(this.zData)
+			this.form.patchValue({
+				...this.zData,
+				closingDay: this.zData.closingDay?.toString() ?? '',
+				dueDay: this.zData.dueDay?.toString() ?? '',
+			})
 		}
 	}
 
@@ -99,10 +108,26 @@ export class CardsForm implements AfterViewInit {
 		}
 
 		const formValue = this.form.getRawValue()
-		this.cardsService.create(formValue).subscribe({
-			next: () => {
-				this.sheetRef.close()
-			},
+		const payload = {
+			name: formValue.name,
+			color: formValue.color,
+			type: formValue.type,
+			lastFour: formValue.lastFour || undefined,
+			creditLimit: formValue.creditLimit
+				? Number(formValue.creditLimit)
+				: undefined,
+			closingDay: formValue.closingDay
+				? Number(formValue.closingDay)
+				: undefined,
+			dueDay: formValue.dueDay ? Number(formValue.dueDay) : undefined,
+		}
+
+		const request$ = this.zData?.id
+			? this.cardsService.update(this.zData.id, payload)
+			: this.cardsService.create(payload)
+
+		request$.subscribe({
+			next: () => this.sheetRef.close(),
 		})
 	}
 }
