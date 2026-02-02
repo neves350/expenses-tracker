@@ -4,18 +4,10 @@ import {
 	computed,
 	input,
 } from '@angular/core'
+import { type Card, CardColor, CardType } from '@core/api/cards.interface'
 import {
-	type Card,
-	CardColor,
-	CardType,
-	CurrencyType,
-} from '@core/api/cards.interface'
-import {
-	BanknoteIcon,
 	CreditCardIcon,
 	LucideAngularModule,
-	SmartphoneIcon,
-	TrendingUpIcon,
 	WalletIcon,
 } from 'lucide-angular'
 import { ZardCardComponent } from '@/shared/components/ui/card'
@@ -29,11 +21,8 @@ import { ZardCardComponent } from '@/shared/components/ui/card'
 export class CardsPreview {
 	readonly card = input.required<Partial<Card>>()
 
-	protected readonly BanknoteIcon = BanknoteIcon
 	protected readonly WalletIcon = WalletIcon
 	protected readonly CreditCardIcon = CreditCardIcon
-	protected readonly SmartphoneIcon = SmartphoneIcon
-	protected readonly TrendingUpIcon = TrendingUpIcon
 
 	private readonly colorClasses: Record<CardColor, string> = {
 		[CardColor.GRAY]: 'bg-zinc-700',
@@ -47,11 +36,8 @@ export class CardsPreview {
 	}
 
 	private readonly typeLabels: Record<CardType, string> = {
-		[CardType.CASH]: 'Cash',
-		[CardType.BANK_ACCOUNT]: 'Bank Account',
 		[CardType.CREDIT_CARD]: 'Credit Card',
-		[CardType.DIGITAL_WALLET]: 'Digital Wallet',
-		[CardType.INVESTMENT]: 'Investment',
+		[CardType.DEBIT_CARD]: 'Debit Card',
 	}
 
 	readonly bgColorClass = computed(() => {
@@ -60,33 +46,28 @@ export class CardsPreview {
 	})
 
 	readonly cardIcon = computed(() => {
-		const type = this.card().type || CardType.CASH
-		const iconMap: Record<CardType, typeof BanknoteIcon> = {
-			[CardType.CASH]: this.BanknoteIcon,
-			[CardType.BANK_ACCOUNT]: this.WalletIcon,
+		const type = this.card().type || CardType.CREDIT_CARD
+		const iconMap: Record<CardType, typeof CreditCardIcon> = {
 			[CardType.CREDIT_CARD]: this.CreditCardIcon,
-			[CardType.DIGITAL_WALLET]: this.SmartphoneIcon,
-			[CardType.INVESTMENT]: this.TrendingUpIcon,
+			[CardType.DEBIT_CARD]: this.WalletIcon,
 		}
 		return iconMap[type]
 	})
 
 	readonly typeLabel = computed(() => {
-		const type = this.card().type || CardType.CASH
+		const type = this.card().type || CardType.CREDIT_CARD
 		return this.typeLabels[type]
 	})
 
-	readonly formattedBalance = computed(() => {
-		const balance = this.card().balance || 0
-		const currency = this.card().currency || CurrencyType.EUR
-		const formatted = Number(balance).toLocaleString('pt-PT', {
+	readonly formattedCreditLimit = computed(() => {
+		const creditLimit = this.card().creditLimit
+		if (!creditLimit) return null
+		return Number(creditLimit).toLocaleString('pt-PT', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		})
-		return currency === CurrencyType.EUR ? `${formatted}€` : `$${formatted}`
 	})
 
 	readonly cardName = computed(() => this.card().name || 'Card Name')
 	readonly lastFour = computed(() => this.card().lastFour)
-	readonly currency = computed(() => this.card().currency || CurrencyType.EUR)
 }

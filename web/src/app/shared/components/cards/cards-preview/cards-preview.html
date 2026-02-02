@@ -18,13 +18,15 @@
       </span>
     </div>
 
+    @if (formattedCreditLimit()) {
     <div class="ml-4 grid flex-1 text-right text-sm leading-tight">
       <span class="truncate text-sm font-semibold">
-        {{ formattedBalance() }}
+        {{ formattedCreditLimit() }}
       </span>
       <span class="truncate text-xs text-muted-foreground">
-        {{ currency() }}
+        Credit Limit
       </span>
     </div>
+    }
   </div>
 </z-card>
