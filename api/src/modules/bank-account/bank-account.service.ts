@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
 import { CreateBankAccountDto } from './dtos/create-bank-account.dto'
 
@@ -28,5 +28,18 @@ export class BankAccountService {
 				userId,
 			},
 		})
+	}
+
+	async findOne(cardId: string, userId: string) {
+		const bankAccount = await this.prisma.bankAccount.findFirst({
+			where: {
+				id: cardId,
+				userId,
+			},
+		})
+
+		if (!bankAccount) throw new NotFoundException('Bank account not found')
+
+		return bankAccount
 	}
 }
