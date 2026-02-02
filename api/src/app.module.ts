@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from './infrastructure/db/prisma.module'
 import { MailModule } from './infrastructure/mail/mail.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { BankAccountModule } from './modules/bank-account/bank-account.module'
 import { CardModule } from './modules/card/card.module'
 import { CategoryModule } from './modules/category/category.module'
 import { ExportModule } from './modules/export/export.module'
@@ -24,6 +25,7 @@ import { UsersModule } from './modules/users/users.module'
 		StatisticModule,
 		ExportModule,
 		GoalModule,
+		BankAccountModule,
 	],
 	controllers: [],
 	providers: [],
