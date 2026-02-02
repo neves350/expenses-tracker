@@ -12,17 +12,9 @@ export enum CardColor {
 	PINK = 'PINK',
 }
 
-export enum CurrencyType {
-	EUR = 'EUR',
-	USD = 'USD',
-}
-
 export enum CardType {
-	CASH = 'CASH',
-	BANK_ACCOUNT = 'BANK_ACCOUNT',
 	CREDIT_CARD = 'CREDIT_CARD',
-	DIGITAL_WALLET = 'DIGITAL_WALLET',
-	INVESTMENT = 'INVESTMENT',
+	DEBIT_CARD = 'DEBIT_CARD',
 }
 
 /**
@@ -34,8 +26,9 @@ export interface Card {
 	color: CardColor
 	type: CardType
 	lastFour?: string
-	currency: CurrencyType
-	balance: number
+	creditLimit?: number
+	closingDay?: number
+	dueDay?: number
 	createdAt?: string
 }
 
@@ -47,8 +40,9 @@ export interface CreateCardRequest {
 	color: CardColor
 	type: CardType
 	lastFour?: string
-	currency: CurrencyType
-	balance: number
+	creditLimit?: number
+	closingDay?: number
+	dueDay?: number
 }
 
 /**
@@ -59,15 +53,16 @@ export interface UpdateCardRequest {
 	color?: CardColor
 	type?: CardType
 	lastFour?: string
-	currency?: CurrencyType
-	balance?: number
+	creditLimit?: number
+	closingDay?: number
+	dueDay?: number
 }
 
 /**
  * CREATE RESPONSE
  */
 export interface CreateCardResponse {
-	wallet: Card
+	card: Card
 	message: string
 }
 
@@ -77,4 +72,12 @@ export interface CreateCardResponse {
 export interface CardActionResponse {
 	message: string
 	success: boolean
+}
+
+/**
+ * CARD EXPENSES
+ */
+export interface CardExpensesRequest {
+	startDate: string
+	endDate: string
 }

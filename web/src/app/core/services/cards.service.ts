@@ -2,6 +2,7 @@ import { computed, Injectable, inject, signal } from '@angular/core'
 import { CardsApi } from '@core/api/cards.api'
 import type {
 	Card,
+	CardExpensesRequest,
 	CreateCardRequest,
 	UpdateCardRequest,
 } from '@core/api/cards.interface'
@@ -20,9 +21,6 @@ export class CardsService {
 
 	// Computed signals
 	readonly hasCards = computed(() => this.cards().length > 0)
-	readonly totalBalance = computed(() =>
-		this.cards().reduce((sum, w) => sum + Number(w.balance), 0),
-	)
 	readonly creditCards = computed(() =>
 		this.cards().filter((w) => w.type === 'CREDIT_CARD'),
 	)
@@ -40,7 +38,7 @@ export class CardsService {
 					this.loading.set(false)
 				},
 				error: (err) => {
-					this.error.set(err.message || 'Failed to load wallets')
+					this.error.set(err.message || 'Failed to load cards')
 					this.loading.set(false)
 				},
 			}),
@@ -51,7 +49,7 @@ export class CardsService {
 		this.loading.set(true)
 
 		return this.cardsApi.create(data).pipe(
-			map((response) => response.wallet),
+			map((response) => response.card),
 			tap({
 				next: (wallet) => {
 					this.cards.update((current) => [...current, wallet])
@@ -70,12 +68,31 @@ export class CardsService {
 	}
 
 	update(cardId: string, data: UpdateCardRequest): Observable<Card> {
-		return this.cardsApi.update(cardId, data)
+		this.loading.set(true)
+
+		return this.cardsApi.update(cardId, data).pipe(
+			tap({
+				next: (updatedCard) => {
+					this.cards.update((current) =>
+						current.map((card) => (card.id === cardId ? updatedCard : card)),
+					)
+					this.loading.set(false)
+				},
+				error: (err) => {
+					this.error.set(err.message || 'Failed to update card')
+					this.loading.set(false)
+				},
+			}),
+		)
 	}
 
 	delete(cardId: string): Observable<string> {
 		return this.cardsApi
 			.delete(cardId)
 			.pipe(map((response) => response.message))
+	}
+
+	monthlyExpenses(cardId: string): Observable<CardExpensesRequest> {
+		return this.cardsApi.monthlyExpenses(cardId)
 	}
 }

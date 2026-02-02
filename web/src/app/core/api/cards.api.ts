@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
-import { Observable } from 'rxjs'
+import { map, Observable } from 'rxjs'
 import { environment } from 'src/environments/environment'
 import type {
 	Card,
 	CardActionResponse,
+	CardExpensesRequest,
 	CreateCardRequest,
 	CreateCardResponse,
 	UpdateCardRequest,
@@ -15,7 +16,7 @@ import type {
 })
 export class CardsApi {
 	private readonly http = inject(HttpClient)
-	private readonly baseUrl = `${environment.apiUrl}/wallets`
+	private readonly baseUrl = `${environment.apiUrl}/cards`
 
 	/**
 	 * CREATE CARD
@@ -48,9 +49,11 @@ export class CardsApi {
 	 * UPDATE CARD
 	 */
 	update(cardId: string, data: UpdateCardRequest): Observable<Card> {
-		return this.http.patch<Card>(`${this.baseUrl}/${cardId}`, data, {
-			withCredentials: true,
-		})
+		return this.http
+			.patch<{ updatedCard: Card }>(`${this.baseUrl}/${cardId}`, data, {
+				withCredentials: true,
+			})
+			.pipe(map((response) => response.updatedCard))
 	}
 
 	/**
@@ -60,5 +63,17 @@ export class CardsApi {
 		return this.http.delete<CardActionResponse>(`${this.baseUrl}/${cardId}`, {
 			withCredentials: true,
 		})
+	}
+
+	/**
+	 * GET MONTHLY EXPENSES
+	 */
+	monthlyExpenses(cardId: string): Observable<CardExpensesRequest> {
+		return this.http.get<CardExpensesRequest>(
+			`${this.baseUrl}/${cardId}/expenses`,
+			{
+				withCredentials: true,
+			},
+		)
 	}
 }
