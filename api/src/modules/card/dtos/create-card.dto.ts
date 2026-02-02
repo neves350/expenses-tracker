@@ -6,18 +6,27 @@ import {
 	IsNumber,
 	IsOptional,
 	IsString,
+	IsUUID,
 	Length,
 	Max,
 	Min,
 	ValidateIf,
 } from 'class-validator'
-import { CardColor, CardType, Type } from 'src/generated/prisma/client'
+import { CardColor, CardType } from 'src/generated/prisma/client'
 
 export class CreateCardDto {
 	@ApiProperty({ example: 'Nubank Credit Card' })
 	@IsString()
 	@IsNotEmpty()
 	name: string
+
+	@ApiProperty({
+		example: '123e4567-e89b-12d3-a456-426614174000',
+		description: 'Bank account ID to link the card',
+	})
+	@IsUUID()
+	@IsNotEmpty()
+	bankAccountId: string
 
 	@ApiProperty({ enum: CardColor, example: 'PURPLE' })
 	@IsEnum(CardColor)

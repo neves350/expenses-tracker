@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
 import { CreateCardDto } from './dtos/create-card.dto'
 import { UpdateCardDto } from './dtos/update-card.dto'
@@ -8,8 +12,28 @@ export class CardService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async create(data: CreateCardDto, userId: string) {
-		const { name, color, type, lastFour, creditLimit, closingDay, dueDay } =
-			data
+		const {
+			name,
+			color,
+			type,
+			lastFour,
+			creditLimit,
+			closingDay,
+			dueDay,
+			bankAccountId,
+		} = data
+
+		// Validate that the bank account belongs to the user
+		const bankAccount = await this.prisma.bankAccount.findFirst({
+			where: {
+				id: bankAccountId,
+				userId,
+			},
+		})
+
+		if (!bankAccount) {
+			throw new BadRequestException('Bank account not found or unauthorized')
+		}
 
 		const card = await this.prisma.card.create({
 			data: {
@@ -21,6 +45,7 @@ export class CardService {
 				closingDay,
 				dueDay,
 				userId,
+				bankAccountId,
 			},
 		})
 
