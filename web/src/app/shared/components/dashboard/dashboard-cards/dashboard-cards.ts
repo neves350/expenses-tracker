@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common'
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -16,15 +17,14 @@ import {
 } from 'lucide-angular'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardCardComponent } from '../../ui/card'
-import { ZardDividerComponent } from '../../ui/divider'
 
 @Component({
 	selector: 'app-dashboard-wallets',
 	imports: [
+		DecimalPipe,
 		ZardCardComponent,
 		LucideAngularModule,
 		ZardButtonComponent,
-		ZardDividerComponent,
 		RouterLink,
 	],
 	templateUrl: './dashboard-cards.html',

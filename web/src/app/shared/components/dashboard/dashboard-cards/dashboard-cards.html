@@ -21,10 +21,12 @@
           <span class="truncate text-xs text-muted-foreground">Exp. 09/29</span>
         </div>
 
+        @if (card.creditLimit) {
         <div class="ml-4 grid flex-1 text-right text-sm leading-tight">
-          <span class="truncate text-sm font-medium">{{ card.balance }}€</span>
-          <span class="truncate text-xs text-muted-foreground">Avail. 4.200,00€</span>
+          <span class="truncate text-sm font-medium">{{ card.creditLimit | number:'1.2-2' }}€</span>
+          <span class="truncate text-xs text-muted-foreground">Credit Limit</span>
         </div>
+        }
       </div>
     </z-card>
     }
