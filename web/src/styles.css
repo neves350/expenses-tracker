@@ -84,6 +84,9 @@
 	--income-foreground: oklch(0.60 0.13 163);
 	--goal: oklch(97.3% 0.071 103.193);
 	--goal-foreground: oklch(79.5% 0.184 86.047);
+
+	/* Cards - Light Mode */
+	--progress: oklch(0.205 0 0);
 }
 
 /* Dark Mode */
@@ -144,6 +147,9 @@
 	--income-foreground: oklch(0.60 0.13 163);
 	--goal: oklch(28.6% 0.066 53.813);
 	--goal-foreground: oklch(79.5% 0.184 86.047);
+
+	/* Cards - Dark Mode */
+	--progress: oklch(0.922 0 0);
 }
 
 /* ==========================================================================
@@ -204,6 +210,9 @@
 	--color-income-foreground: var(--income-foreground);
 	--color-goal: var(--goal);
 	--color-goal-foreground: var(--goal-foreground);
+
+	/* Cards - Dark Mode */
+	--color-progress: var(--progress);
 }
 
 /* ==========================================================================
