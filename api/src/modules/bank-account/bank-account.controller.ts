@@ -1,9 +1,18 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Patch,
+	Post,
+	UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { BankAccountService } from './bank-account.service'
 import { CreateBankAccountDto } from './dtos/create-bank-account.dto'
+import type { UpdateBankAccountDto } from './dtos/update-bank-account.dto'
 
 @ApiTags('Bank Accounts')
 @Controller('bank-account')
@@ -51,5 +60,26 @@ export class BankAccountController {
 		const card = await this.bankAccountService.findOne(id, user.userId)
 
 		return { card }
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Patch('/:id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Update bank account by id',
+		description: 'Updates the bank account information.',
+	})
+	async update(
+		@Param('id') id: string,
+		@Body() data: UpdateBankAccountDto,
+		@CurrentUser() user,
+	) {
+		const updatedBankAccount = await this.bankAccountService.update(
+			id,
+			user.userId,
+			data,
+		)
+
+		return { updatedBankAccount }
 	}
 }
