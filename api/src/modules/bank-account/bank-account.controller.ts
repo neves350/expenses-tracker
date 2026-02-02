@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Patch,
@@ -81,5 +82,18 @@ export class BankAccountController {
 		)
 
 		return { updatedBankAccount }
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Delete('/:id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Delete bank account by id',
+		description: 'Deletes the bank account information.',
+	})
+	async delete(@Param('id') id: string, @CurrentUser() user) {
+		// Verify bank account ownership before deleting
+		await this.bankAccountService.findOne(id, user.userId)
+		return this.bankAccountService.delete(id)
 	}
 }

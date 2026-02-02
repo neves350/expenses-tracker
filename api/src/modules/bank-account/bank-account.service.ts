@@ -67,4 +67,15 @@ export class BankAccountService {
 
 		return updatedBankAccount
 	}
+
+	async delete(id: string) {
+		await this.prisma.bankAccount.delete({
+			where: { id },
+		})
+
+		return {
+			message: 'Bank account deleted successfully',
+			success: true,
+		}
+	}
 }
