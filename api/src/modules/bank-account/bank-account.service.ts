@@ -21,4 +21,12 @@ export class BankAccountService {
 
 		return bankAccount
 	}
+
+	async findAll(userId: string) {
+		return this.prisma.bankAccount.findMany({
+			where: {
+				userId,
+			},
+		})
+	}
 }

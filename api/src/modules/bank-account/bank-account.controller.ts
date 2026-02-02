@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
@@ -25,5 +25,18 @@ export class BankAccountController {
 			bankAccount,
 			message: 'Bank account created successfull',
 		}
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get('')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get all bank accounts',
+		description: 'Get all bank accounts from user.',
+	})
+	async findAll(@CurrentUser() user) {
+		const bankAccounts = await this.bankAccountService.findAll(user.userId)
+
+		return bankAccounts
 	}
 }
