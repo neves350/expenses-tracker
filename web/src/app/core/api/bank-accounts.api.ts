@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment'
 import type {
 	BankAccount,
 	BankAccountActionResponse,
+	BankAccountsResponse,
 	CreateBankAccountRequest,
 	CreateBankAccountResponse,
 	UpdateBankAccountRequest,
@@ -31,8 +32,8 @@ export class BankAccountsApi {
 	/**
 	 * GET ALL BANK ACCOUNTS
 	 */
-	findAll(): Observable<BankAccount[]> {
-		return this.http.get<BankAccount[]>(`${this.baseUrl}`, {
+	findAll(): Observable<BankAccountsResponse> {
+		return this.http.get<BankAccountsResponse>(`${this.baseUrl}`, {
 			withCredentials: true,
 		})
 	}

@@ -8,19 +8,19 @@
       <span class="truncate text-xs text-muted-foreground">
         Total Assets · Sum of all accounts
       </span>
-      <span class="text-xl font-bold">90,00€</span>
+      <span class="text-xl font-bold">{{ totalBalance() }}€</span>
     </div>
 
     <!-- Edit & Delete Buttons -->
     <div class="flex gap-1">
       <i-lucide [img]="TrendingUpIcon" class="size-4 text-income-foreground" />
-      <span class="text-sm font-bold text-primary"> 90,00€ </span>
+      <span class="text-sm font-bold text-primary">{{ totalBalance() }}€</span>
     </div>
   </div>
 
   <z-divider />
 
   <div>
-    <p class="text-sm text-muted-foreground mb-1">6 accounts with a balance</p>
+    <p class="text-sm text-muted-foreground mb-1">{{ accountCount() }} accounts with a balance</p>
   </div>
 </z-card>

@@ -5,7 +5,7 @@ import type {
 	CreateBankAccountRequest,
 	UpdateBankAccountRequest,
 } from '@core/api/bank-accounts.interface'
-import { map, Observable, tap } from 'rxjs'
+import { map, Observable, switchMap, tap } from 'rxjs'
 
 @Injectable({
 	providedIn: 'root',
@@ -15,6 +15,8 @@ export class BankAccountsService {
 
 	// Signal-based state
 	readonly bankAccounts = signal<BankAccount[]>([])
+	readonly totalBalance = signal<number>(0)
+	readonly totalAccounts = signal<number>(0)
 	readonly loading = signal<boolean>(false)
 	readonly error = signal<string | null>(null)
 
@@ -27,8 +29,10 @@ export class BankAccountsService {
 
 		return this.bankAccountsApi.findAll().pipe(
 			tap({
-				next: (accounts) => {
-					this.bankAccounts.set(accounts)
+				next: (response) => {
+					this.bankAccounts.set(response.data)
+					this.totalBalance.set(response.total)
+					this.totalAccounts.set(response.count)
 					this.loading.set(false)
 				},
 				error: (err) => {
@@ -36,6 +40,7 @@ export class BankAccountsService {
 					this.loading.set(false)
 				},
 			}),
+			map((response) => response.data),
 		)
 	}
 
@@ -44,16 +49,9 @@ export class BankAccountsService {
 
 		return this.bankAccountsApi.create(data).pipe(
 			map((response) => response.bankAccount),
-			tap({
-				next: (bankAccount) => {
-					this.bankAccounts.update((current) => [...current, bankAccount])
-					this.loading.set(false)
-				},
-				error: (err) => {
-					this.error.set(err.message || 'Failed to create bank account')
-					this.loading.set(false)
-				},
-			}),
+			switchMap((bankAccount) =>
+				this.loadBankAccounts().pipe(map(() => bankAccount)),
+			),
 		)
 	}
 
@@ -68,26 +66,17 @@ export class BankAccountsService {
 		this.loading.set(true)
 
 		return this.bankAccountsApi.update(bankAccountId, data).pipe(
-			tap({
-				next: (updatedbankAccount) => {
-					this.bankAccounts.update((current) =>
-						current.map((account) =>
-							account.id === bankAccountId ? updatedbankAccount : account,
-						),
-					)
-					this.loading.set(false)
-				},
-				error: (err) => {
-					this.error.set(err.message || 'Failed to update bank account')
-					this.loading.set(false)
-				},
-			}),
+			switchMap((updatedAccount) =>
+				this.loadBankAccounts().pipe(map(() => updatedAccount)),
+			),
 		)
 	}
 
 	delete(bankAccountId: string): Observable<string> {
-		return this.bankAccountsApi
-			.delete(bankAccountId)
-			.pipe(map((response) => response.message))
+		return this.bankAccountsApi.delete(bankAccountId).pipe(
+			switchMap((response) =>
+				this.loadBankAccounts().pipe(map(() => response.message)),
+			),
+		)
 	}
 }

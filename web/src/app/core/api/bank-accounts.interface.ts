@@ -60,3 +60,9 @@ export interface BankAccountActionResponse {
 	message: string
 	success: boolean
 }
+
+export interface BankAccountsResponse {
+	data: BankAccount[]
+	total: number
+	count: number
+}

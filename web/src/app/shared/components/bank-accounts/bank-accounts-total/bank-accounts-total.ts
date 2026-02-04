@@ -1,4 +1,5 @@
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
+import { BankAccountsService } from '@core/services/bank-accounts.service'
 import {
 	LucideAngularModule,
 	TrendingUpIcon,
@@ -15,4 +16,9 @@ import { ZardDividerComponent } from '../../ui/divider'
 export class BankAccountsTotal {
 	readonly WalletMinimalIcon = WalletMinimalIcon
 	readonly TrendingUpIcon = TrendingUpIcon
+
+	private readonly bankAccountsService = inject(BankAccountsService)
+
+	readonly totalBalance = this.bankAccountsService.totalBalance
+	readonly accountCount = this.bankAccountsService.totalAccounts
 }
