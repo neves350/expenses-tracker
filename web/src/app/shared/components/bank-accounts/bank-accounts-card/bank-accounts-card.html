@@ -15,7 +15,7 @@
 
     <!-- Popover Option -->
     <div class="flex items-center gap-1">
-      <z-badge [class]="account().balance > 0 ? 'success' : 'destructive'" class="h-5">
+      <z-badge [zType]="account().balance > 0 ? 'available' : 'unavailable'" class="h-5">
         {{ account().balance > 0 ? 'Available' : 'Unavailable' }}
       </z-badge>
 
@@ -33,7 +33,8 @@
           Edit
         </z-button>
 
-        <z-button zPopoverClose zType="ghost" zSize="sm" zFull>
+        <z-button zPopoverClose zType="ghost" zSize="sm" zFull
+          >: 'unavailable'" class="h-5">
           <i-lucide [img]="EyeIcon" class="size-5 mr-2" />
           Details
         </z-button>
@@ -57,9 +58,7 @@
 
   <div class="mt-6">
     <p class="text-xs text-muted-foreground mb-1">Current Balance</p>
-    <span
-      class="text-xl font-bold"
-      [class]="account().balance < 0 ? 'text-destructive' : 'text-primary'">
+    <span class="text-xl font-bold" [class]="balanceColorClass()">
       {{ formattedBalance() }}
     </span>
   </div>

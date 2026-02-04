@@ -92,6 +92,13 @@ export class BankAccountsCard {
 		return iconMap[this.account().type]
 	})
 
+	readonly balanceColorClass = computed(() => {
+		const balance = Number(this.account().balance)
+		if (balance < 0) return 'text-destructive'
+		if (balance === 0) return 'text-muted-foreground'
+		return 'text-primary'
+	})
+
 	readonly typeLabel = computed(() => {
 		return this.typeLabels[this.account().type]
 	})

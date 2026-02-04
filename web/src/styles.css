@@ -88,6 +88,13 @@
 	/* Cards - Light Mode */
 	--progress: oklch(0.205 0 0);
 	--total: oklch(96.2% 0.044 156.743);
+
+	--available: oklch(0.60 0.13 163);
+	--available-bg: oklch(95% 0.052 163.051);
+	--available-border: oklch(59.6% 0.145 163.225);
+	--unavailable: oklch(27.4% 0.006 286.033);
+	--unavailable-bg: oklch(92% 0.004 286.32);
+	--unavailable-border: oklch(37% 0.013 285.805);
 }
 
 /* Dark Mode */
@@ -152,6 +159,13 @@
 	/* Cards - Dark Mode */
 	--progress: oklch(0.922 0 0);
 	--total: oklch(26.2% 0.051 172.552);
+
+	--available: oklch(0.60 0.13 163);
+	--available-bg: oklch(0.26 0.05 173);
+	--available-border: oklch(59.6% 0.145 163.225);
+	--unavailable: oklch(70.5% 0.015 286.067);
+	--unavailable-bg: oklch(27.4% 0.006 286.033);
+	--unavailable-border: oklch(37% 0.013 285.805);
 }
 
 /* ==========================================================================
@@ -216,6 +230,8 @@
 	/* Cards - Dark Mode */
 	--color-progress: var(--progress);
 	--color-total: var(--total);
+	--color-available: var(--available);
+	--color-unavailable: var(--unavailable);
 }
 
 /* ==========================================================================
