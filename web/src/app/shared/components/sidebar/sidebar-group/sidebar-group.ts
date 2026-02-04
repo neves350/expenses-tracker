@@ -5,6 +5,7 @@ import {
 	ChartAreaIcon,
 	CreditCardIcon,
 	GoalIcon,
+	LandmarkIcon,
 	LayoutDashboardIcon,
 	LucideAngularModule,
 	type LucideIconData,
@@ -48,6 +49,11 @@ export class SidebarGroup {
 			title: 'Cards',
 			url: '/cards',
 			icon: CreditCardIcon,
+		},
+		{
+			title: 'Accounts',
+			url: '/bank-account',
+			icon: LandmarkIcon,
 		},
 		{
 			title: 'Transactions',
