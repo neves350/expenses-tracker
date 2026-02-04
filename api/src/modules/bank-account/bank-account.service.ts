@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
 import { CreateBankAccountDto } from './dtos/create-bank-account.dto'
-import type { UpdateBankAccountDto } from './dtos/update-bank-account.dto'
+import { UpdateBankAccountDto } from './dtos/update-bank-account.dto'
 
 @Injectable()
 export class BankAccountService {
@@ -69,6 +73,17 @@ export class BankAccountService {
 	}
 
 	async delete(id: string) {
+		// Check if there are cards linked to this bank account
+		const cardsCount = await this.prisma.card.count({
+			where: { bankAccountId: id },
+		})
+
+		if (cardsCount > 0) {
+			throw new BadRequestException(
+				`Cannot delete bank account. There are ${cardsCount} card(s) linked to it.`,
+			)
+		}
+
 		await this.prisma.bankAccount.delete({
 			where: { id },
 		})

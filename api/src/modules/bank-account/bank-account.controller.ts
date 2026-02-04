@@ -13,7 +13,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { BankAccountService } from './bank-account.service'
 import { CreateBankAccountDto } from './dtos/create-bank-account.dto'
-import type { UpdateBankAccountDto } from './dtos/update-bank-account.dto'
+import { UpdateBankAccountDto } from './dtos/update-bank-account.dto'
 
 @ApiTags('Bank Accounts')
 @Controller('bank-account')
