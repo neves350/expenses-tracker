@@ -87,6 +87,7 @@
 
 	/* Cards - Light Mode */
 	--progress: oklch(0.205 0 0);
+	--total: oklch(96.2% 0.044 156.743);
 }
 
 /* Dark Mode */
@@ -150,6 +151,7 @@
 
 	/* Cards - Dark Mode */
 	--progress: oklch(0.922 0 0);
+	--total: oklch(26.2% 0.051 172.552);
 }
 
 /* ==========================================================================
@@ -213,6 +215,7 @@
 
 	/* Cards - Dark Mode */
 	--color-progress: var(--progress);
+	--color-total: var(--total);
 }
 
 /* ==========================================================================
