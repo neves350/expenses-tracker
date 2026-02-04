@@ -24,6 +24,7 @@ import {
 } from 'lucide-angular'
 import { toast } from 'ngx-sonner'
 import { lastValueFrom } from 'rxjs'
+import { ZardBadgeComponent } from '../../ui/badge'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardCardComponent } from '../../ui/card'
 import { ZardDialogService } from '../../ui/dialog'
@@ -47,6 +48,7 @@ import { BankAccountsForm } from '../bank-accounts-form/bank-accounts-form'
 		ZardPopoverCloseDirective,
 		ZardPopoverComponent,
 		ZardPopoverDirective,
+		ZardBadgeComponent,
 	],
 	templateUrl: './bank-accounts-card.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -96,7 +98,7 @@ export class BankAccountsCard {
 
 	readonly formattedBalance = computed(() => {
 		const balance = this.account().balance
-		if (!balance) return null
+		if (balance === null || balance === undefined) return null
 		return Number(balance).toLocaleString('pt-PT', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
@@ -112,9 +114,11 @@ export class BankAccountsCard {
 		effect(() => {
 			const bankAccountId = this.account().id
 			if (bankAccountId) {
-				this.cardsService.countByBankAccount(bankAccountId).subscribe((count) => {
-					this.linkedCardsCount.set(count)
-				})
+				this.cardsService
+					.countByBankAccount(bankAccountId)
+					.subscribe((count) => {
+						this.linkedCardsCount.set(count)
+					})
 			}
 		})
 	}

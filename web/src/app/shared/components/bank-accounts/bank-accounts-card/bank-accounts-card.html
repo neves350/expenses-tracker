@@ -13,8 +13,12 @@
       </span>
     </div>
 
-    <!-- Edit & Delete Buttons -->
-    <div class="flex gap-1">
+    <!-- Popover Option -->
+    <div class="flex items-center gap-1">
+      <z-badge [class]="account().balance > 0 ? 'success' : 'destructive'" class="h-5">
+        {{ account().balance > 0 ? 'Available' : 'Unavailable' }}
+      </z-badge>
+
       <z-button zPopover [zContent]="popoverContent" zType="ghost">
         <i-lucide [img]="EllipsisVerticalIcon" class="size-5" />
       </z-button>
@@ -53,6 +57,14 @@
 
   <div class="mt-6">
     <p class="text-xs text-muted-foreground mb-1">Current Balance</p>
-    <span class="text-xl font-bold">{{ formattedBalance() }}€</span>
+    <span
+      class="text-xl font-bold"
+      [class]="account().balance < 0 ? 'text-destructive' : 'text-primary'"
+      >{{ formattedBalance() }}€</span
+    >
   </div>
+
+  <z-divider />
+
+  <p class="text-xs text-muted-foreground mb-1">No confirmed movements.</p>
 </z-card>
