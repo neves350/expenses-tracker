@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import {
-	IsEnum,
-	IsNotEmpty,
-	IsNumber,
-	IsPositive,
-	IsString,
-} from 'class-validator'
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 import { BankCurrency, BankType } from 'src/generated/prisma/client'
 
 export class CreateBankAccountDto {
@@ -26,7 +20,6 @@ export class CreateBankAccountDto {
 
 	@ApiProperty()
 	@IsNumber()
-	@IsPositive({ message: 'Amount must be greater than 0' })
 	@IsNotEmpty()
 	balance: number
 }
