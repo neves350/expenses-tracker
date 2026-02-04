@@ -97,12 +97,12 @@ export class BankAccountsCard {
 	})
 
 	readonly formattedBalance = computed(() => {
-		const balance = this.account().balance
+		const { balance, currency } = this.account()
 		if (balance === null || balance === undefined) return null
-		return Number(balance).toLocaleString('pt-PT', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		})
+		return new Intl.NumberFormat('pt-PT', {
+			style: 'currency',
+			currency,
+		}).format(Number(balance))
 	})
 
 	// Track linked cards count
