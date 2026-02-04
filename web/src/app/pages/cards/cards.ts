@@ -4,6 +4,7 @@ import {
 	inject,
 	OnInit,
 } from '@angular/core'
+import { BankAccountsService } from '@core/services/bank-accounts.service'
 import { CardsService } from '@core/services/cards.service'
 import { LucideAngularModule, PlusIcon, WalletCardsIcon } from 'lucide-angular'
 import { CardsForm } from '@/shared/components/cards/cards-form/cards-form'
@@ -29,6 +30,7 @@ export class Cards implements OnInit {
 
 	private readonly sheetService = inject(ZardSheetService)
 	private readonly cardsService = inject(CardsService)
+	private readonly bankAccountsService = inject(BankAccountsService)
 
 	// Expose service signals to template
 	readonly cards = this.cardsService.cards
@@ -37,6 +39,8 @@ export class Cards implements OnInit {
 
 	ngOnInit(): void {
 		this.cardsService.loadCards().subscribe()
+		// Pre-load bank accounts for the form
+		this.bankAccountsService.loadBankAccounts().subscribe()
 	}
 
 	openSheet() {

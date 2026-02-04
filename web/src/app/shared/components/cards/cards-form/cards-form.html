@@ -93,6 +93,24 @@
   </div>
   }
 
+  <!-- Bank Account Select -->
+  <div class="grid gap-2">
+    <label for="bankAccountId">Bank Account</label>
+    <z-select class="w-full" formControlName="bankAccountId">
+      @for (account of bankAccounts(); track account.id) {
+      <z-select-item [zValue]="$any(account.id)">
+        <span>{{ account.name }}</span>
+      </z-select-item>
+      }
+    </z-select>
+    @if (form.controls.bankAccountId.touched && form.controls.bankAccountId.errors?.['required']) {
+    <span class="text-xs text-destructive">Bank account is required</span>
+    }
+    @if (bankAccounts().length === 0) {
+    <span class="text-xs text-muted-foreground">No bank accounts available. Create one first.</span>
+    }
+  </div>
+
   <z-divider />
 
   <!-- Submit Button -->

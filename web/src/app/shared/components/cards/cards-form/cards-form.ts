@@ -13,6 +13,7 @@ import {
 	Validators,
 } from '@angular/forms'
 import { CardColor, CardType } from '@core/api/cards.interface'
+import { BankAccountsService } from '@core/services/bank-accounts.service'
 import { CardsService } from '@core/services/cards.service'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardDividerComponent } from '../../ui/divider'
@@ -43,6 +44,9 @@ export class CardsForm implements AfterViewInit {
 	private readonly cardsService = inject(CardsService)
 	private readonly sheetRef = inject(ZardSheetRef)
 
+	// Bank accounts from service (pre-loaded in Cards page)
+	readonly bankAccounts = inject(BankAccountsService).bankAccounts
+
 	// Form with default values
 	form = this.fb.nonNullable.group({
 		name: ['', [Validators.required]],
@@ -52,6 +56,7 @@ export class CardsForm implements AfterViewInit {
 		creditLimit: [0 as number | null],
 		closingDay: ['1'],
 		dueDay: ['10'],
+		bankAccountId: ['', [Validators.required]],
 	})
 
 	readonly isEditMode = computed(() => !!this.zData?.id)
@@ -112,6 +117,7 @@ export class CardsForm implements AfterViewInit {
 			name: formValue.name,
 			color: formValue.color,
 			type: formValue.type,
+			bankAccountId: formValue.bankAccountId,
 			lastFour: formValue.lastFour || undefined,
 			creditLimit: formValue.creditLimit
 				? Number(formValue.creditLimit)

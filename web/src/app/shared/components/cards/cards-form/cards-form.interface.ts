@@ -9,4 +9,5 @@ export interface iSheetData {
 	creditLimit?: number
 	closingDay?: number | string
 	dueDay?: number | string
+	accountId?: string
 }

@@ -31,9 +31,11 @@ export class CardsApi {
 	 * GET ALL CARDS
 	 */
 	findAll(): Observable<Card[]> {
-		return this.http.get<Card[]>(`${this.baseUrl}`, {
-			withCredentials: true,
-		})
+		return this.http
+			.get<{ cards: Card[]; total: number }>(`${this.baseUrl}`, {
+				withCredentials: true,
+			})
+			.pipe(map((response) => response.cards))
 	}
 
 	/**

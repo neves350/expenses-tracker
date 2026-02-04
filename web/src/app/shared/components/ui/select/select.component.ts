@@ -642,7 +642,7 @@ export class ZardSelectComponent
 		}
 
 		// Find the index of the currently selected item
-		let selectedValue
+		let selectedValue: string | string[]
 		if (Array.isArray(this.zValue()) && this.zValue().length) {
 			;[selectedValue] = this.zValue()
 		} else {
