@@ -28,11 +28,28 @@ export class BankAccountService {
 	}
 
 	async findAll(userId: string) {
-		return this.prisma.bankAccount.findMany({
-			where: {
-				userId,
-			},
-		})
+		const [bankAccounts, aggregation] = await Promise.all([
+			this.prisma.bankAccount.findMany({
+				where: { userId },
+			}),
+			this.prisma.bankAccount.aggregate({
+				where: {
+					userId,
+				},
+				_sum: {
+					balance: true,
+				},
+				_count: {
+					id: true,
+				},
+			}),
+		])
+
+		return {
+			data: bankAccounts,
+			total: aggregation._sum.balance ?? 0,
+			count: aggregation._count.id,
+		}
 	}
 
 	async findOne(cardId: string, userId: string) {
