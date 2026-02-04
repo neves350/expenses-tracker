@@ -7,17 +7,17 @@ import {
 import { TemplatePortal } from '@angular/cdk/portal'
 import { CommonModule, isPlatformBrowser } from '@angular/common'
 import {
-	type AfterContentInit,
 	afterNextRender,
 	ChangeDetectionStrategy,
 	Component,
 	computed,
 	contentChildren,
 	DestroyRef,
+	effect,
 	ElementRef,
 	forwardRef,
-	Injector,
 	inject,
+	Injector,
 	input,
 	model,
 	type OnDestroy,
@@ -121,9 +121,7 @@ const COMPACT_MODE_WIDTH_THRESHOLD = 100
 			'onTriggerKeydown($event)',
 	},
 })
-export class ZardSelectComponent
-	implements ControlValueAccessor, AfterContentInit, OnDestroy
-{
+export class ZardSelectComponent implements ControlValueAccessor, OnDestroy {
 	private readonly destroyRef = inject(DestroyRef)
 	private readonly elementRef = inject(ElementRef<HTMLElement>)
 	private readonly injector = inject(Injector)
@@ -131,6 +129,16 @@ export class ZardSelectComponent
 	private readonly overlayPositionBuilder = inject(OverlayPositionBuilder)
 	private readonly viewContainerRef = inject(ViewContainerRef)
 	private readonly platformId = inject(PLATFORM_ID)
+
+	constructor() {
+		// React to dynamic content changes (e.g., items loaded asynchronously)
+		effect(() => {
+			const items = this.selectItems()
+			if (items.length > 0) {
+				this.setupSelectItems()
+			}
+		})
+	}
 
 	readonly dropdownTemplate =
 		viewChild.required<TemplateRef<void>>('dropdownTemplate')
@@ -193,7 +201,7 @@ export class ZardSelectComponent
 		),
 	)
 
-	ngAfterContentInit() {
+	private setupSelectItems(): void {
 		const hostWidth = this.elementRef.nativeElement.offsetWidth || 0
 		// Setup select host reference for each item
 		let i = 0
