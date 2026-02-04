@@ -1,0 +1,67 @@
+<form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4 py-4">
+  <!-- Name Input -->
+  <div class="grid gap-2">
+    <label for="name">Account Name</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="name"
+      placeholder="My Account"
+    />
+    @if (form.controls.name.touched && form.controls.name.errors?.['required']) {
+    <span class="text-xs text-destructive">Name of a account is required</span>
+    }
+  </div>
+
+  <div class="grid gap-3">
+    <!-- Type Select -->
+    <div class="grid gap-2">
+      <label for="type">Type</label>
+      <z-select class="w-full" formControlName="type">
+        @for (bankAccountType of bankAccountTypes; track bankAccountType) {
+        <z-select-item [zValue]="bankAccountType">
+          <span>{{ getTypeLabel(bankAccountType) }}</span>
+        </z-select-item>
+        }
+      </z-select>
+      @if (form.controls.type.touched && form.controls.type.errors?.['required']) {
+      <span class="text-xs text-destructive">Type is required</span>
+      }
+    </div>
+
+    <!-- Currency Select -->
+    <div class="grid gap-2">
+      <label for="currency">Currency</label>
+      <z-select class="w-full" formControlName="currency">
+        @for (bankAccountCurrency of bankAccountCurrencies; track bankAccountCurrency) {
+        <z-select-item [zValue]="bankAccountCurrency">
+          <span>{{ getCurrencyLabel(bankAccountCurrency) }}</span>
+        </z-select-item>
+        }
+      </z-select>
+      @if (form.controls.type.touched && form.controls.type.errors?.['required']) {
+      <span class="text-xs text-destructive">Type is required</span>
+      }
+    </div>
+
+    <!-- Balance -->
+    <div class="grid gap-3">
+      <label for="balance">Balance</label>
+      <input
+        z-input
+        class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+        formControlName="balance"
+        placeholder="100"
+      />
+    </div>
+
+    <z-divider />
+
+    <!-- Submit Button -->
+    <div>
+      <z-button class="w-full cursor-pointer" (click)="submit()">{{
+        isEditMode() ? 'Save Changes' : 'Create Account'
+      }}</z-button>
+    </div>
+  </div>
+</form>

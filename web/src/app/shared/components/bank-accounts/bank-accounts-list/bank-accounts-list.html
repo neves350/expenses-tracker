@@ -1,0 +1,5 @@
+<div class="grid grid-cols-3 gap-4 mt-4 items-stretch">
+  @for (account of accounts(); track account.id) {
+  <app-bank-accounts-card [account]="account" />
+  }
+</div>

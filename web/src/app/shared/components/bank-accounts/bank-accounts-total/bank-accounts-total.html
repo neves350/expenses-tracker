@@ -1,0 +1,26 @@
+<z-card class="h-full flex flex-col mb-8 bg-total/30">
+  <div class="flex items-start justify-between">
+    <div class="size-10 flex items-center justify-center rounded-lg text-white bg-accent">
+      <i-lucide [img]="WalletMinimalIcon" class="size-5 text-accent-foreground" />
+    </div>
+
+    <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
+      <span class="truncate text-xs text-muted-foreground">
+        Total Assets · Sum of all accounts
+      </span>
+      <span class="text-xl font-bold">90,00€</span>
+    </div>
+
+    <!-- Edit & Delete Buttons -->
+    <div class="flex gap-1">
+      <i-lucide [img]="TrendingUpIcon" class="size-4 text-income-foreground" />
+      <span class="text-sm font-bold text-primary"> 90,00€ </span>
+    </div>
+  </div>
+
+  <z-divider />
+
+  <div>
+    <p class="text-sm text-muted-foreground mb-1">6 accounts with a balance</p>
+  </div>
+</z-card>
