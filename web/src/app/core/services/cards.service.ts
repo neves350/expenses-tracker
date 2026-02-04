@@ -27,11 +27,11 @@ export class CardsService {
 	readonly creditCardsCount = computed(() => this.creditCards().length)
 	readonly hasCreditCards = computed(() => this.creditCardsCount() > 0)
 
-	loadCards(): Observable<Card[]> {
+	loadCards(bankAccountId?: string): Observable<Card[]> {
 		this.loading.set(true)
 		this.error.set(null)
 
-		return this.cardsApi.findAll().pipe(
+		return this.cardsApi.findAll(bankAccountId).pipe(
 			tap({
 				next: (wallets) => {
 					this.cards.set(wallets)
@@ -94,5 +94,9 @@ export class CardsService {
 
 	monthlyExpenses(cardId: string): Observable<CardExpensesRequest> {
 		return this.cardsApi.monthlyExpenses(cardId)
+	}
+
+	countByBankAccount(bankAccountId: string): Observable<number> {
+		return this.cardsApi.countByBankAccount(bankAccountId)
 	}
 }

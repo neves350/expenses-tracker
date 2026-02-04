@@ -30,12 +30,25 @@ export class CardsApi {
 	/**
 	 * GET ALL CARDS
 	 */
-	findAll(): Observable<Card[]> {
+	findAll(bankAccountId?: string): Observable<Card[]> {
 		return this.http
 			.get<{ cards: Card[]; total: number }>(`${this.baseUrl}`, {
 				withCredentials: true,
+				...(bankAccountId && { params: { bankAccountId } }),
 			})
 			.pipe(map((response) => response.cards))
+	}
+
+	/**
+	 * COUNT CARDS BY BANK ACCOUNT
+	 */
+	countByBankAccount(bankAccountId: string): Observable<number> {
+		return this.http
+			.get<{ cards: Card[]; total: number }>(`${this.baseUrl}`, {
+				withCredentials: true,
+				params: { bankAccountId },
+			})
+			.pipe(map((response) => response.total))
 	}
 
 	/**
