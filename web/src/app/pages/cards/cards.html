@@ -1,6 +1,6 @@
 <main class="p-4 md:p-6 w-full">
   <div class="max-w-[1400px] mx-auto py-6 md:py-3 space-y-8 md:space-y-12">
-    <div class="flex justify-between">
+    <div class="flex justify-between items-start">
       <h1 class="font-semibold flex flex-col">
         Cards
         <span class="font-normal text-muted-foreground text-sm">
@@ -8,10 +8,26 @@
         </span>
       </h1>
 
-      <z-button class="cursor-pointer" zType="outline" (click)="openSheet()">
-        <i-lucide [img]="PlusIcon" />
-        New card
-      </z-button>
+      <div class="flex items-center gap-3">
+        <z-select
+          class="w-[200px]"
+          zPlaceholder="All bank accounts"
+          [zValue]="selectedBankAccountId() ?? 'all'"
+          (zSelectionChange)="onBankAccountFilterChange($any($event))"
+        >
+          <z-select-item zValue="all">All bank accounts</z-select-item>
+          @for (account of bankAccounts(); track account.id) {
+          <z-select-item [zValue]="account.id!">
+            <span>{{ account.name }}</span>
+          </z-select-item>
+          }
+        </z-select>
+
+        <z-button class="cursor-pointer" zType="outline" (click)="openSheet()">
+          <i-lucide [img]="PlusIcon" />
+          New card
+        </z-button>
+      </div>
     </div>
 
     @if (hasCards()) {
