@@ -32,7 +32,7 @@ export class TransfersApi {
 	findAll(params?: TransfersQueryParams): Observable<TransfersResponse> {
 		return this.http.get<TransfersResponse>(`${this.baseUrl}`, {
 			withCredentials: true,
-			...(params && { params: params as Record<string, string> }),
+			params: params as Record<string, string> | undefined,
 		})
 	}
 
