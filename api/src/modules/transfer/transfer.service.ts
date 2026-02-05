@@ -4,6 +4,7 @@ import {
 	NotFoundException,
 } from '@nestjs/common'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
+import { QueryTransferDto } from './dtos/query-transfer.dto'
 import { TransferDto } from './dtos/transfer.dto'
 
 @Injectable()
@@ -112,6 +113,61 @@ export class TransferService {
 		return {
 			transfer,
 			message: 'Transfer completed successfully',
+		}
+	}
+
+	async findAll(userId: string, query: QueryTransferDto) {
+		const {
+			accountId,
+			startDate,
+			endDate,
+			status,
+			offset = 0,
+			limit = 10,
+		} = query
+
+		const where: any = { userId }
+
+		// filter by account
+		if (accountId) {
+			where.OR = [
+				{
+					fromAccountId: accountId,
+				},
+				{
+					toAccountId: accountId,
+				},
+			]
+		}
+
+		// filter by status
+		if (status) where.status = status
+
+		// filter by period
+		if (startDate || endDate) {
+			where.date = {}
+			if (startDate) where.date.gte = startDate
+			if (endDate) where.date.lte = endDate
+		}
+
+		const [transfers, count] = await Promise.all([
+			this.prisma.transfer.findMany({
+				where,
+				orderBy: {
+					date: 'desc',
+				},
+				take: limit,
+				skip: offset,
+			}),
+
+			this.prisma.transfer.count({ where }),
+		])
+
+		return {
+			data: transfers,
+			count,
+			limit,
+			offset,
 		}
 	}
 }
