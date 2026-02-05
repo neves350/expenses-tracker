@@ -46,7 +46,9 @@ export class TransferController {
 	})
 	@ApiFindAllTransfersResponses()
 	async findAll(@CurrentUser() user, @Query() query: QueryTransferDto) {
-		return this.transferService.findAll(user.userId, query)
+		const transfers = await this.transferService.findAll(user.userId, query)
+
+		return transfers
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -58,6 +60,8 @@ export class TransferController {
 	})
 	@ApiFindOneTransferResponses()
 	async findOne(@Param('id') id: string, @CurrentUser() user) {
-		return this.transferService.findOne(id, user.userId)
+		const transfer = await this.transferService.findOne(id, user.userId)
+
+		return { transfer }
 	}
 }
