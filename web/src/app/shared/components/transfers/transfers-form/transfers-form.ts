@@ -87,6 +87,7 @@ export class TransfersForm {
 		this.transfersService.create(payload).subscribe({
 			next: () => {
 				toast.success('Transfer created successfully')
+				this.bankAccountsService.loadBankAccounts().subscribe()
 				this.sheetRef.close()
 			},
 			error: (error) => {
