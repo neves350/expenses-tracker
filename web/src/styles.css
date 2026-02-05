@@ -290,3 +290,8 @@
 		left: calc(50% + 8rem);
 	}
 }
+
+/* Background Blur */
+.cdk-overlay-backdrop {
+  backdrop-filter: blur(4px);
+}
