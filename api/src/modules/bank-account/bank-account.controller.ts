@@ -9,6 +9,13 @@ import {
 	UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+	ApiCreateBankAccountResponses,
+	ApiDeleteBankAccountResponses,
+	ApiFindAllBankAccountsResponses,
+	ApiFindOneBankAccountResponses,
+	ApiUpdateBankAccountResponses,
+} from 'src/common/decorators/api-responses/bank-account-responses.decorator'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { BankAccountService } from './bank-account.service'
@@ -28,6 +35,7 @@ export class BankAccountController {
 		description:
 			'Creates a new bank account with name, type, currency and balance.',
 	})
+	@ApiCreateBankAccountResponses()
 	async create(@Body() data: CreateBankAccountDto, @CurrentUser() user) {
 		const bankAccount = await this.bankAccountService.create(data, user.userId)
 
@@ -44,6 +52,7 @@ export class BankAccountController {
 		summary: 'Get all bank accounts',
 		description: 'Get all bank accounts from user.',
 	})
+	@ApiFindAllBankAccountsResponses()
 	async findAll(@CurrentUser() user) {
 		const bankAccounts = await this.bankAccountService.findAll(user.userId)
 
@@ -57,6 +66,7 @@ export class BankAccountController {
 		summary: 'Get bank account by id',
 		description: 'Get bank account for the user.',
 	})
+	@ApiFindOneBankAccountResponses()
 	async findOne(@Param('id') id: string, @CurrentUser() user) {
 		const card = await this.bankAccountService.findOne(id, user.userId)
 
@@ -70,6 +80,7 @@ export class BankAccountController {
 		summary: 'Update bank account by id',
 		description: 'Updates the bank account information.',
 	})
+	@ApiUpdateBankAccountResponses()
 	async update(
 		@Param('id') id: string,
 		@Body() data: UpdateBankAccountDto,
@@ -91,6 +102,7 @@ export class BankAccountController {
 		summary: 'Delete bank account by id',
 		description: 'Deletes the bank account information.',
 	})
+	@ApiDeleteBankAccountResponses()
 	async delete(@Param('id') id: string, @CurrentUser() user) {
 		// Verify bank account ownership before deleting
 		await this.bankAccountService.findOne(id, user.userId)
