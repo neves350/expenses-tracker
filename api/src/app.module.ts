@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { ScheduleModule } from '@nestjs/schedule'
 import { PrismaModule } from './infrastructure/db/prisma.module'
 import { MailModule } from './infrastructure/mail/mail.module'
 import { AuthModule } from './modules/auth/auth.module'
@@ -10,11 +11,13 @@ import { ExportModule } from './modules/export/export.module'
 import { GoalModule } from './modules/goal/goal.module'
 import { StatisticModule } from './modules/statistic/statistic.module'
 import { TransactionModule } from './modules/transaction/transaction.module'
+import { TransferModule } from './modules/transfer/transfer.module'
 import { UsersModule } from './modules/users/users.module'
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
+		ScheduleModule.forRoot(),
 		AuthModule,
 		UsersModule,
 		PrismaModule,
@@ -26,6 +29,7 @@ import { UsersModule } from './modules/users/users.module'
 		ExportModule,
 		GoalModule,
 		BankAccountModule,
+		TransferModule,
 	],
 	controllers: [],
 	providers: [],

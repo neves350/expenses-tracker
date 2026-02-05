@@ -26,6 +26,7 @@ model User {
   goals        Goal[]
   cards        Card[]
   bankAccounts BankAccount[]
+  transfer     Transfer[]
   categories   Category[]
 
   @@map("users")
@@ -137,6 +138,28 @@ enum BankType {
 enum BankCurrency {
   EUR
   USD
+}
+
+model Transfer {
+  id            String         @id @default(uuid())
+  userId        String         @map("user_id")
+  fromAccountId String         @map("from_account_id")
+  toAccountId   String         @map("to_account_id")
+  amount        Decimal        @db.Decimal(12, 2)
+  date          DateTime
+  description   String?
+  status        TransferStatus @default(PENDING)
+  executedAt    DateTime?      @map("executed_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transfers")
+}
+
+enum TransferStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
 }
 
 model Category {
