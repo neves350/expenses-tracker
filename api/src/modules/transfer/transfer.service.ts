@@ -170,4 +170,17 @@ export class TransferService {
 			offset,
 		}
 	}
+
+	async findOne(transferId: string, userId: string) {
+		const transfer = this.prisma.transfer.findUnique({
+			where: {
+				id: transferId,
+				userId,
+			},
+		})
+
+		if (!transfer) throw new NotFoundException('Transfer not found.')
+
+		return transfer
+	}
 }

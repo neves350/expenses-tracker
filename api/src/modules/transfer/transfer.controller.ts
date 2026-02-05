@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Query,
+	UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
@@ -32,5 +40,16 @@ export class TransferController {
 	})
 	async findAll(@CurrentUser() user, @Query() query: QueryTransferDto) {
 		return this.transferService.findAll(user.userId, query)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get(':id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Find one transfer',
+		description: 'Find one transfers for an account.',
+	})
+	async findOne(@Param('id') id: string, @CurrentUser() user) {
+		return this.transferService.findOne(id, user.userId)
 	}
 }
