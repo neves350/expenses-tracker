@@ -9,6 +9,7 @@ import {
 import { BankAccountsForm } from '@/shared/components/bank-accounts/bank-accounts-form/bank-accounts-form'
 import { BankAccountsList } from '@/shared/components/bank-accounts/bank-accounts-list/bank-accounts-list'
 import { BankAccountsTotal } from '@/shared/components/bank-accounts/bank-accounts-total/bank-accounts-total'
+import { TransfersForm } from '@/shared/components/transfers/transfers-form/transfers-form'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
 import { ZardSheetService } from '@/shared/components/ui/sheet'
@@ -41,6 +42,18 @@ export class BankAccount implements OnInit {
 		this.bankAccountsService.loadBankAccounts().subscribe()
 	}
 
+	openTransfer() {
+		this.sheetService.create({
+			zTitle: 'New Transfer',
+			zContent: TransfersForm,
+			zSide: 'right',
+			zWidth: '500px',
+			zHideFooter: true,
+			zCustomClasses:
+				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
+		})
+	}
+
 	openSheet() {
 		this.sheetService.create({
 			zTitle: 'New Bank Account',
@@ -48,6 +61,8 @@ export class BankAccount implements OnInit {
 			zSide: 'right',
 			zWidth: '500px',
 			zHideFooter: true,
+			zCustomClasses:
+				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 		})
 	}
 }

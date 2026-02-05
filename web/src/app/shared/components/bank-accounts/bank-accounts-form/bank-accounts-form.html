@@ -1,3 +1,5 @@
+<z-divider />
+
 <form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4 py-4">
   <!-- Name Input -->
   <div class="grid gap-2">
@@ -55,10 +57,9 @@
       />
     </div>
 
-    <z-divider />
-
     <!-- Submit Button -->
-    <div>
+    <div class="mt-auto pt-4">
+      <z-divider class="mb-4" />
       <z-button class="w-full cursor-pointer" (click)="submit()">{{
         isEditMode() ? 'Save Changes' : 'Create Account'
       }}</z-button>

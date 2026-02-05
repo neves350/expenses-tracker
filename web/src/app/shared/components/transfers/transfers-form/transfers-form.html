@@ -1,0 +1,88 @@
+<z-divider />
+
+<form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4 py-4">
+  <!-- Amount Input -->
+  <div class="grid gap-2">
+    <label for="amount">Amount</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="amount"
+      placeholder="90"
+    />
+    @if (form.controls.amount.touched && form.controls.amount.errors?.['required']) {
+    <span class="text-xs text-destructive">Amount is required</span>
+    }
+  </div>
+
+  <!-- Form Account Select -->
+  <div class="grid gap-2">
+    <label for="fromAccountId">From</label>
+    <z-select class="w-full" formControlName="fromAccountId">
+      @for (account of accounts; track account.id) {
+      <z-select-item [zValue]="account.id!">
+        <span class="flex w-full justify-between gap-4">
+          <span>{{ account.name }}</span>
+          <span class="text-xs text-muted-foreground">{{ formatBalance(account) }}</span>
+        </span>
+      </z-select-item>
+      }
+    </z-select>
+    @if (form.controls.fromAccountId.touched && form.controls.fromAccountId.errors?.['required']) {
+    <span class="text-xs text-destructive">Source account is required</span>
+    }
+  </div>
+
+  <div
+    class="size-10 grid items-center justify-center justify-self-center rounded-full bg-income text-income-foreground"
+  >
+    <span class="material-symbols-outlined text-xl">
+      <i-lucide [img]="ArrowDownIcon" class="h-5" />
+    </span>
+  </div>
+
+  <!-- To Account Select -->
+  <div class="grid gap-2">
+    <label for="toAccountId">To</label>
+    <z-select class="w-full" formControlName="toAccountId">
+      @for (account of accounts; track account.id) {
+      <z-select-item [zValue]="account.id!">
+        <span class="flex w-full justify-between gap-4">
+          <span>{{ account.name }}</span>
+          <span class="text-xs text-muted-foreground">{{ formatBalance(account) }}</span>
+        </span>
+      </z-select-item>
+      } @if (form.controls.toAccountId.touched && form.controls.toAccountId.errors?.['required']) {
+      <span class="text-xs text-destructive">Destination account is required</span>
+      }
+    </z-select>
+  </div>
+
+  <!-- Date Picker -->
+  <div class="grid gap-2">
+    <label for="date">Date</label>
+    <z-date-picker
+      placeholder="Pick a date"
+      zSize="sm"
+      class="w-full [&>button]:w-full"
+      (dateChange)="onDateChange($event)"
+    />
+  </div>
+
+  <!-- Description Input -->
+  <div class="grid gap-2">
+    <label for="description">Description (optional)</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="description"
+      placeholder="E: Emergency reserve"
+    />
+  </div>
+
+  <!-- Submit Button -->
+  <div class="mt-auto pt-4">
+    <z-divider class="mb-4" />
+    <z-button class="w-full cursor-pointer" (click)="submit()">Transfer</z-button>
+  </div>
+</form>
