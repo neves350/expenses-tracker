@@ -1,24 +1,88 @@
 <hlm-sidebar-group>
-    <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden">
-      Main Menu
-    </div>
+  <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden">Main Menu</div>
   <div hlmSidebarGroupContent>
-    <ul hlmSidebarMenu class="p-2 mr-2 gap-3">
-      @for (item of items; track item.title) {
-        <li hlmSidebarMenuItem>
-          <a
-            hlmSidebarMenuButton
-            [routerLink]="item.url"
-            [tooltip]="item.title"
-            [tooltipDisabled]="!isCollapsed()"
-            routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground"
-          >
-            <i-lucide [img]="item.icon" class="size-5" />
-            @if (!isCollapsed()) {
-              <span class="m-4">{{ item.title }}</span>
-            }
-          </a>
-        </li>
+    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+      @for (item of mainItem; track item.title) {
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          [routerLink]="item.url"
+          [tooltip]="item.title"
+          [tooltipDisabled]="!isCollapsed()"
+          routerLinkActive="text-sidebar-accent bg-sidebar-group font-semibold"
+        >
+          <i-lucide [img]="item.icon" class="size-5 mb-1" />
+          @if (!isCollapsed()) {
+          <span class="m-4">{{ item.title }}</span>
+          }
+        </a>
+      </li>
+      }
+    </ul>
+  </div>
+
+  <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden mt-6">Finances</div>
+  <div hlmSidebarGroupContent>
+    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+      @for (item of financeItem; track item.title) {
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          [routerLink]="item.url"
+          [tooltip]="item.title"
+          [tooltipDisabled]="!isCollapsed()"
+          routerLinkActive="text-sidebar-accent bg-sidebar-group font-semibold"
+        >
+          <i-lucide [img]="item.icon" class="size-5 mb-1" />
+          @if (!isCollapsed()) {
+          <span class="m-4">{{ item.title }}</span>
+          }
+        </a>
+      </li>
+      }
+    </ul>
+  </div>
+
+  <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden mt-6">Analytics</div>
+  <div hlmSidebarGroupContent>
+    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+      @for (item of analyticsItem; track item.title) {
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          [routerLink]="item.url"
+          [tooltip]="item.title"
+          [tooltipDisabled]="!isCollapsed()"
+          routerLinkActive="text-sidebar-accent bg-sidebar-group font-semibold"
+        >
+          <i-lucide [img]="item.icon" class="size-5 mb-1" />
+          @if (!isCollapsed()) {
+          <span class="m-4">{{ item.title }}</span>
+          }
+        </a>
+      </li>
+      }
+    </ul>
+  </div>
+
+  <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden mt-6">Others</div>
+  <div hlmSidebarGroupContent>
+    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+      @for (item of othersItem; track item.title) {
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          [routerLink]="item.url"
+          [tooltip]="item.title"
+          [tooltipDisabled]="!isCollapsed()"
+          routerLinkActive="text-sidebar-accent bg-sidebar-group font-semibold"
+        >
+          <i-lucide [img]="item.icon" class="size-5 mb-1" />
+          @if (!isCollapsed()) {
+          <span class="m-4">{{ item.title }}</span>
+          }
+        </a>
+      </li>
       }
     </ul>
   </div>

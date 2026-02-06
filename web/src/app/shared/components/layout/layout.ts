@@ -8,6 +8,5 @@ import { HlmSidebarImports } from '../ui/spartan/sidebar/src'
 	selector: 'app-layout',
 	imports: [Header, RouterOutlet, Sidebar, HlmSidebarImports],
 	templateUrl: './layout.html',
-	styleUrl: './layout.css',
 })
 export class Layout {}

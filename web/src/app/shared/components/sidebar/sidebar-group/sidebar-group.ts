@@ -3,12 +3,14 @@ import { RouterLink, RouterLinkActive } from '@angular/router'
 import {
 	ArrowRightLeftIcon,
 	ChartAreaIcon,
-	CreditCardIcon,
 	GoalIcon,
 	LandmarkIcon,
 	LayoutDashboardIcon,
 	LucideAngularModule,
 	type LucideIconData,
+	SettingsIcon,
+	TagsIcon,
+	WalletCardsIcon,
 } from 'lucide-angular'
 import {
 	HlmSidebarImports,
@@ -39,27 +41,38 @@ export class SidebarGroup {
 		() => this.sidebarService.state() === 'collapsed',
 	)
 
-	readonly items: MenuItem[] = [
+	readonly mainItem: MenuItem[] = [
 		{
 			title: 'Dashboard',
 			url: '/dashboard',
 			icon: LayoutDashboardIcon,
 		},
-		{
-			title: 'Cards',
-			url: '/cards',
-			icon: CreditCardIcon,
-		},
-		{
-			title: 'Accounts',
-			url: '/bank-account',
-			icon: LandmarkIcon,
-		},
+	]
+
+	readonly financeItem: MenuItem[] = [
 		{
 			title: 'Transactions',
 			url: '/transactions',
 			icon: ArrowRightLeftIcon,
 		},
+		{
+			title: 'Cards',
+			url: '/wallets',
+			icon: WalletCardsIcon,
+		},
+		{
+			title: 'Accounts',
+			url: '/bank-accounts',
+			icon: LandmarkIcon,
+		},
+		{
+			title: 'Categories',
+			url: '/categories',
+			icon: TagsIcon,
+		},
+	]
+
+	readonly analyticsItem: MenuItem[] = [
 		{
 			title: 'Statistics',
 			url: '/statistics',
@@ -69,6 +82,14 @@ export class SidebarGroup {
 			title: 'Goals',
 			url: '/goals',
 			icon: GoalIcon,
+		},
+	]
+
+	readonly othersItem: MenuItem[] = [
+		{
+			title: 'Settings',
+			url: '/settings',
+			icon: SettingsIcon,
 		},
 	]
 }
