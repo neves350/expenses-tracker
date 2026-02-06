@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
 import {
 	LucideAngularModule,
@@ -12,6 +12,7 @@ import { ZardDividerComponent } from '../../ui/divider'
 	selector: 'app-bank-accounts-total',
 	imports: [ZardCardComponent, LucideAngularModule, ZardDividerComponent],
 	templateUrl: './bank-accounts-total.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BankAccountsTotal {
 	readonly WalletMinimalIcon = WalletMinimalIcon
