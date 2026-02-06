@@ -8,7 +8,6 @@ import { toSignal } from '@angular/core/rxjs-interop'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { BankCurrency, BankType } from '@core/api/bank-accounts.interface'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
-import { ZardButtonComponent } from '../../ui/button'
 import { ZardDividerComponent } from '../../ui/divider'
 import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
 import { Z_SHEET_DATA, ZardSheetRef } from '../../ui/sheet'
@@ -20,7 +19,6 @@ import type { iSheetData } from './bank-account-form.interface'
 		ZardDividerComponent,
 		ZardSelectComponent,
 		ZardSelectItemComponent,
-		ZardButtonComponent,
 		ReactiveFormsModule,
 	],
 	templateUrl: './bank-accounts-form.html',

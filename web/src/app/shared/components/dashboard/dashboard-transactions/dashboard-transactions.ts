@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common'
+import { DatePipe } from '@angular/common'
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -18,7 +18,6 @@ import {
 } from 'lucide-angular'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardCardComponent } from '../../ui/card'
-import { ZardDividerComponent } from '../../ui/divider'
 
 @Component({
 	selector: 'app-dashboard-transactions',
@@ -27,9 +26,7 @@ import { ZardDividerComponent } from '../../ui/divider'
 		LucideAngularModule,
 		ZardButtonComponent,
 		RouterLink,
-		ZardDividerComponent,
 		DatePipe,
-		DecimalPipe,
 	],
 	templateUrl: './dashboard-transactions.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,

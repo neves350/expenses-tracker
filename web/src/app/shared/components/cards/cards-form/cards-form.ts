@@ -15,7 +15,6 @@ import {
 import { CardColor, CardType } from '@core/api/cards.interface'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
 import { CardsService } from '@core/services/cards.service'
-import { ZardButtonComponent } from '../../ui/button'
 import { ZardDividerComponent } from '../../ui/divider'
 import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
 import { Z_SHEET_DATA, ZardSheetRef } from '../../ui/sheet'
@@ -32,7 +31,6 @@ import type { iSheetData } from './cards-form.interface'
 		ZardSelectComponent,
 		ZardSelectItemComponent,
 		CardsColorPicker,
-		ZardButtonComponent,
 		CardsPreview,
 	],
 	templateUrl: './cards-form.html',

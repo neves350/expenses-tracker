@@ -10,7 +10,6 @@ import { BankAccountsService } from '@core/services/bank-accounts.service'
 import { TransfersService } from '@core/services/transfers.service'
 import { ArrowDownIcon, LucideAngularModule } from 'lucide-angular'
 import { toast } from 'ngx-sonner'
-import { ZardButtonComponent } from '../../ui/button'
 import { ZardDatePickerComponent } from '../../ui/date-picker'
 import { ZardDividerComponent } from '../../ui/divider'
 import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
@@ -22,7 +21,6 @@ import { ZardSheetRef } from '../../ui/sheet'
 		ZardDividerComponent,
 		ZardSelectComponent,
 		ZardSelectItemComponent,
-		ZardButtonComponent,
 		ReactiveFormsModule,
 		ZardDatePickerComponent,
 		LucideAngularModule,
