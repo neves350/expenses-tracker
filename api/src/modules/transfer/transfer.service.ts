@@ -163,12 +163,14 @@ export class TransferService {
 						select: {
 							id: true,
 							name: true,
+							currency: true,
 						},
 					},
 					toAccount: {
 						select: {
 							id: true,
 							name: true,
+							currency: true,
 						},
 					},
 				},

@@ -1,6 +1,17 @@
-import { Component } from '@angular/core'
-import { RouterLink } from '@angular/router'
+import { DatePipe, DecimalPipe } from '@angular/common'
 import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+	input,
+	type OnInit,
+} from '@angular/core'
+import { RouterLink } from '@angular/router'
+import type { BankAccount } from '@core/api/bank-accounts.interface'
+import { TransfersService } from '@core/services/transfers.service'
+import {
+	ArrowRightLeftIcon,
 	ChevronRightIcon,
 	LucideAngularModule,
 	ScanBarcodeIcon,
@@ -19,13 +30,40 @@ import { ZardDividerComponent } from '../../ui/divider'
 		ZardButtonComponent,
 		RouterLink,
 		ZardDividerComponent,
+		DatePipe,
+		DecimalPipe,
 	],
 	templateUrl: './dashboard-transactions.html',
-	styleUrl: './dashboard-transactions.css',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardTransactions {
+export class DashboardTransactions implements OnInit {
 	readonly ScanBarcodeIcon = ScanBarcodeIcon
 	readonly TrendingUpIcon = TrendingUpIcon
 	readonly TrendingDownIcon = TrendingDownIcon
 	readonly ChevronRightIcon = ChevronRightIcon
+	readonly ArrowRightLeftIcon = ArrowRightLeftIcon
+
+	private readonly transfersService = inject(TransfersService)
+
+	readonly hasTransfers = this.transfersService.hasTransfers
+	readonly account = input.required<BankAccount>()
+	readonly loading = this.transfersService.loading
+
+	readonly recentTransfers = computed(() =>
+		this.transfersService
+			.transfers()
+			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+			.slice(0, 3),
+	)
+
+	formatBalance(account: BankAccount): string {
+		return new Intl.NumberFormat('pt-PT', {
+			style: 'currency',
+			currency: account.currency,
+		}).format(Number(account.balance))
+	}
+
+	ngOnInit(): void {
+		this.transfersService.loadTransfers().subscribe()
+	}
 }

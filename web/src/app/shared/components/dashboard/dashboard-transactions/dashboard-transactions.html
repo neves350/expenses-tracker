@@ -4,11 +4,53 @@
     Recent transactions
   </h1>
 
+  @if (hasTransfers()) {
+  <!-- Se existirem transactions -->
+  <div class="flex-1 mt-4 mb-2">
+    @for (transfer of recentTransfers(); track transfer.id) {
+    <div class="flex w-full items-center outline-none p-2">
+      <div
+        class="size-12 flex items-center justify-center rounded-full bg-expense text-expense-foreground"
+      >
+        <span class="material-symbols-outlined text-3xl">
+          <i-lucide [img]="TrendingDownIcon" class="my-icon" />
+        </span>
+      </div>
+
+      <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
+        <span class="truncate text-sm font-medium">{{ transfer.description || 'Transfer' }}</span>
+        <span class="truncate text-xs text-muted-foreground"
+          >From <span class="truncate font-bold">{{ transfer.fromAccount?.name }}</span> to
+          <span class="truncate font-bold">{{ transfer.toAccount?.name }}</span> ·
+          {{ transfer.date | date : 'd MMM' }}</span
+        >
+      </div>
+
+      <div class="ml-4 grid flex-1 text-right text-sm leading-tight">
+        <span class="truncate text-sm text-expense-foreground font-semibold">{{
+          transfer.amount | number : '1.2-2'
+        }}</span>
+      </div>
+    </div>
+
+    <z-divider zOrientation="horizontal" />
+    }
+  </div>
+
+  <div class="flex flex-col items-center justify-center mt-4">
+    <z-button class="cursor-pointer" zType="ghost" routerLink="/transactions">
+      View transactions
+      <i-lucide [img]="ChevronRightIcon" />
+    </z-button>
+  </div>
+  } @else {
   <!-- Se não existirem transactions -->
-  <!-- <div class="flex flex-col items-center justify-center p-6 mt-6">
-    <div class="size-12 flex items-center justify-center rounded-xl bg-accent text-accent-foreground mb-4">
+  <div class="flex flex-col items-center justify-center p-6 mt-6">
+    <div
+      class="size-12 flex items-center justify-center rounded-xl bg-accent text-accent-foreground mb-4"
+    >
       <span class="material-symbols-outlined text-3xl">
-        <i-lucide [img]="WalletMinimalIcon" class="my-icon" />
+        <i-lucide [img]="ArrowRightLeftIcon" class="my-icon" />
       </span>
     </div>
 
@@ -18,70 +60,6 @@
         <span>Add transactions to view them here</span>
       </div>
     </div>
-  </div> -->
-
-  <!-- Se existirem transactions -->
-  <div class="flex-1 mt-4 mb-2">
-    <div class="flex w-full items-center outline-none p-2">
-      <div class="size-12 flex items-center justify-center rounded-full bg-expense text-expense-foreground">
-        <span class="material-symbols-outlined text-3xl">
-          <i-lucide [img]="TrendingDownIcon" class="my-icon" />
-        </span>
-      </div>
-
-      <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
-        <span class="truncate text-sm font-medium">Supermarket</span>
-        <span class="truncate text-xs text-muted-foreground">Food · 29 Jan</span>
-      </div>
-
-      <div class="ml-4 grid flex-1 text-right text-sm leading-tight">
-        <span class="truncate text-sm text-expense-foreground font-semibold">-95,00€</span>
-      </div>
-    </div>
-
-    <z-divider zOrientation="horizontal" />
-
-    <div class="flex w-full items-center outline-none p-2">
-      <div class="size-12 flex items-center justify-center rounded-full bg-income text-income-foreground">
-        <span class="material-symbols-outlined text-3xl">
-          <i-lucide [img]="TrendingUpIcon" class="my-icon" />
-        </span>
-      </div>
-
-      <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
-        <span class="truncate text-sm font-medium">Salary</span>
-        <span class="truncate text-xs text-muted-foreground">Revenue · 26 Jan</span>
-      </div>
-
-      <div class="ml-4 grid flex-1 text-right text-sm leading-tight">
-        <span class="truncate text-sm text-primary font-semibold">+1.220,00€</span>
-      </div>
-    </div>
-
-    <z-divider zOrientation="horizontal" />
-
-    <div class="flex w-full items-center outline-none p-2">
-      <div class="size-12 flex items-center justify-center rounded-full bg-income text-income-foreground">
-        <span class="material-symbols-outlined text-3xl">
-          <i-lucide [img]="TrendingUpIcon" class="my-icon" />
-        </span>
-      </div>
-
-      <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
-        <span class="truncate text-sm font-medium">Salary</span>
-        <span class="truncate text-xs text-muted-foreground">Revenue · 26 Dec</span>
-      </div>
-
-      <div class="ml-4 grid flex-1 text-right text-sm leading-tight">
-        <span class="truncate text-sm text-primary font-semibold">+1.220,00€</span>
-      </div>
-    </div>
   </div>
-
-  <div class="flex flex-col items-center justify-center mt-4">
-    <z-button class="cursor-pointer" zType="ghost" routerLink="/transactions" >
-      View transactions
-      <i-lucide [img]="ChevronRightIcon" />
-    </z-button>
-  </div>
+  }
 </z-card>
