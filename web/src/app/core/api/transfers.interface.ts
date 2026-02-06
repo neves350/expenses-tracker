@@ -20,6 +20,16 @@ export interface Transfer {
 	status: TransferStatus
 	executedAt?: Date
 	createdAt?: string
+	fromAccount?: {
+		id: string
+		name: string
+		currency: string
+	}
+	toAccount?: {
+		id: string
+		name: string
+		currency: string
+	}
 }
 
 /**
