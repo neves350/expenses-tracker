@@ -47,7 +47,7 @@ export const routes: Routes = [
 				loadComponent: () => import('./pages/cards/cards').then((m) => m.Cards),
 			},
 			{
-				path: 'bank-account',
+				path: 'accounts',
 				loadComponent: () =>
 					import('./pages/bank-account/bank-account').then(
 						(m) => m.BankAccount,

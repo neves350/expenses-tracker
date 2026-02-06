@@ -57,12 +57,12 @@ export class SidebarGroup {
 		},
 		{
 			title: 'Cards',
-			url: '/wallets',
+			url: '/cards',
 			icon: WalletCardsIcon,
 		},
 		{
 			title: 'Accounts',
-			url: '/bank-accounts',
+			url: '/accounts',
 			icon: LandmarkIcon,
 		},
 		{
