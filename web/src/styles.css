@@ -82,6 +82,8 @@
 	--expense-foreground: oklch(64.6% 0.222 41.116);
 	--income: oklch(95% 0.052 163.051);
 	--income-foreground: oklch(0.60 0.13 163);
+	--transfer: oklch(71.5% 0.143 215.221);
+	--transfer-foreground: oklch(98.4% 0.019 200.873);
 	--goal: oklch(97.3% 0.071 103.193);
 	--goal-foreground: oklch(79.5% 0.184 86.047);
 
@@ -153,6 +155,8 @@
 	--expense-foreground: oklch(64.6% 0.222 41.116);
 	--income: oklch(0.26 0.05 173);
 	--income-foreground: oklch(0.60 0.13 163);
+	--transfer: oklch(52% 0.105 223.128);
+	--transfer-foreground: oklch(95.3% 0.051 180.801);
 	--goal: oklch(28.6% 0.066 53.813);
 	--goal-foreground: oklch(79.5% 0.184 86.047);
 
@@ -223,6 +227,8 @@
 	--color-expense: var(--expense);
 	--color-expense-foreground: var(--expense-foreground);
 	--color-income: var(--income);
+	--color-transfer: var(--transfer);
+	--color-transfer-foreground: var(--transfer-foreground);
 	--color-income-foreground: var(--income-foreground);
 	--color-goal: var(--goal);
 	--color-goal-foreground: var(--goal-foreground);
