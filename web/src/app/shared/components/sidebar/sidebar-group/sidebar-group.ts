@@ -4,12 +4,18 @@ import {
 	ArrowRightLeftIcon,
 	ChartAreaIcon,
 	GoalIcon,
+	LandmarkIcon,
 	LayoutDashboardIcon,
 	LucideAngularModule,
 	type LucideIconData,
+	SettingsIcon,
+	TagsIcon,
 	WalletCardsIcon,
 } from 'lucide-angular'
-import { HlmSidebarImports, HlmSidebarService } from '../../ui/spartan/sidebar/src'
+import {
+	HlmSidebarImports,
+	HlmSidebarService,
+} from '../../ui/spartan/sidebar/src'
 
 interface MenuItem {
 	title: string
@@ -31,24 +37,42 @@ interface MenuItem {
 export class SidebarGroup {
 	private readonly sidebarService = inject(HlmSidebarService)
 
-	readonly isCollapsed = computed(() => this.sidebarService.state() === 'collapsed')
+	readonly isCollapsed = computed(
+		() => this.sidebarService.state() === 'collapsed',
+	)
 
-	readonly items: MenuItem[] = [
+	readonly mainItem: MenuItem[] = [
 		{
 			title: 'Dashboard',
 			url: '/dashboard',
 			icon: LayoutDashboardIcon,
 		},
-		{
-			title: 'Wallets',
-			url: '/wallets',
-			icon: WalletCardsIcon,
-		},
+	]
+
+	readonly financeItem: MenuItem[] = [
 		{
 			title: 'Transactions',
 			url: '/transactions',
 			icon: ArrowRightLeftIcon,
 		},
+		{
+			title: 'Cards',
+			url: '/wallets',
+			icon: WalletCardsIcon,
+		},
+		{
+			title: 'Accounts',
+			url: '/bank-accounts',
+			icon: LandmarkIcon,
+		},
+		{
+			title: 'Categories',
+			url: '/categories',
+			icon: TagsIcon,
+		},
+	]
+
+	readonly analyticsItem: MenuItem[] = [
 		{
 			title: 'Statistics',
 			url: '/statistics',
@@ -58,6 +82,14 @@ export class SidebarGroup {
 			title: 'Goals',
 			url: '/goals',
 			icon: GoalIcon,
+		},
+	]
+
+	readonly othersItem: MenuItem[] = [
+		{
+			title: 'Settings',
+			url: '/settings',
+			icon: SettingsIcon,
 		},
 	]
 }
