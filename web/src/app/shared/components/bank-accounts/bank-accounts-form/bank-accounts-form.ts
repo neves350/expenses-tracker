@@ -40,6 +40,18 @@ export class BankAccountsForm {
 		balance: [0 as number | null],
 	})
 
+	constructor() {
+		// Populate form when editing
+		if (this.zData?.id) {
+			this.form.patchValue({
+				name: this.zData.name ?? '',
+				type: this.zData.type ?? BankType.CHECKING,
+				currency: this.zData.currency ?? BankCurrency.EUR,
+				balance: this.zData.balance ?? 0,
+			})
+		}
+	}
+
 	readonly isEditMode = computed(() => !!this.zData?.id)
 
 	// Enum values for template
