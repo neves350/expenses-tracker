@@ -136,7 +136,14 @@ export class BankAccountsCard {
 			zContent: BankAccountsForm,
 			zSide: 'right',
 			zWidth: '500px',
-			zHideFooter: true,
+			zHideFooter: false,
+			zOkText: 'Save Changes',
+			zOnOk: (instance: BankAccountsForm) => {
+				instance.submit()
+				return false // submit() handle close
+			},
+			zCustomClasses:
+				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 			zData: {
 				id: this.account().id,
 				name: this.account().name,

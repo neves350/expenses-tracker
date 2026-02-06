@@ -48,7 +48,12 @@ export class BankAccount implements OnInit {
 			zContent: TransfersForm,
 			zSide: 'right',
 			zWidth: '500px',
-			zHideFooter: true,
+			zHideFooter: false,
+			zOkText: 'Send Transfer',
+			zOnOk: (instance: TransfersForm) => {
+				instance.submit()
+				return false // submit() handle close
+			},
 			zCustomClasses:
 				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 		})
@@ -60,7 +65,12 @@ export class BankAccount implements OnInit {
 			zContent: BankAccountsForm,
 			zSide: 'right',
 			zWidth: '500px',
-			zHideFooter: true,
+			zHideFooter: false,
+			zOkText: 'Create Account',
+			zOnOk: (instance: BankAccountsForm) => {
+				instance.submit()
+				return false // submit() handle close
+			},
 			zCustomClasses:
 				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 		})

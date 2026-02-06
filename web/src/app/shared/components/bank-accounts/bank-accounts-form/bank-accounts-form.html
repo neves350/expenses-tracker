@@ -55,14 +55,7 @@
         formControlName="balance"
         placeholder="100"
       />
-    </div>
-
-    <!-- Submit Button -->
-    <div class="mt-auto pt-4">
-      <z-divider class="mb-4" />
-      <z-button class="w-full cursor-pointer" (click)="submit()">{{
-        isEditMode() ? 'Save Changes' : 'Create Account'
-      }}</z-button>
+      <span class="text-xs text-muted-foreground">Current account balance (may be negative)</span>
     </div>
   </div>
 </form>

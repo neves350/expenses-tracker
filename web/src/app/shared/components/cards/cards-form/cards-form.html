@@ -105,18 +105,8 @@
     </z-select>
     @if (form.controls.bankAccountId.touched && form.controls.bankAccountId.errors?.['required']) {
     <span class="text-xs text-destructive">Bank account is required</span>
-    }
-    @if (bankAccounts().length === 0) {
+    } @if (bankAccounts().length === 0) {
     <span class="text-xs text-muted-foreground">No bank accounts available. Create one first.</span>
     }
-  </div>
-
-  <z-divider />
-
-  <!-- Submit Button -->
-  <div>
-    <z-button class="w-full cursor-pointer" (click)="submit()">{{
-      isEditMode() ? 'Save Changes' : 'Create Card'
-    }}</z-button>
   </div>
 </form>

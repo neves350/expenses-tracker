@@ -118,7 +118,14 @@ export class CardsCard {
 			zContent: CardsForm,
 			zSide: 'right',
 			zWidth: '500px',
-			zHideFooter: true,
+			zHideFooter: false,
+			zOkText: 'Save Changes',
+			zOnOk: (instance: CardsForm) => {
+				instance.submit()
+				return false // submit() handle close
+			},
+			zCustomClasses:
+				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 			zData: {
 				id: this.card().id,
 				name: this.card().name,

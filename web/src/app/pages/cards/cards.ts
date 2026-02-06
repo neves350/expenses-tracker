@@ -66,7 +66,14 @@ export class Cards implements OnInit {
 			zContent: CardsForm,
 			zSide: 'right',
 			zWidth: '500px',
-			zHideFooter: true,
+			zHideFooter: false,
+			zOkText: 'Create Card',
+			zOnOk: (instance: CardsForm) => {
+				instance.submit()
+				return false // submit() handle close
+			},
+			zCustomClasses:
+				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 		})
 	}
 }
