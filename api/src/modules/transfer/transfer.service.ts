@@ -158,6 +158,20 @@ export class TransferService {
 				},
 				take: limit,
 				skip: offset,
+				include: {
+					fromAccount: {
+						select: {
+							id: true,
+							name: true,
+						},
+					},
+					toAccount: {
+						select: {
+							id: true,
+							name: true,
+						},
+					},
+				},
 			}),
 
 			this.prisma.transfer.count({ where }),
