@@ -1,6 +1,8 @@
-import type { Routes } from '@angular/router'
+import { inject } from '@angular/core'
+import type { ActivatedRouteSnapshot, Routes } from '@angular/router'
 import { authGuard } from '@core/guards/auth.guard'
 import { guestGuard } from '@core/guards/guest.guard'
+import { BankAccountsService } from '@core/services/bank-accounts.service'
 import { Layout } from './shared/components/layout/layout'
 
 export const routes: Routes = [
@@ -52,6 +54,18 @@ export const routes: Routes = [
 					import('./pages/bank-account/bank-account').then(
 						(m) => m.BankAccount,
 					),
+			},
+			{
+				path: 'account-details/:id',
+				loadComponent: () =>
+					import('./pages/bank-account/account-details/account-details').then(
+						(m) => m.AccountDetails,
+					),
+				resolve: {
+					account: (route: ActivatedRouteSnapshot) => {
+						return inject(BankAccountsService).findById(route.params['id'])
+					},
+				},
 			},
 			{
 				path: 'profile',

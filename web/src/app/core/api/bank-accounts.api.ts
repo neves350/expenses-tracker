@@ -42,9 +42,11 @@ export class BankAccountsApi {
 	 * GET BANK ACCOUNT BY ID
 	 */
 	findById(bankAccountId: string): Observable<BankAccount> {
-		return this.http.get<BankAccount>(`${this.baseUrl}/${bankAccountId}`, {
-			withCredentials: true,
-		})
+		return this.http
+			.get<{ card: BankAccount }>(`${this.baseUrl}/${bankAccountId}`, {
+				withCredentials: true,
+			})
+			.pipe(map((response) => response.card))
 	}
 
 	/**
