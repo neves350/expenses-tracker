@@ -20,6 +20,7 @@ export class BankAccountService {
 				type,
 				currency,
 				balance,
+				initialBalance: balance,
 				userId,
 			},
 		})
@@ -53,16 +54,33 @@ export class BankAccountService {
 	}
 
 	async findOne(cardId: string, userId: string) {
-		const bankAccount = await this.prisma.bankAccount.findFirst({
-			where: {
-				id: cardId,
-				userId,
-			},
-		})
+		const [bankAccount, transferCount, transactionCount] = await Promise.all([
+			this.prisma.bankAccount.findFirst({
+				where: {
+					id: cardId,
+					userId,
+				},
+			}),
+
+			this.prisma.transfer.count({
+				where: {
+					OR: [{ fromAccountId: cardId }, { toAccountId: cardId }],
+				},
+			}),
+
+			this.prisma.transaction.count({
+				where: {
+					bankAccountId: cardId,
+				},
+			}),
+		])
 
 		if (!bankAccount) throw new NotFoundException('Bank account not found')
 
-		return bankAccount
+		return {
+			...bankAccount,
+			totalMovements: transferCount + transactionCount,
+		}
 	}
 
 	async update(

@@ -112,21 +112,20 @@ enum CardType {
 }
 
 model BankAccount {
-  id            String        @id @default(uuid())
-  userId        String        @map("user_id")
-  name          String
-  type          BankType      @default(CHECKING)
-  currency      BankCurrency  @default(EUR)
-  balance       Decimal       @db.Decimal(12, 2)
-  cards         Card[]
-  transactions  Transaction[]
-  transfersFrom Transfer[]    @relation("from_transfers")
-  transfersTo   Transfer[]    @relation("to_transfers")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String        @id @default(uuid())
+  userId         String        @map("user_id")
+  name           String
+  type           BankType      @default(CHECKING)
+  currency       BankCurrency  @default(EUR)
+  balance        Decimal       @db.Decimal(12, 2)
+  initialBalance Decimal       @default(0) @map("initial_balance") @db.Decimal(12, 2)
+  cards          Card[]
+  transactions   Transaction[]
+  transfersFrom  Transfer[]    @relation("from_transfers")
+  transfersTo    Transfer[]    @relation("to_transfers")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("bank_accounts")
 }
