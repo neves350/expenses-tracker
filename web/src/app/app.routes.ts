@@ -1,5 +1,5 @@
 import { inject } from '@angular/core'
-import type { ActivatedRouteSnapshot, Routes } from '@angular/router'
+import { ActivatedRouteSnapshot, type Routes } from '@angular/router'
 import { authGuard } from '@core/guards/auth.guard'
 import { guestGuard } from '@core/guards/guest.guard'
 import { BankAccountsService } from '@core/services/bank-accounts.service'

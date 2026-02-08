@@ -7,6 +7,7 @@ import {
 	input,
 	signal,
 } from '@angular/core'
+import { RouterLink } from '@angular/router'
 import { BankAccount, BankType } from '@core/api/bank-accounts.interface'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
 import { CardsService } from '@core/services/cards.service'
@@ -49,6 +50,7 @@ import { BankAccountsForm } from '../bank-accounts-form/bank-accounts-form'
 		ZardPopoverComponent,
 		ZardPopoverDirective,
 		ZardBadgeComponent,
+		RouterLink,
 	],
 	templateUrl: './bank-accounts-card.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
