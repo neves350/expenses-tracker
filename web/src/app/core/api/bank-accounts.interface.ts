@@ -22,6 +22,8 @@ export interface BankAccount {
 	type: BankType
 	currency: BankCurrency
 	balance: number
+	initialBalance?: number
+	totalMovements?: number
 	createdAt?: string
 }
 
