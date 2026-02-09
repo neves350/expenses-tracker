@@ -108,4 +108,15 @@ export class BankAccountController {
 		await this.bankAccountService.findOne(id, user.userId)
 		return this.bankAccountService.delete(id)
 	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get(':id/balance-history')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get balance history',
+		description: 'Get balance history on a 6 months period.',
+	})
+	async getBalanceHistory(@Param('id') id: string, @CurrentUser() user) {
+		return this.bankAccountService.getBalanceHistory(id, user.userId)
+	}
 }
