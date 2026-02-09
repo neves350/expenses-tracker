@@ -74,9 +74,12 @@ export function createBalanceChartOptions(
 	balanceData: number[],
 	months: string[],
 	currencySymbol: string,
+	isNegative: boolean,
 ): Partial<BalanceChartOptions> {
 	const foreground = getCssVar('--foreground') || 'oklch(0.26 0.05 173)'
-	const chartColor = getCssVar('--chart-2') || 'oklch(0.6 0.118 184.704)'
+	const chartColor = isNegative
+		? getCssVar('--expense-foreground') || 'oklch(64.6% 0.222 41.116)'
+		: getCssVar('--income-foreground') || 'oklch(0.60 0.13 163)'
 
 	const formatValue = (value: number) =>
 		`${value.toLocaleString()}${currencySymbol}`
@@ -148,6 +151,7 @@ export function createBalanceChartOptions(
 		yaxis: {
 			min: roundDown(minValue - padding),
 			max: roundUp(maxValue + padding),
+			tickAmount: 4,
 			labels: {
 				style: {
 					colors: foreground,

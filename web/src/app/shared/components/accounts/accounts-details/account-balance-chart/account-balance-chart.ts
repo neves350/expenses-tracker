@@ -118,9 +118,15 @@ export class AccountBalanceChart {
 
 		const balances = data.map((item) => item.balance)
 		const months = data.map((item) => MONTHS_PT[item.month - 1])
+		const lastBalance = balances[balances.length - 1]
 
 		this.chartOptions.set(
-			createBalanceChartOptions(balances, months, this.currencySymbol()),
+			createBalanceChartOptions(
+				balances,
+				months,
+				this.currencySymbol(),
+				lastBalance < 0,
+			),
 		)
 	}
 
