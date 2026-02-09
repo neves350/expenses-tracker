@@ -2,11 +2,12 @@ import { Component, input } from '@angular/core'
 import { BankAccount } from '@core/api/bank-accounts.interface'
 import { AccountBalance } from '@/shared/components/accounts/accounts-details/account-balance/account-balance'
 import { AccountBalanceChart } from '@/shared/components/accounts/accounts-details/account-balance-chart/account-balance-chart'
-import AccountHeader from '../../../shared/components/accounts/accounts-details/account-header/account-header'
+import { AccountHeader } from '@/shared/components/accounts/accounts-details/account-header/account-header'
+import { AccountRecent } from '@/shared/components/accounts/accounts-details/account-recent/account-recent'
 
 @Component({
 	selector: 'app-account-details',
-	imports: [AccountHeader, AccountBalance, AccountBalanceChart],
+	imports: [AccountHeader, AccountBalance, AccountBalanceChart, AccountRecent],
 	templateUrl: './account-details.html',
 })
 export class AccountDetails {
