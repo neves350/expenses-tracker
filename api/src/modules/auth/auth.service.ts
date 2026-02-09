@@ -7,6 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { JwtService, type JwtSignOptions } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
+import { Categories } from 'prisma/categories'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
 import { MailService } from 'src/infrastructure/mail/mail.service'
 import { UsersService } from '../users/users.service'
@@ -38,12 +39,26 @@ export class AuthService {
 		const hashedPassword = await bcrypt.hash(password, 10)
 
 		// creates new user
-		const user = await this.prisma.user.create({
-			data: {
-				name,
-				email,
-				passwordHash: hashedPassword,
-			},
+		const { user } = await this.prisma.$transaction(async (tx) => {
+			const user = await tx.user.create({
+				data: {
+					name,
+					email,
+					passwordHash: hashedPassword,
+				},
+			})
+
+			await tx.category.createMany({
+				data: Categories.map((category) => ({
+					title: category.title,
+					icon: category.icon,
+					type: category.type,
+					isDefault: true,
+					userId: user.id,
+				})),
+			})
+
+			return { user }
 		})
 
 		const payload = {
