@@ -68,6 +68,11 @@ export const routes: Routes = [
 				},
 			},
 			{
+				path: 'categories',
+				loadComponent: () =>
+					import('./pages/categories/categories').then((m) => m.Categories),
+			},
+			{
 				path: 'profile',
 				loadComponent: () =>
 					import('./pages/user-profile/user-profile').then(
