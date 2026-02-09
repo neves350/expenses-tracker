@@ -119,4 +119,15 @@ export class BankAccountController {
 	async getBalanceHistory(@Param('id') id: string, @CurrentUser() user) {
 		return this.bankAccountService.getBalanceHistory(id, user.userId)
 	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get(':id/recent-movements')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get recent movements',
+		description: 'Get recent movements of an account.',
+	})
+	async getRecentMovements(@Param('id') id: string, @CurrentUser() user) {
+		return this.bankAccountService.getRecentMovements(id, user.userId)
+	}
 }

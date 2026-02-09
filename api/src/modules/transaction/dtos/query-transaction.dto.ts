@@ -24,6 +24,11 @@ export class QueryTransactionDto {
 	@IsOptional()
 	@IsString()
 	@ApiPropertyOptional()
+	accountId?: string
+
+	@IsOptional()
+	@IsString()
+	@ApiPropertyOptional()
 	categoryId?: string
 
 	@IsOptional()

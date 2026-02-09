@@ -67,6 +67,7 @@ export class TransactionService {
 	): Promise<PaginatedResult<Transaction>> {
 		const {
 			cardId,
+			accountId,
 			categoryId,
 			type,
 			startDate,
@@ -104,6 +105,7 @@ export class TransactionService {
 		if (cardId) where.cardId = cardId
 		if (categoryId) where.categoryId = categoryId
 		if (type) where.type = type
+		if (accountId) where.bankAccountId = accountId
 
 		// date filters
 		if (startDate || endDate) {
