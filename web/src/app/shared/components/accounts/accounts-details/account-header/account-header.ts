@@ -9,7 +9,7 @@ import { ZardButtonComponent } from '@/shared/components/ui/button'
 	imports: [ZardButtonComponent, LucideAngularModule, RouterLink],
 	templateUrl: './account-header.html',
 })
-export default class AccountHeader {
+export class AccountHeader {
 	readonly ArrowBigLeftDashIcon = ArrowBigLeftDashIcon
 
 	readonly account = input.required<BankAccount>()
