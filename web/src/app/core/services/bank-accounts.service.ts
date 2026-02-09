@@ -1,6 +1,7 @@
 import { computed, Injectable, inject, signal } from '@angular/core'
 import { BankAccountsApi } from '@core/api/bank-accounts.api'
 import type {
+	BalanceHistoryResponse,
 	BankAccount,
 	CreateBankAccountRequest,
 	UpdateBankAccountRequest,
@@ -65,18 +66,26 @@ export class BankAccountsService {
 	): Observable<BankAccount> {
 		this.loading.set(true)
 
-		return this.bankAccountsApi.update(bankAccountId, data).pipe(
-			switchMap((updatedAccount) =>
-				this.loadBankAccounts().pipe(map(() => updatedAccount)),
-			),
-		)
+		return this.bankAccountsApi
+			.update(bankAccountId, data)
+			.pipe(
+				switchMap((updatedAccount) =>
+					this.loadBankAccounts().pipe(map(() => updatedAccount)),
+				),
+			)
 	}
 
 	delete(bankAccountId: string): Observable<string> {
-		return this.bankAccountsApi.delete(bankAccountId).pipe(
-			switchMap((response) =>
-				this.loadBankAccounts().pipe(map(() => response.message)),
-			),
-		)
+		return this.bankAccountsApi
+			.delete(bankAccountId)
+			.pipe(
+				switchMap((response) =>
+					this.loadBankAccounts().pipe(map(() => response.message)),
+				),
+			)
+	}
+
+	getBalanceHistory(accountId: string): Observable<BalanceHistoryResponse> {
+		return this.bankAccountsApi.getBalanceHistory(accountId)
 	}
 }

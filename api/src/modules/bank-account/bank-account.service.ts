@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { Type } from 'src/generated/prisma/enums'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
 import { CreateBankAccountDto } from './dtos/create-bank-account.dto'

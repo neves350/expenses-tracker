@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core'
 import { map, Observable } from 'rxjs'
 import { environment } from 'src/environments/environment'
 import type {
+	BalanceHistoryResponse,
 	BankAccount,
 	BankAccountActionResponse,
 	BankAccountsResponse,
@@ -73,6 +74,18 @@ export class BankAccountsApi {
 	delete(bankAccountId: string): Observable<BankAccountActionResponse> {
 		return this.http.delete<BankAccountActionResponse>(
 			`${this.baseUrl}/${bankAccountId}`,
+			{
+				withCredentials: true,
+			},
+		)
+	}
+
+	/**
+	 * GET BALANCE HISTORY
+	 */
+	getBalanceHistory(accountId: string): Observable<BalanceHistoryResponse> {
+		return this.http.get<BalanceHistoryResponse>(
+			`${this.baseUrl}/${accountId}/balance-history`,
 			{
 				withCredentials: true,
 			},

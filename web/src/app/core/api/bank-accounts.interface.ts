@@ -68,3 +68,16 @@ export interface BankAccountsResponse {
 	total: number
 	count: number
 }
+
+/**
+ * ACCOUNT BALANCE HISTORY
+ */
+export interface BalanceHistoryItem {
+	month: number
+	year: number
+	balance: number
+}
+
+export interface BalanceHistoryResponse {
+	data: BalanceHistoryItem[]
+}
