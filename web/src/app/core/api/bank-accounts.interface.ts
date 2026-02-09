@@ -81,3 +81,31 @@ export interface BalanceHistoryItem {
 export interface BalanceHistoryResponse {
 	data: BalanceHistoryItem[]
 }
+
+/**
+ * ACCOUNT RECENT MOVEMENTS
+ */
+export interface Movement {
+	id: string
+	type: 'transaction' | 'transfer'
+	amount: number
+	date: string
+	description: string
+	transactionType?: 'INCOME' | 'EXPENSE'
+	category?: {
+		title: string
+		type: string
+	}
+	fromAccount?: {
+		id: string
+		name: string
+	}
+	toAccount?: {
+		id: string
+		name: string
+	}
+}
+
+export interface RecentMovementsResponse {
+	data: Movement[]
+}

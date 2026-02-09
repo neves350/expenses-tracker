@@ -9,6 +9,7 @@ import type {
 	BankAccountsResponse,
 	CreateBankAccountRequest,
 	CreateBankAccountResponse,
+	RecentMovementsResponse,
 	UpdateBankAccountRequest,
 } from './bank-accounts.interface'
 
@@ -86,6 +87,18 @@ export class BankAccountsApi {
 	getBalanceHistory(accountId: string): Observable<BalanceHistoryResponse> {
 		return this.http.get<BalanceHistoryResponse>(
 			`${this.baseUrl}/${accountId}/balance-history`,
+			{
+				withCredentials: true,
+			},
+		)
+	}
+
+	/**
+	 * GET RECENT MOVEMENTS
+	 */
+	getRecentMovements(accountId: string): Observable<RecentMovementsResponse> {
+		return this.http.get<RecentMovementsResponse>(
+			`${this.baseUrl}/${accountId}/recent-movements`,
 			{
 				withCredentials: true,
 			},
