@@ -208,18 +208,78 @@ export class BankAccountService {
 		runningBalance += Number(priorTransfersTo._sum.amount ?? 0)
 
 		// Build result with running balance
-		const data = Array.from(monthlyChanges.entries()).map(
-			([key, change]) => {
-				runningBalance += change
-				const [year, month] = key.split('-').map(Number)
-				return {
-					month: month + 1,
-					year,
-					balance: Math.round(runningBalance * 100) / 100,
-				}
-			},
-		)
+		const data = Array.from(monthlyChanges.entries()).map(([key, change]) => {
+			runningBalance += change
+			const [year, month] = key.split('-').map(Number)
+			return {
+				month: month + 1,
+				year,
+				balance: Math.round(runningBalance * 100) / 100,
+			}
+		})
 
 		return { data }
+	}
+
+	async getRecentMovements(accountId: string, userId: string, limit = 5) {
+		const bankAccount = await this.prisma.bankAccount.findFirst({
+			where: { id: accountId, userId },
+		})
+
+		if (!bankAccount) throw new NotFoundException('Bank account not found')
+
+		const [transactions, transfers] = await Promise.all([
+			this.prisma.transaction.findMany({
+				where: { bankAccountId: accountId },
+				orderBy: { date: 'desc' },
+				take: limit,
+				include: {
+					category: { select: { title: true, type: true } },
+				},
+			}),
+			this.prisma.transfer.findMany({
+				where: {
+					OR: [{ fromAccountId: accountId }, { toAccountId: accountId }],
+					status: 'COMPLETED',
+				},
+				orderBy: { date: 'desc' },
+				take: limit,
+				include: {
+					fromAccount: {
+						select: { id: true, name: true },
+					},
+					toAccount: {
+						select: { id: true, name: true },
+					},
+				},
+			}),
+		])
+
+		const movements = [
+			...transactions.map((tx) => ({
+				id: tx.id,
+				type: 'transaction' as const,
+				amount: Number(tx.amount),
+				date: tx.date,
+				description: tx.title,
+				transactionType: tx.type,
+				category: tx.category,
+			})),
+			...transfers.map((t) => ({
+				id: t.id,
+				type: 'transfer' as const,
+				amount: Number(t.amount),
+				date: t.date,
+				description: t.description || 'Transfer',
+				fromAccount: t.fromAccount,
+				toAccount: t.toAccount,
+			})),
+		]
+
+		movements.sort(
+			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+		)
+
+		return { data: movements.slice(0, limit) }
 	}
 }
