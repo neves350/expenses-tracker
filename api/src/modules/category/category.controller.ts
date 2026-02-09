@@ -34,8 +34,7 @@ export class CategoryController {
 	@ApiBearerAuth()
 	@ApiOperation({
 		summary: 'Create a new category',
-		description:
-			'Creates a new category with title, type, icon and icon color.',
+		description: 'Creates a new category with title, type and icon.',
 	})
 	@ApiCreateResponses()
 	async create(@Body() createCategory: CreateCategory, @CurrentUser() user) {
@@ -71,7 +70,7 @@ export class CategoryController {
 	})
 	@ApiFindOneResponses()
 	async findOne(@Param('id') id: string, @CurrentUser() user) {
-		return this.categoryService.findOne(id, user.sub)
+		return this.categoryService.findOne(id, user.userId)
 	}
 
 	@UseGuards(JwtAuthGuard)

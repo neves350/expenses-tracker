@@ -17,11 +17,6 @@ export class UpdateCategoryDto {
 	@ApiProperty({ required: false })
 	icon?: string
 
-	@IsString()
-	@IsOptional()
-	@ApiProperty({ required: false })
-	iconColor?: string
-
 	@IsEnum(CategoryType)
 	@IsOptional()
 	@ApiProperty({ enum: CategoryType, required: false })

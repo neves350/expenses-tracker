@@ -17,11 +17,6 @@ export class CreateCategory {
 	@ApiProperty()
 	icon: string
 
-	@IsString()
-	@IsNotEmpty()
-	@ApiProperty()
-	iconColor: string
-
 	@IsEnum(CategoryType)
 	@IsNotEmpty()
 	@ApiProperty({ enum: ['INCOME', 'EXPENSE'] })

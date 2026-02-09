@@ -1,8 +1,4 @@
-import {
-	ForbiddenException,
-	Injectable,
-	NotFoundException,
-} from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
 import { CreateCategory } from './dtos/create-category.dto'
 import type { CategoryType } from './dtos/query-category.dto'
@@ -13,14 +9,13 @@ export class CategoryService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async create(createCategory: CreateCategory, userId: string) {
-		const { title, icon, iconColor, type } = createCategory
+		const { title, icon, type } = createCategory
 
 		// create category
 		const category = this.prisma.category.create({
 			data: {
 				title,
 				icon,
-				iconColor,
 				type,
 				isDefault: false,
 				userId,
@@ -33,10 +28,7 @@ export class CategoryService {
 	async findAll(userId: string, type?: CategoryType) {
 		return this.prisma.category.findMany({
 			where: {
-				OR: [
-					{ userId: null }, // default categories
-					{ userId }, // custom categories
-				],
+				userId,
 				...(type && { type }), // add filter if exists
 			},
 		})
@@ -64,16 +56,11 @@ export class CategoryService {
 		const category = await this.prisma.category.findFirst({
 			where: {
 				id: categoryId,
+				userId,
 			},
 		})
 
 		if (!category) throw new NotFoundException('Category not found')
-
-		if (category.userId === null)
-			throw new ForbiddenException('Cannot edit default categories')
-
-		if (category.userId !== userId)
-			throw new ForbiddenException('You can only edit your own categories')
 
 		// update category
 		const updatedCategory = await this.prisma.category.update({
@@ -91,18 +78,10 @@ export class CategoryService {
 			where: { id: categoryId },
 		})
 
-		if (!category) {
-			throw new NotFoundException('Category not found')
-		}
-
-		if (category.userId === null)
-			throw new ForbiddenException('Cannot delete default categories')
-
-		if (category.userId !== userId)
-			throw new ForbiddenException('You can only delete your own categories')
+		if (!category) throw new NotFoundException('Category not found')
 
 		await this.prisma.category.delete({
-			where: { id: categoryId },
+			where: { id: categoryId, userId },
 		})
 
 		return {

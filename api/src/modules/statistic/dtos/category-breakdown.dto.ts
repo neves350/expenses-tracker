@@ -10,9 +10,6 @@ export class CategoryBreakdownItem {
 	@ApiProperty({ description: 'Category icon', example: '🍔' })
 	categoryIcon: string
 
-	@ApiProperty({ description: 'Icon color', example: '#1e40af' })
-	categoryIconColor: string
-
 	@ApiProperty({ description: 'Total', example: 450.5 })
 	total: number
 

@@ -30,7 +30,7 @@ export class CategoryService {
 			grouped.map(async (item) => {
 				const category = await this.prisma.category.findUnique({
 					where: { id: item.categoryId },
-					select: { title: true, icon: true, iconColor: true },
+					select: { title: true, icon: true },
 				})
 
 				const amount = NumberHelper.toNumber(item._sum.amount)
@@ -39,8 +39,7 @@ export class CategoryService {
 				return {
 					categoryId: item.categoryId,
 					categoryTitle: category?.title || 'Unknown',
-					categoryIcon: category?.icon || '❓',
-					categoryIconColor: category?.iconColor || '#1e40af',
+					categoryIcon: category?.icon || 'shopping-cart',
 					total: amount,
 					percentage: NumberHelper.round(percentage, 2),
 					transactionCount: item._count,
@@ -68,7 +67,7 @@ export class CategoryService {
 			topCategories.map(async (item) => {
 				const category = await this.prisma.category.findUnique({
 					where: { id: item.categoryId },
-					select: { title: true, icon: true, iconColor: true },
+					select: { title: true, icon: true },
 				})
 
 				const amount = NumberHelper.toNumber(item._sum.amount)
@@ -78,8 +77,7 @@ export class CategoryService {
 				return {
 					categoryId: item.categoryId,
 					categoryTitle: category?.title || 'Unknown',
-					categoryIcon: category?.icon || '❓',
-					categoryIconColor: category?.iconColor || '#1e40af',
+					categoryIcon: category?.icon || 'shopping-cart',
 					total: amount,
 					percentage: NumberHelper.round(percentage, 2),
 					transactionCount: item._count,
