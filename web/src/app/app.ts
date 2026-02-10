@@ -5,6 +5,9 @@ import { NgxSonnerToaster } from 'ngx-sonner'
 @Component({
 	selector: 'app-root',
 	imports: [RouterOutlet, NgxSonnerToaster],
-	template: '<router-outlet /><ngx-sonner-toaster richColors />',
+	template: `
+		<router-outlet />
+		<ngx-sonner-toaster richColors [expand]="true" />
+	`,
 })
 export class App {}
