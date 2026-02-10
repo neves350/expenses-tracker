@@ -1,7 +1,9 @@
 import {
+	Bandage,
 	Briefcase,
 	Bus,
 	Car,
+	ChartNoAxesCombined,
 	CircleDollarSign,
 	Coffee,
 	Dumbbell,
@@ -12,13 +14,16 @@ import {
 	GraduationCap,
 	HeartPulse,
 	House,
+	Joystick,
 	Lightbulb,
 	type LucideIconData,
 	Music,
 	PawPrint,
 	Plane,
 	Repeat2,
+	RotateCcw,
 	Shirt,
+	ShoppingBag,
 	ShoppingBasket,
 	ShoppingCart,
 	Tag,
@@ -57,12 +62,17 @@ export const CATEGORY_ICON_MAP: Record<string, LucideIconData> = {
 	'paw-print': PawPrint,
 	'shopping-cart': ShoppingCart,
 	tag: Tag,
+	'chart-no-axes-combined': ChartNoAxesCombined,
+	'shopping-bag': ShoppingBag,
+	'rotate-ccw': RotateCcw,
+	joystick: Joystick,
+	bandage: Bandage,
 }
 
 export const CATEGORY_ICON_GROUPS = [
 	{
 		label: 'Food',
-		icons: ['utensils', 'coffee', 'wine', 'shopping-basket'],
+		icons: ['utensils', 'coffee', 'wine', 'shopping-basket', 'shopping-bag'],
 	},
 	{
 		label: 'Transport',
@@ -74,11 +84,18 @@ export const CATEGORY_ICON_GROUPS = [
 	},
 	{
 		label: 'Leisure',
-		icons: ['gamepad-2', 'music', 'film', 'dumbbell'],
+		icons: ['gamepad-2', 'music', 'film', 'dumbbell', 'joystick'],
 	},
 	{
 		label: 'Finance',
-		icons: ['briefcase', 'trending-up', 'circle-dollar-sign', 'repeat-2'],
+		icons: [
+			'briefcase',
+			'trending-up',
+			'circle-dollar-sign',
+			'repeat-2',
+			'chart-no-axes-combined',
+			'rotate-ccw',
+		],
 	},
 	{
 		label: 'Personal',
@@ -88,6 +105,7 @@ export const CATEGORY_ICON_GROUPS = [
 			'graduation-cap',
 			'heart-pulse',
 			'paw-print',
+			'bandage',
 		],
 	},
 	{
