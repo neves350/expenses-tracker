@@ -1,24 +1,22 @@
 <hlm-sidebar collapsible="icon">
-    <hlm-sidebar-header class="flex flex-row items-center gap-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 m-1.5 mb-[-15px]">
-      <z-avatar
-        zSrc="image.png"
-        zAlt="Application logo"
-        zSize="sm"
-      />
-      <span class="font-semibold group-data-[collapsible=icon]:hidden">
-        Expense Tracker
-      </span>
-    </hlm-sidebar-header>
+  <hlm-sidebar-header
+    class="flex flex-row items-center gap-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 m-1.5 mb-[-19px]"
+  >
+    <z-button zType="sidebarGhost" routerLink="/" class="flex items-center cursor-pointer">
+      <z-avatar zSrc="spendly-icon.svg" zAlt="Application logo" zSize="sm" />
+      <span class="font-bold group-data-[collapsible=icon]:hidden text-md ml-2">Spendly</span>
+    </z-button>
+  </hlm-sidebar-header>
 
-    <z-divider zOrientation="horizontal" />
+  <z-divider zOrientation="horizontal" />
 
-    <hlm-sidebar-content>
-      <app-sidebar-group />
-    </hlm-sidebar-content>
+  <hlm-sidebar-content>
+    <app-sidebar-group />
+  </hlm-sidebar-content>
 
-    <z-divider zOrientation="horizontal" />
+  <z-divider zOrientation="horizontal" />
 
-    <hlm-sidebar-footer>
-      <app-profile-button />
-    </hlm-sidebar-footer>
-  </hlm-sidebar>
+  <hlm-sidebar-footer>
+    <app-profile-button />
+  </hlm-sidebar-footer>
+</hlm-sidebar>
