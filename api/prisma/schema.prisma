@@ -49,26 +49,38 @@ model Token {
 }
 
 model Goal {
-  id            String    @id @default(uuid())
-  userId        String    @map("user_id")
+  id            String       @id @default(uuid())
+  userId        String       @map("user_id")
+  categoryId    String?      @map("category_id")
+  bankAccountId String?      @map("bank_account_id")
   title         String
-  amount        Decimal   @db.Decimal(12, 2)
-  currentAmount Float     @default(0) @map("current_amount")
-  deadline      DateTime
+  amount        Decimal      @db.Decimal(12, 2)
+  currentAmount Decimal      @default(0) @map("current_amount") @db.Decimal(12, 2)
+  startDate     DateTime     @default(now()) @map("start_date")
+  endDate       DateTime?    @map("end_date")
+  type          GoalType     @default(SAVINGS)
   deposits      Deposit[]
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category      Category?    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  bankAccount   BankAccount? @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
 
   @@map("goals")
 }
 
+enum GoalType {
+  SAVINGS
+  SPENDING_LIMIT
+}
+
 model Deposit {
   id        String   @id @default(uuid())
-  amount    Float
   goalId    String   @map("goal_id")
-  goal      Goal     @relation(fields: [goalId], references: [id])
+  amount    Decimal  @db.Decimal(12, 2)
+  date      DateTime @default(now())
+  note      String?
+  goal      Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("deposits")
@@ -126,6 +138,7 @@ model BankAccount {
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
   user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goals          Goal[]
 
   @@map("bank_accounts")
 }
@@ -174,6 +187,7 @@ model Category {
   isDefault    Boolean       @default(false) @map("is_default")
   type         Type
   transactions Transaction[]
+  goals        Goal[]
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
