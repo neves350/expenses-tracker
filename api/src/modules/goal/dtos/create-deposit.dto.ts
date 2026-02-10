@@ -1,5 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumber, IsPositive } from 'class-validator'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
+import {
+	IsDate,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsPositive,
+	IsString,
+} from 'class-validator'
 
 export class CreateDepositDto {
 	@IsNumber()
@@ -10,4 +18,15 @@ export class CreateDepositDto {
 		description: 'Amount to deposit towards the goal',
 	})
 	amount: number
+
+	@Type(() => Date)
+	@IsDate()
+	@IsOptional()
+	@ApiPropertyOptional({ example: '2026-01-30' })
+	date?: Date
+
+	@IsString()
+	@IsOptional()
+	@ApiPropertyOptional({ example: 'Gym membership fee' })
+	note?: string
 }

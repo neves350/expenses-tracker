@@ -8,9 +8,10 @@ import {
 	IsOptional,
 	IsPositive,
 	IsString,
+	IsUUID,
 	ValidateIf,
 } from 'class-validator'
-import { DeadlinePreset } from '../enums/deadline-preset.enum'
+import { GoalType } from 'src/generated/prisma/enums'
 
 export class CreateGoalDto {
 	@IsString()
@@ -24,15 +25,31 @@ export class CreateGoalDto {
 	@ApiProperty({ example: 5000 })
 	amount: number
 
-	@IsEnum(DeadlinePreset)
-	@IsOptional()
-	@ApiPropertyOptional({ enum: DeadlinePreset })
-	deadlinePreset?: DeadlinePreset
+	@IsEnum(GoalType)
+	@IsNotEmpty()
+	@ApiProperty({ enum: GoalType })
+	type: GoalType
 
 	@Type(() => Date)
 	@IsDate()
-	@ValidateIf((o) => o.deadlinePreset === DeadlinePreset.CUSTOM)
-	@IsNotEmpty({ message: 'Custom deadline is required when preset is CUSTOM' })
-	@ApiPropertyOptional()
-	customDeadline?: Date
+	@IsNotEmpty()
+	@ApiProperty({ example: '2026-01-30' })
+	startDate: Date
+
+	@Type(() => Date)
+	@IsDate()
+	@IsOptional()
+	@ApiPropertyOptional({ example: '2026-01-30' })
+	endDate?: Date
+
+	@IsUUID()
+	@IsOptional()
+	@ApiPropertyOptional({ example: '1e79e7e4-89ec-490d-bad2-e197fe106f2b' })
+	bankAccountId?: string
+
+	@IsUUID()
+	@IsOptional()
+	@ValidateIf((goal) => goal.type === GoalType.SPENDING_LIMIT)
+	@ApiPropertyOptional({ example: '1e79e7e4-89ec-490d-bad2-e197fe106f2b' })
+	categoryId?: string
 }
