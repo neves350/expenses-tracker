@@ -1,0 +1,39 @@
+<form [formGroup]="form">
+  <!-- Title Input -->
+  <div class="grid gap-2 mt-4">
+    <label for="title">Name</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="title"
+      placeholder="E.g: Restaurant"
+    />
+    @if (form.controls.title.touched && form.controls.title.errors?.['required']) {
+      <span class="text-xs text-destructive">Name is required</span>
+    }
+  </div>
+
+  <!-- Icon Picker -->
+  <div class="grid gap-2 mt-4">
+    <label>Icon</label>
+    <app-icon-picker formControlName="icon" />
+    @if (form.controls.icon.touched && form.controls.icon.errors?.['required']) {
+      <span class="text-xs text-destructive">Icon is required</span>
+    }
+  </div>
+
+  <!-- Type Select -->
+  <div class="grid gap-2 mt-4">
+    <label for="type">Type</label>
+    <z-select class="w-full" formControlName="type">
+      @for (categoryType of categoryTypes; track categoryType) {
+        <z-select-item [zValue]="categoryType">
+          <span>{{ getTypeLabel(categoryType) }}</span>
+        </z-select-item>
+      }
+    </z-select>
+    @if (form.controls.type.touched && form.controls.type.errors?.['required']) {
+      <span class="text-xs text-destructive">Type is required</span>
+    }
+  </div>
+</form>
