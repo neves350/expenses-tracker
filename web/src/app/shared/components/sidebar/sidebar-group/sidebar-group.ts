@@ -12,6 +12,7 @@ import {
 	TagsIcon,
 	WalletCardsIcon,
 } from 'lucide-angular'
+import { ZardDividerComponent } from '../../ui/divider'
 import {
 	HlmSidebarImports,
 	HlmSidebarService,
@@ -30,15 +31,21 @@ interface MenuItem {
 		LucideAngularModule,
 		RouterLink,
 		RouterLinkActive,
+		ZardDividerComponent,
 	],
 	templateUrl: './sidebar-group.html',
-	styleUrl: './sidebar-group.css',
 })
 export class SidebarGroup {
 	private readonly sidebarService = inject(HlmSidebarService)
 
 	readonly isCollapsed = computed(
 		() => this.sidebarService.state() === 'collapsed',
+	)
+
+	readonly isCollapsedClass = computed(() =>
+		this.isCollapsed()
+			? 'text-sidebar-accent bg-sidebar-group font-semibold border-0 rounded-md'
+			: 'text-sidebar-accent bg-sidebar-group font-semibold border-l-3 border-sidebar-accent pl-4',
 	)
 
 	readonly mainItem: MenuItem[] = [
