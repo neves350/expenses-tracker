@@ -117,9 +117,9 @@ export class GoalController {
 	async addDeposit(
 		@CurrentUser() user,
 		@Param('id') id: string,
-		@Body() dto: CreateDepositDto,
+		@Body() data: CreateDepositDto,
 	) {
-		return this.goalService.addDeposit(user.userId, id, dto.amount)
+		return this.goalService.addDeposit(user.userId, id, data)
 	}
 
 	@UseGuards(JwtAuthGuard)

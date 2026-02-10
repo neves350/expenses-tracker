@@ -1,181 +1,310 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { GoalType } from 'src/generated/prisma/enums'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
+import { CreateDepositDto } from './dtos/create-deposit.dto'
 import { CreateGoalDto } from './dtos/create-goal.dto'
 import { UpdateGoalDto } from './dtos/update-goal.dto'
-import { DeadlinePreset } from './enums/deadline-preset.enum'
-import { DeadlineService } from './helpers/deadline.helper'
 import { HeatmapService } from './helpers/heatmap.helper'
 import { SavingsService } from './helpers/savings.helper'
+import { SpendingLimitService } from './helpers/spending-limit.helper'
 
 @Injectable()
 export class GoalService {
 	constructor(
 		private readonly prisma: PrismaService,
-		private readonly deadlineService: DeadlineService,
+		readonly spendingLimitService: SpendingLimitService,
 		private readonly savingsService: SavingsService,
 		private readonly heatmapService: HeatmapService,
 	) {}
-	async create(userId: string, dto: CreateGoalDto) {
-		const { title, amount, customDeadline, deadlinePreset } = dto
-
-		const deadline = this.deadlineService.calculateDeadline(
-			deadlinePreset || DeadlinePreset.ONE_MONTH,
-			customDeadline,
-		)
-
-		const savingsBreakdown = this.savingsService.calculateSavingsBreakdown(
+	/**
+	 * CREATE
+	 */
+	async create(userId: string, data: CreateGoalDto) {
+		const {
+			title,
 			amount,
-			deadline,
-		)
+			startDate,
+			type,
+			bankAccountId,
+			categoryId,
+			endDate,
+		} = data
+
+		if (categoryId) {
+			const category = await this.prisma.category.findFirst({
+				where: { id: categoryId, userId },
+			})
+			if (!category)
+				throw new BadRequestException('Category not found')
+		}
+
+		if (bankAccountId) {
+			const account = await this.prisma.bankAccount.findFirst({
+				where: { id: bankAccountId, userId },
+			})
+			if (!account)
+				throw new BadRequestException('Bank account not found')
+		}
 
 		const goal = await this.prisma.goal.create({
 			data: {
 				title,
 				amount,
-				deadline,
-				userId,
-			},
-		})
-
-		return {
-			...goal,
-			savingsBreakdown,
-		}
-	}
-
-	async findAll(userId: string) {
-		const goals = this.prisma.goal.findMany({
-			where: {
+				type,
+				startDate,
+				endDate,
+				bankAccountId: bankAccountId || null,
+				categoryId: categoryId || null,
 				userId,
 			},
 			include: {
-				_count: {
-					select: {
-						deposits: true,
-					},
-				},
+				category: true,
+				bankAccount: true,
 			},
 		})
 
-		return (await goals).map((goal) => {
-			// convert to number
-			const currentAmount = Number(goal.currentAmount)
-			const targetAmount = Number(goal.amount)
-
-			return {
-				...goal,
-				amount: targetAmount,
-				currentAmount: currentAmount,
-				progress: Number(((currentAmount / targetAmount) * 100).toFixed(2)),
-				isCompleted: currentAmount >= targetAmount,
-			}
-		})
-	}
-
-	async findOne(userId: string, id: string) {
-		const goal = await this.prisma.goal.findFirst({
-			where: {
-				id,
-				userId,
-			},
-			include: {
-				deposits: {
-					orderBy: {
-						createdAt: 'asc',
-					},
-				},
-			},
-		})
-
-		if (!goal) throw new BadRequestException('Goal not found')
-
-		const currentAmount = Number(goal.currentAmount)
 		const targetAmount = Number(goal.amount)
-		const remainingAmount = targetAmount - currentAmount
 
-		// generate heatmap data
-		const heatmapData = this.heatmapService.generateHeatmap(
-			goal.deposits,
-			goal.deadline,
-		)
+		const breakdown =
+			goal.type === GoalType.SAVINGS
+				? this.savingsService.calculateSavingsBreakdown(
+						targetAmount,
+						goal.endDate,
+					)
+				: this.spendingLimitService.calculateSpendingBreakdown(
+						targetAmount,
+						goal.endDate,
+					)
 
 		return {
 			...goal,
 			amount: targetAmount,
-			currentAmount: currentAmount,
-			progress: Number(((currentAmount / targetAmount) * 100).toFixed(2)),
-			isCompleted: currentAmount >= targetAmount,
-			savingsBreakdown:
-				remainingAmount > 0
-					? this.savingsService.calculateSavingsBreakdown(
-							remainingAmount,
-							goal.deadline,
-						)
-					: null,
-			heatmap: heatmapData,
+			currentAmount: 0,
+			breakdown,
 		}
 	}
 
-	async update(userId: string, id: string, dto: UpdateGoalDto) {
+	/**
+	 * FIND ALL
+	 */
+	async findAll(userId: string) {
+		const goals = await this.prisma.goal.findMany({
+			where: { userId },
+			include: {
+				category: true,
+				bankAccount: true,
+				_count: { select: { deposits: true } },
+			},
+			orderBy: { createdAt: 'desc' },
+		})
+
+		return Promise.all(
+			goals.map(async (goal) => {
+				const targetAmount = Number(goal.amount)
+				let currentAmount = Number(goal.currentAmount)
+
+				// For SPENDING_LIMIT: calculate from transactions
+				if (goal.type === GoalType.SPENDING_LIMIT && goal.categoryId) {
+					const result = await this.prisma.transaction.aggregate({
+						where: {
+							category: {
+								id: goal.categoryId,
+								userId,
+							},
+							type: 'EXPENSE',
+							date: {
+								gte: goal.startDate,
+								...(goal.endDate && { lte: goal.endDate }),
+							},
+						},
+						_sum: { amount: true },
+					})
+					currentAmount = Number(result._sum.amount ?? 0)
+				}
+
+				const progress =
+					targetAmount > 0
+						? Number(((currentAmount / targetAmount) * 100).toFixed(2))
+						: 0
+				const isCompleted = currentAmount >= targetAmount
+
+				const breakdown =
+					goal.type === GoalType.SAVINGS
+						? this.savingsService.calculateSavingsBreakdown(
+								targetAmount - currentAmount,
+								goal.endDate,
+							)
+						: this.spendingLimitService.calculateSpendingBreakdown(
+								targetAmount - currentAmount,
+								goal.endDate,
+							)
+
+				const paceStatus =
+					goal.type === GoalType.SAVINGS
+						? this.savingsService.calculatePaceStatus(
+								currentAmount,
+								targetAmount,
+								goal.startDate,
+								goal.endDate,
+							)
+						: this.spendingLimitService.calculatePaceStatus(
+								currentAmount,
+								targetAmount,
+								goal.startDate,
+								goal.endDate,
+							)
+
+				return {
+					...goal,
+					amount: targetAmount,
+					currentAmount,
+					progress,
+					isCompleted,
+					breakdown,
+					paceStatus,
+				}
+			}),
+		)
+	}
+
+	/**
+	 * FIND ONE
+	 */
+	async findOne(userId: string, id: string) {
 		const goal = await this.prisma.goal.findFirst({
-			where: {
-				id,
-				userId,
+			where: { id, userId },
+			include: {
+				category: true,
+				bankAccount: true,
+				deposits: { orderBy: { date: 'desc' } },
 			},
 		})
 
 		if (!goal) throw new BadRequestException('Goal not found')
 
-		if (Object.keys(dto).length === 0)
-			throw new BadRequestException('No data provided for update')
+		const targetAmount = Number(goal.amount)
+		let currentAmount = Number(goal.currentAmount)
 
-		const updateData: any = {}
-
-		if (dto.title) {
-			updateData.title = dto.title
+		if (goal.type === GoalType.SPENDING_LIMIT && goal.categoryId) {
+			const result = await this.prisma.transaction.aggregate({
+				where: {
+					category: { id: goal.categoryId, userId },
+					type: 'EXPENSE',
+					date: {
+						gte: goal.startDate,
+						...(goal.endDate && { lte: goal.endDate }),
+					},
+				},
+				_sum: { amount: true },
+			})
+			currentAmount = Number(result._sum.amount ?? 0)
 		}
 
-		if (dto.amount) {
-			updateData.amount = dto.amount
+		const remainingAmount = targetAmount - currentAmount
+		const progress =
+			targetAmount > 0
+				? Number(((currentAmount / targetAmount) * 100).toFixed(2))
+				: 0
+
+		const breakdown =
+			goal.type === GoalType.SAVINGS
+				? this.savingsService.calculateSavingsBreakdown(
+						remainingAmount,
+						goal.endDate,
+					)
+				: this.spendingLimitService.calculateSpendingBreakdown(
+						remainingAmount,
+						goal.endDate,
+					)
+
+		const paceStatus =
+			goal.type === GoalType.SAVINGS
+				? this.savingsService.calculatePaceStatus(
+						currentAmount,
+						targetAmount,
+						goal.startDate,
+						goal.endDate,
+					)
+				: this.spendingLimitService.calculatePaceStatus(
+						currentAmount,
+						targetAmount,
+						goal.startDate,
+						goal.endDate,
+					)
+
+		// Heatmap only for SAVINGS goals
+		const heatmap =
+			goal.type === GoalType.SAVINGS
+				? this.heatmapService.generateHeatmap(
+						goal.deposits,
+						goal.startDate,
+						goal.endDate,
+					)
+				: null
+
+		return {
+			...goal,
+			amount: targetAmount,
+			currentAmount,
+			progress,
+			isCompleted: currentAmount >= targetAmount,
+			breakdown,
+			paceStatus,
+			heatmap,
 		}
+	}
 
-		// recalcuate if deadline changes
-		if (dto.deadlinePreset || dto.customDeadline) {
-			updateData.deadline = this.deadlineService.calculateDeadline(
-				dto.deadlinePreset || DeadlinePreset.ONE_MONTH,
-				dto.customDeadline,
-			)
-		}
-
-		if (Object.keys(updateData).length === 0)
-			throw new BadRequestException('No valid data provided for update')
-
-		const updatedGoal = await this.prisma.goal.update({
-			where: {
-				id,
-			},
-			data: updateData,
+	/**
+	 * UPDATE
+	 */
+	async update(userId: string, id: string, data: UpdateGoalDto) {
+		const goal = await this.prisma.goal.findFirst({
+			where: { id, userId },
 		})
 
-		const currentAmount = Number(updatedGoal.currentAmount)
+		if (!goal) throw new BadRequestException('Goal not found')
+
+		if (Object.keys(data).length === 0)
+			throw new BadRequestException('No data provided for update')
+
+		const updatedGoal = await this.prisma.goal.update({
+			where: { id },
+			data: {
+				...(data.title && { title: data.title }),
+				...(data.amount && { amount: data.amount }),
+				...(data.type && { type: data.type }),
+				...(data.startDate && { startDate: data.startDate }),
+				...(data.endDate !== undefined && { endDate: data.endDate }),
+				...(data.bankAccountId !== undefined && {
+					bankAccountId: data.bankAccountId,
+				}),
+				...(data.categoryId !== undefined && {
+					categoryId: data.categoryId,
+				}),
+			},
+			include: {
+				category: true,
+				bankAccount: true,
+			},
+		})
+
 		const targetAmount = Number(updatedGoal.amount)
-		const remainingAmount = targetAmount - currentAmount
+		const currentAmount = Number(updatedGoal.currentAmount)
 
 		return {
 			...updatedGoal,
 			amount: targetAmount,
-			currentAmount: currentAmount,
-			progress: Number(((currentAmount / targetAmount) * 100).toFixed(2)),
-			savingsBreakdown:
-				remainingAmount > 0
-					? this.savingsService.calculateSavingsBreakdown(
-							remainingAmount,
-							updatedGoal.deadline,
-						)
-					: null,
+			currentAmount,
+			progress:
+				targetAmount > 0
+					? Number(((currentAmount / targetAmount) * 100).toFixed(2))
+					: 0,
 		}
 	}
 
+	/**
+	 * DELETE
+	 */
 	async delete(userId: string, id: string) {
 		const goal = await this.prisma.goal.findFirst({
 			where: {
@@ -198,45 +327,43 @@ export class GoalService {
 		}
 	}
 
-	async addDeposit(userId: string, goalId: string, amount: number) {
+	/**
+	 * ADD DEPOSIT
+	 */
+	async addDeposit(userId: string, goalId: string, data: CreateDepositDto) {
 		const goal = await this.prisma.goal.findFirst({
-			where: {
-				id: goalId,
-				userId,
-			},
+			where: { id: goalId, userId },
 		})
 
 		if (!goal) throw new BadRequestException('Goal not found')
 
+		if (goal.type !== GoalType.SAVINGS)
+			throw new BadRequestException(
+				'Deposits can only be added to savings goals',
+			)
+
 		const currentAmount = Number(goal.currentAmount)
 		const targetAmount = Number(goal.amount)
 
-		// check if user get the goal
-		if (currentAmount >= targetAmount) {
+		if (currentAmount >= targetAmount)
 			throw new BadRequestException('Goal already completed')
-		}
 
-		// previne to pass the goal
-		const newTotal = currentAmount + amount
+		const newTotal = currentAmount + data.amount
 		const actualDeposit =
-			newTotal > targetAmount ? targetAmount - currentAmount : amount
+			newTotal > targetAmount ? targetAmount - currentAmount : data.amount
 
 		const [deposit, updatedGoal] = await this.prisma.$transaction([
 			this.prisma.deposit.create({
 				data: {
 					amount: actualDeposit,
+					date: data.date ?? new Date(),
+					note: data.note,
 					goalId,
 				},
 			}),
 			this.prisma.goal.update({
-				where: {
-					id: goalId,
-				},
-				data: {
-					currentAmount: {
-						increment: actualDeposit,
-					},
-				},
+				where: { id: goalId },
+				data: { currentAmount: { increment: actualDeposit } },
 			}),
 		])
 
@@ -244,10 +371,7 @@ export class GoalService {
 		const finalTarget = Number(updatedGoal.amount)
 
 		return {
-			deposit: {
-				...deposit,
-				amount: Number(deposit.amount),
-			},
+			deposit: { ...deposit, amount: Number(deposit.amount) },
 			goal: {
 				...updatedGoal,
 				amount: finalTarget,
@@ -257,11 +381,14 @@ export class GoalService {
 			},
 			message:
 				finalAmount >= finalTarget
-					? '🎉 Goal completed!'
+					? 'Goal completed!'
 					: 'Deposit added successfully',
 		}
 	}
 
+	/**
+	 * GET DEPOSITS
+	 */
 	async getDeposits(userId: string, goalId: string) {
 		const goal = await this.prisma.goal.findFirst({
 			where: {
@@ -273,12 +400,8 @@ export class GoalService {
 		if (!goal) throw new BadRequestException('Goal not found')
 
 		const deposits = await this.prisma.deposit.findMany({
-			where: {
-				goalId,
-			},
-			orderBy: {
-				createdAt: 'desc',
-			},
+			where: { goalId },
+			orderBy: { date: 'desc' },
 		})
 
 		return {
