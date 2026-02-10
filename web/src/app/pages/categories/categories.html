@@ -15,5 +15,18 @@
         </z-button>
       </div>
     </div>
+
+    <div class="grid grid-cols-2 gap-6">
+      <app-categories-list
+        [categories]="expenseCategories()"
+        title="Expense Categories"
+        dotColor="bg-red-500"
+      />
+      <app-categories-list
+        [categories]="incomeCategories()"
+        title="Income Categories"
+        dotColor="bg-emerald-500"
+      />
+    </div>
   </div>
 </main>
