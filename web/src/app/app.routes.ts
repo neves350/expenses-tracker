@@ -13,23 +13,27 @@ export const routes: Routes = [
 	},
 	{
 		path: 'login',
+		title: 'Login',
 		canActivate: [guestGuard],
 		loadComponent: () => import('./pages/login/login').then((m) => m.Login),
 	},
 	{
 		path: 'register',
+		title: 'Register',
 		canActivate: [guestGuard],
 		loadComponent: () =>
 			import('./pages/register/register').then((m) => m.Register),
 	},
 	{
 		path: 'password/recover',
+		title: 'Recover Password',
 		canActivate: [guestGuard],
 		loadComponent: () =>
 			import('./pages/password/recover/recover').then((m) => m.Recover),
 	},
 	{
 		path: 'password/reset',
+		title: 'Reset Password',
 		canActivate: [guestGuard],
 		loadComponent: () =>
 			import('./pages/password/reset/reset').then((m) => m.Reset),
@@ -41,15 +45,18 @@ export const routes: Routes = [
 		children: [
 			{
 				path: 'dashboard',
+				title: 'Dashboard',
 				loadComponent: () =>
 					import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
 			},
 			{
 				path: 'cards',
+				title: 'Cards',
 				loadComponent: () => import('./pages/cards/cards').then((m) => m.Cards),
 			},
 			{
 				path: 'accounts',
+				title: 'Accounts',
 				loadComponent: () =>
 					import('./pages/bank-account/bank-account').then(
 						(m) => m.BankAccount,
@@ -57,6 +64,7 @@ export const routes: Routes = [
 			},
 			{
 				path: 'account-details/:id',
+				title: 'Account Details',
 				loadComponent: () =>
 					import('./pages/bank-account/account-details/account-details').then(
 						(m) => m.AccountDetails,
@@ -69,11 +77,13 @@ export const routes: Routes = [
 			},
 			{
 				path: 'categories',
+				title: 'Categories',
 				loadComponent: () =>
 					import('./pages/categories/categories').then((m) => m.Categories),
 			},
 			{
 				path: 'profile',
+				title: 'Profile',
 				loadComponent: () =>
 					import('./pages/user-profile/user-profile').then(
 						(m) => m.UserProfile,
