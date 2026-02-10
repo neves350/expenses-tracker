@@ -22,6 +22,7 @@ export const badgeVariants = cva(
 				default: 'rounded-md',
 				square: 'rounded-none',
 				pill: 'rounded-full',
+				soft: 'rounded-md p-2',
 			},
 		},
 		defaultVariants: {
