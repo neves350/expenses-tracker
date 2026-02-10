@@ -1,0 +1,251 @@
+# Spendly API
+
+REST API backend built with **NestJS 11**, **Prisma 7**, and **PostgreSQL**.
+
+## Architecture
+
+```
+src/
+├── main.ts                    # Bootstrap, CORS, Swagger, cookies
+├── app.module.ts              # Root module
+├── modules/                   # Feature modules
+│   ├── auth/                  #   JWT auth (login, register, refresh, recover)
+│   ├── users/                 #   User profile management
+│   ├── bank-account/          #   Bank account CRUD
+│   ├── card/                  #   Credit/debit card CRUD
+│   ├── transaction/           #   Income/expense transactions
+│   ├── category/              #   Default + custom categories
+│   ├── transfer/              #   Account-to-account transfers
+│   ├── statistic/             #   Overview, by-category, trends
+│   ├── export/                #   CSV transaction export
+│   └── goal/                  #   Savings goals + deposits
+├── infrastructure/
+│   ├── db/                    #   PrismaService (Neon adapter)
+│   └── mail/                  #   Email service (nodemailer)
+└── common/
+    └── decorators/            #   @CurrentUser(), API response decorators
+```
+
+## Request Lifecycle
+
+```
+Incoming Request
+       │
+       ▼
+┌──────────────┐
+│ cookie-parser│   Parse httpOnly cookies (accessToken, refreshToken)
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ CORS         │   Allow frontend origin with credentials
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Validation   │   class-validator + class-transformer via global pipe
+│ Pipe         │   Strips unknown properties, transforms types
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ JwtAuthGuard │   Extract JWT from cookie → validate → attach user
+│ (protected)  │   Skipped for public routes (/auth/login, /auth/register)
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Controller   │   Route handler with @CurrentUser() decorator
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Service      │   Business logic — ALL queries filtered by userId
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Prisma ORM   │   Type-safe database queries
+└──────┬───────┘
+       │
+       ▼
+   PostgreSQL
+```
+
+## API Endpoints
+
+### Auth (`/auth`)
+
+| Method | Route               | Auth | Description            |
+| ------ | ------------------- | ---- | ---------------------- |
+| POST   | `/auth/register`    | No   | Create new account     |
+| POST   | `/auth/login`       | No   | Login, set JWT cookies |
+| POST   | `/auth/refresh`     | No   | Refresh access token   |
+| POST   | `/auth/logout`      | Yes  | Clear auth cookies     |
+| POST   | `/auth/forgot`      | No   | Send recovery email    |
+| POST   | `/auth/reset`       | No   | Reset password w/ code |
+
+### Users (`/users`)
+
+| Method | Route               | Auth | Description            |
+| ------ | ------------------- | ---- | ---------------------- |
+| GET    | `/users/profile`    | Yes  | Get current user       |
+| PUT    | `/users`            | Yes  | Update user profile    |
+
+### Bank Accounts (`/bank-accounts`)
+
+| Method | Route                    | Auth | Description            |
+| ------ | ------------------------ | ---- | ---------------------- |
+| GET    | `/bank-accounts`         | Yes  | List all accounts      |
+| GET    | `/bank-accounts/:id`     | Yes  | Get single account     |
+| POST   | `/bank-accounts`         | Yes  | Create account         |
+| PUT    | `/bank-accounts/:id`     | Yes  | Update account         |
+| DELETE | `/bank-accounts/:id`     | Yes  | Delete account         |
+
+### Cards (`/cards`)
+
+| Method | Route                    | Auth | Description            |
+| ------ | ------------------------ | ---- | ---------------------- |
+| GET    | `/cards`                 | Yes  | List all cards         |
+| GET    | `/cards/:id`             | Yes  | Get single card        |
+| GET    | `/cards/:id/expenses`    | Yes  | Get card expenses      |
+| POST   | `/cards`                 | Yes  | Create card            |
+| PUT    | `/cards/:id`             | Yes  | Update card            |
+| DELETE | `/cards/:id`             | Yes  | Delete card            |
+
+### Transactions (`/transactions`)
+
+| Method | Route                    | Auth | Description            |
+| ------ | ------------------------ | ---- | ---------------------- |
+| GET    | `/transactions`          | Yes  | List (filtered/paged)  |
+| POST   | `/transactions`          | Yes  | Create transaction     |
+| PUT    | `/transactions/:id`      | Yes  | Update transaction     |
+| DELETE | `/transactions/:id`      | Yes  | Delete transaction     |
+
+### Categories (`/categories`)
+
+| Method | Route                    | Auth | Description            |
+| ------ | ------------------------ | ---- | ---------------------- |
+| GET    | `/categories`            | Yes  | List all categories    |
+| POST   | `/categories`            | Yes  | Create custom category |
+| PUT    | `/categories/:id`        | Yes  | Update category        |
+| DELETE | `/categories/:id`        | Yes  | Delete category        |
+
+### Transfers (`/transfers`)
+
+| Method | Route                    | Auth | Description            |
+| ------ | ------------------------ | ---- | ---------------------- |
+| GET    | `/transfers`             | Yes  | List all transfers     |
+| POST   | `/transfers`             | Yes  | Create transfer        |
+| PUT    | `/transfers/:id`         | Yes  | Update transfer        |
+| DELETE | `/transfers/:id`         | Yes  | Delete transfer        |
+
+### Statistics (`/statistics`)
+
+| Method | Route                       | Auth | Description                      |
+| ------ | --------------------------- | ---- | -------------------------------- |
+| GET    | `/statistics/overview`      | Yes  | Totals, averages, top categories |
+| GET    | `/statistics/by-category`   | Yes  | Category breakdown + percentages |
+| GET    | `/statistics/trends`        | Yes  | Period comparison + changes      |
+
+### Export (`/export`)
+
+| Method | Route                       | Auth | Description              |
+| ------ | --------------------------- | ---- | ------------------------ |
+| GET    | `/export/transactions`      | Yes  | Download CSV             |
+
+### Goals (`/goals`)
+
+| Method | Route                       | Auth | Description              |
+| ------ | --------------------------- | ---- | ------------------------ |
+| GET    | `/goals`                    | Yes  | List all goals           |
+| POST   | `/goals`                    | Yes  | Create goal              |
+| PUT    | `/goals/:id`                | Yes  | Update goal              |
+| DELETE | `/goals/:id`                | Yes  | Delete goal              |
+| POST   | `/goals/:id/deposits`       | Yes  | Add deposit to goal      |
+
+## Key Patterns
+
+### Protected Route Pattern
+
+Every protected endpoint uses the same pattern:
+
+```typescript
+@UseGuards(JwtAuthGuard)
+@Get()
+async findAll(@CurrentUser() user: { userId: string; email: string }) {
+  return this.service.findAll(user.userId)
+}
+```
+
+### Data Isolation
+
+All service methods filter by `userId` to ensure users only access their own data:
+
+```typescript
+async findAll(userId: string) {
+  return this.prisma.bankAccount.findMany({
+    where: { userId }, // CRITICAL — never omit this
+  })
+}
+```
+
+### Authentication
+
+- **Access token**: JWT in httpOnly cookie, expires in 15 minutes
+- **Refresh token**: JWT in httpOnly cookie, expires in 7 days
+- Passport JWT strategy reads tokens from cookies (not Authorization header)
+- `@CurrentUser()` custom decorator extracts `{ userId, email }` from request
+
+### Prisma Setup
+
+- Custom client output: `src/generated/prisma`
+- Neon serverless adapter for connection pooling
+- Decimal(12, 2) for all monetary values
+- Snake_case DB columns mapped to camelCase via `@map()`
+
+## Commands
+
+```bash
+# Development
+npm run dev              # Start with hot reload (watch mode)
+npm run start:debug      # Start with debugger attached
+
+# Build
+npm run build            # Compile to dist/
+npm run start:prod       # Run compiled build
+
+# Testing
+npm test                 # Run all unit tests
+npm run test:watch       # Watch mode
+npm run test:cov         # With coverage report
+npm run test:e2e         # End-to-end tests
+
+# Database
+npx prisma migrate dev                    # Create + apply migration
+npx prisma migrate dev --name add-goals   # Named migration
+npx prisma db push                        # Push schema (no migration)
+npx prisma studio                         # Database GUI
+npx prisma generate                       # Regenerate client
+npx prisma db seed                        # Seed default categories
+```
+
+## Environment Variables
+
+Create a `.env` file in this directory:
+
+```env
+DATABASE_URL="postgresql://user:password@host:5432/spendly"
+JWT_SECRET="your-secret-key"
+JWT_REFRESH_SECRET="your-refresh-secret"
+MAIL_HOST="smtp.example.com"
+MAIL_USER="user@example.com"
+MAIL_PASS="password"
+```
+
+## API Documentation
+
+When the server is running:
+
+- **Swagger UI**: http://localhost:3000/api
+- **Scalar Docs**: http://localhost:3000/docs
