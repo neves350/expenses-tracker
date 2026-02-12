@@ -1,0 +1,109 @@
+<z-divider />
+
+<form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4 py-4">
+  <!-- Type Select -->
+  <div class="grid grid-cols-2 gap-4">
+    @for (goalType of goalTypes; track goalType) {
+      <button
+        type="button"
+        class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center transition-colors"
+        [class]="getTypeClasses(goalType)"
+        (click)="selectType(goalType)"
+      >
+        <i-lucide [img]="typeIcons[goalType]" class="size-6" [class]="getTypeIconClasses(goalType)" />
+        <span class="text-sm font-semibold">{{ getTypeLabel(goalType) }}</span>
+        <span class="text-xs text-muted-foreground">{{ typeDescriptions[goalType] }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Name Input -->
+  <div class="grid gap-2 space-y-2">
+    <label for="title">Goal Name</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="title"
+      placeholder="E.g: Gifts, Emergency reserve..."
+    />
+    @if (form.controls.title.touched && form.controls.title.errors?.['required']) {
+      <span class="text-xs text-destructive">Name of a goal is required</span>
+    }
+  </div>
+
+  <!-- Balance -->
+  <div class="grid gap-2 space-y-2">
+    <label for="amount">Goal Amount</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="amount"
+      placeholder="100"
+    />
+    @if (form.controls.amount.touched && form.controls.amount.errors?.['required']) {
+      <span class="text-xs text-destructive">Amount is required</span>
+    }
+  </div>
+
+  <!-- SAVINGS -->
+  @if (form.controls.type.value === 'SAVINGS') {
+    <div class="grid gap-2">
+      <label for="bankAccountId">Account to save (optional)</label>
+      <z-select class="w-full" formControlName="bankAccountId">
+        @for (account of accounts(); track account.id) {
+          <z-select-item [zValue]="$any(account.id)">
+            <span>{{ account.name }}</span>
+          </z-select-item>
+        }
+      </z-select>
+      @if (accounts().length === 0) {
+        <span class="text-xs text-muted-foreground"
+          >No bank accounts available. Create one first.</span
+        >
+      }
+    </div>
+  }
+
+  <!-- SPENDING LIMIT -->
+  @if (form.controls.type.value === 'SPENDING_LIMIT') {
+    <div class="grid gap-2">
+      <label for="categoryId">Category (optional)</label>
+      <z-select class="w-full" formControlName="categoryId">
+        @for (category of categories(); track category.id) {
+          <z-select-item [zValue]="$any(category.id)">
+            <span>{{ category.title }}</span>
+          </z-select-item>
+        }
+      </z-select>
+      <span class="text-xs text-muted-foreground">
+        Expenses in this category will be accounted for.</span
+      >
+    </div>
+  }
+
+  <!-- Date Picker -->
+  <div class="grid grid-cols-2 gap-4">
+    <div class="grid gap-2">
+      <label for="date">Start Date</label>
+      <z-date-picker
+        placeholder="Pick a date"
+        zSize="sm"
+        zFormat="dd-MM-yyyy"
+        class="w-full [&>button]:w-full"
+        [value]="selectedDate"
+        (dateChange)="onStartDateChange($event)"
+      />
+    </div>
+
+    <div class="grid gap-2">
+      <label for="date">End Date (Optional)</label>
+      <z-date-picker
+        placeholder="No deadline"
+        zSize="sm"
+        zFormat="dd-MM-yyyy"
+        class="w-full [&>button]:w-full"
+        (dateChange)="onEndDateChange($event)"
+      />
+    </div>
+  </div>
+</form>
