@@ -132,7 +132,7 @@ export class ZardDatePickerComponent implements ControlValueAccessor {
 			'justify-start text-left font-normal',
 			!hasValue && 'text-muted-foreground',
 			height,
-			'min-w-[240px]',
+			'w-full',
 		)
 	})
 
