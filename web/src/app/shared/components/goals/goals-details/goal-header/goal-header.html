@@ -1,0 +1,15 @@
+<div class="flex justify-between items-center">
+  <div class="flex items-center">
+    <z-button class="cursor-pointer mr-4" zType="outline" routerLink="/goals">
+      <i-lucide [img]="ArrowBigLeftDashIcon" />
+    </z-button>
+    <h1 class="font-semibold flex flex-col">
+      {{ displayGoal().title }}
+      <span class="font-normal text-muted-foreground text-sm">{{ typeLabel() }}</span>
+    </h1>
+  </div>
+
+  <z-button class="cursor-pointer" zType="outline" (click)="updateCard()">
+    <i-lucide [img]="PencilIcon" />
+  </z-button>
+</div>

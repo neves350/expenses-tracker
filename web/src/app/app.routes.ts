@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, type Routes } from '@angular/router'
 import { authGuard } from '@core/guards/auth.guard'
 import { guestGuard } from '@core/guards/guest.guard'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
+import { GoalsService } from '@core/services/goals.service'
 import { Layout } from './shared/components/layout/layout'
 
 export const routes: Routes = [
@@ -85,6 +86,19 @@ export const routes: Routes = [
 				path: 'goals',
 				title: 'Goals',
 				loadComponent: () => import('./pages/goals/goals').then((m) => m.Goals),
+			},
+			{
+				path: 'goal-details/:id',
+				title: 'Goal Details',
+				loadComponent: () =>
+					import('./pages/goals/goals-details/goals-details').then(
+						(m) => m.GoalsDetails,
+					),
+				resolve: {
+					goal: (route: ActivatedRouteSnapshot) => {
+						return inject(GoalsService).findById(route.params['id'])
+					},
+				},
 			},
 			{
 				path: 'profile',

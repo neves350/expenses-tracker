@@ -171,17 +171,25 @@ export class GoalsForm {
 			...(formValue.endDate && { endDate: formValue.endDate }),
 		}
 
-		this.goalsService.create(payload).subscribe({
+		const request$ = this.zData?.id
+			? this.goalsService.update(this.zData.id, payload)
+			: this.goalsService.create(payload)
+
+		request$.subscribe({
 			next: () => {
-				toast.success('Goal created successfully')
+				toast.success(
+					this.zData?.id
+						? 'Goal updated successfully'
+						: 'Goal created successfully',
+				)
 				this.bankAccountsService.loadBankAccounts().subscribe()
 				this.sheetRef.close()
 			},
 			error: (error) => {
-				console.log('Full error:', error)
-				console.log('Error message:', error.error?.message)
 				toast.error(
-					error.error?.message || error.message || 'Failed to create goal',
+					error.error?.message ||
+						error.message ||
+						'Failed to save goal',
 				)
 			},
 		})
