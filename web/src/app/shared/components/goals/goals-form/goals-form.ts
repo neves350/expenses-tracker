@@ -49,6 +49,7 @@ export class GoalsForm {
 	readonly categories = this.categoriesService.expenseCategories
 
 	readonly selectedDate: Date | null = new Date()
+	readonly isEditMode = computed(() => !!this.zData?.id)
 
 	readonly HandCoinsIcon = HandCoinsIcon
 	readonly BanknoteArrowDownIcon = BanknoteArrowDownIcon
@@ -86,7 +87,6 @@ export class GoalsForm {
 		}
 	}
 
-	readonly isEditMode = computed(() => !!this.zData?.id)
 	readonly goalTypes = Object.values(GoalType)
 
 	private readonly formValues = toSignal(this.form.valueChanges, {
@@ -140,9 +140,7 @@ export class GoalsForm {
 
 		if (!isSelected) return 'text-muted-foreground'
 
-		return goalType === GoalType.SAVINGS
-			? 'text-primary'
-			: 'text-destructive'
+		return goalType === GoalType.SAVINGS ? 'text-primary' : 'text-destructive'
 	}
 
 	onStartDateChange(date: Date | null) {

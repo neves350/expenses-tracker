@@ -2,20 +2,26 @@
 
 <form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4 py-4">
   <!-- Type Select -->
-  <div class="grid grid-cols-2 gap-4">
-    @for (goalType of goalTypes; track goalType) {
-      <button
-        type="button"
-        class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center transition-colors"
-        [class]="getTypeClasses(goalType)"
-        (click)="selectType(goalType)"
-      >
-        <i-lucide [img]="typeIcons[goalType]" class="size-6" [class]="getTypeIconClasses(goalType)" />
-        <span class="text-sm font-semibold">{{ getTypeLabel(goalType) }}</span>
-        <span class="text-xs text-muted-foreground">{{ typeDescriptions[goalType] }}</span>
-      </button>
-    }
-  </div>
+  @if (!isEditMode()) {
+    <div class="grid grid-cols-2 gap-4">
+      @for (goalType of goalTypes; track goalType) {
+        <button
+          type="button"
+          class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center transition-colors"
+          [class]="getTypeClasses(goalType)"
+          (click)="selectType(goalType)"
+        >
+          <i-lucide
+            [img]="typeIcons[goalType]"
+            class="size-6"
+            [class]="getTypeIconClasses(goalType)"
+          />
+          <span class="text-sm font-semibold">{{ getTypeLabel(goalType) }}</span>
+          <span class="text-xs text-muted-foreground">{{ typeDescriptions[goalType] }}</span>
+        </button>
+      }
+    </div>
+  }
 
   <!-- Name Input -->
   <div class="grid gap-2 space-y-2">

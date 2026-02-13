@@ -19,31 +19,35 @@
     <!-- Cards with goals -->
 
     <!-- If doesn't have goals -->
-    <z-card class="w-full h-full flex flex-col">
-      <!-- Empty State -->
-      <div class="flex flex-col items-center justify-center p-6 mt-6">
-        <div
-          class="size-12 flex items-center justify-center rounded-lg bg-accent text-accent-foreground mb-4"
-        >
-          <i-lucide [img]="GoalIcon" />
-        </div>
+    @if (hasGoals()) {
+      <app-goals-list [goals]="goals()" />
+    } @else {
+      <z-card class="w-full h-full flex flex-col">
+        <!-- Empty State -->
+        <div class="flex flex-col items-center justify-center p-6 mt-6">
+          <div
+            class="size-12 flex items-center justify-center rounded-lg bg-accent text-accent-foreground mb-4"
+          >
+            <i-lucide [img]="GoalIcon" />
+          </div>
 
-        <div class="flex flex-col items-center text-center">
-          <div class="space-y-2 mt-6">
-            <p class="font-medium">No goals added</p>
-            <span class="text-muted-foreground">
-              Set goals to save money or control spending in specific categories.
-            </span>
+          <div class="flex flex-col items-center text-center">
+            <div class="space-y-2 mt-6">
+              <p class="font-medium">No goals added</p>
+              <span class="text-muted-foreground">
+                Set goals to save money or control spending in specific categories.
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center justify-center mt-4">
+            <z-button class="cursor-pointer" (click)="openSheet()">
+              <i-lucide [img]="PlusIcon" />
+              Create first goal
+            </z-button>
           </div>
         </div>
-
-        <div class="flex flex-col items-center justify-center mt-4">
-          <z-button class="cursor-pointer" (click)="openSheet()">
-            <i-lucide [img]="PlusIcon" />
-            Create first goal
-          </z-button>
-        </div>
-      </div>
-    </z-card>
+      </z-card>
+    }
   </div>
 </main>

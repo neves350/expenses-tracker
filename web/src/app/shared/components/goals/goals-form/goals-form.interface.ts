@@ -2,7 +2,8 @@ import type { GoalType } from '@core/api/goals.interface'
 
 export interface iGoalsData {
 	id?: string
-	accountId?: string
+	bankAccountId?: string
+	categoryId: string
 	title?: string
 	amount?: number
 	currentAmount?: number

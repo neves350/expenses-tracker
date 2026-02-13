@@ -2,13 +2,19 @@ import { Component, inject } from '@angular/core'
 import { GoalsService } from '@core/services/goals.service'
 import { GoalIcon, LucideAngularModule, PlusIcon } from 'lucide-angular'
 import { GoalsForm } from '@/shared/components/goals/goals-form/goals-form'
+import { GoalsList } from '@/shared/components/goals/goals-list/goals-list'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
 import { ZardSheetService } from '@/shared/components/ui/sheet'
 
 @Component({
 	selector: 'app-goals',
-	imports: [ZardButtonComponent, LucideAngularModule, ZardCardComponent],
+	imports: [
+		ZardButtonComponent,
+		LucideAngularModule,
+		ZardCardComponent,
+		GoalsList,
+	],
 	templateUrl: './goals.html',
 })
 export class Goals {
@@ -17,6 +23,9 @@ export class Goals {
 
 	private readonly sheetService = inject(ZardSheetService)
 	private readonly goalsService = inject(GoalsService)
+
+	readonly hasGoals = this.goalsService.hasGoals
+	readonly goals = this.goalsService.goals
 
 	ngOnInit(): void {
 		this.goalsService.loadGoals().subscribe()
