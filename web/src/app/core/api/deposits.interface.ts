@@ -4,12 +4,12 @@ import type { Goal } from './goals.interface'
  * DEPOSIT
  */
 export interface Deposit {
-	id?: string
+	id: string
 	goalId: string
 	amount: number
 	date: string
 	note?: string
-	createdAt?: string
+	createdAt: string
 }
 
 /**

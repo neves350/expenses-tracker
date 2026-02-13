@@ -20,6 +20,7 @@ export class GoalsService {
 
 	// Signal-based state
 	readonly goals = signal<Goal[]>([])
+	readonly depositsVersion = signal(0)
 	readonly loading = signal<boolean>(false)
 	readonly error = signal<string | null>(null)
 
@@ -103,6 +104,7 @@ export class GoalsService {
 					this.goals.update((current) =>
 						current.map((goal) => (goal.id === goalId ? response.goal : goal)),
 					)
+					this.depositsVersion.update((v) => v + 1)
 					this.loading.set(false)
 				},
 				error: (err) => {
