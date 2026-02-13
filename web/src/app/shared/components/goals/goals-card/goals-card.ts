@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common'
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -29,6 +30,8 @@ import { ZardPopoverComponent, ZardPopoverDirective } from '../../ui/popover'
 import { ZardProgressBarComponent } from '../../ui/progress-bar'
 import { ZardSheetService } from '../../ui/sheet'
 import { ZardTableCellComponent } from '../../ui/table'
+import { GoalsDepositForm } from '../goals-deposit-form/goals-deposit-form'
+import type { iDepositSheetData } from '../goals-deposit-form/goals-deposit-form.interface'
 import { GoalsForm } from '../goals-form/goals-form'
 import type { iGoalsData } from '../goals-form/goals-form.interface'
 
@@ -44,6 +47,7 @@ import type { iGoalsData } from '../goals-form/goals-form.interface'
 		ZardPopoverComponent,
 		ZardPopoverDirective,
 		ZardDividerComponent,
+		DatePipe,
 	],
 	templateUrl: './goals-card.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -130,6 +134,26 @@ export class GoalsCard {
 			}
 		)
 	})
+
+	addDeposit() {
+		this.dialogService.create({
+			zTitle: 'Add Deposit',
+			zContent: GoalsDepositForm,
+			zWidth: '425px',
+			zHideFooter: false,
+			zOkText: 'Deposit',
+			zOnOk: (instance: GoalsDepositForm) => {
+				instance.submit()
+				return false // submit() handle close
+			},
+			zCustomClasses:
+				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
+			zData: {
+				id: this.goal().id,
+				goal: this.goal(),
+			} as iDepositSheetData,
+		})
+	}
 
 	updateCard() {
 		this.sheetService.create({
