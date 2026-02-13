@@ -76,11 +76,29 @@ export class GoalService {
 						goal.endDate,
 					)
 
+		const paceStatus =
+			goal.type === GoalType.SAVINGS
+				? this.savingsService.calculatePaceStatus(
+						0,
+						targetAmount,
+						goal.startDate,
+						goal.endDate,
+					)
+				: this.spendingLimitService.calculatePaceStatus(
+						0,
+						targetAmount,
+						goal.startDate,
+						goal.endDate,
+					)
+
 		return {
 			...goal,
 			amount: targetAmount,
 			currentAmount: 0,
+			progress: 0,
+			isCompleted: false,
 			breakdown,
+			paceStatus,
 		}
 	}
 
@@ -364,11 +382,26 @@ export class GoalService {
 			this.prisma.goal.update({
 				where: { id: goalId },
 				data: { currentAmount: { increment: actualDeposit } },
+				include: { category: true, bankAccount: true },
 			}),
 		])
 
 		const finalAmount = Number(updatedGoal.currentAmount)
 		const finalTarget = Number(updatedGoal.amount)
+		const progress = Number(((finalAmount / finalTarget) * 100).toFixed(2))
+		const isCompleted = finalAmount >= finalTarget
+
+		const breakdown = this.savingsService.calculateSavingsBreakdown(
+			finalTarget - finalAmount,
+			updatedGoal.endDate,
+		)
+
+		const paceStatus = this.savingsService.calculatePaceStatus(
+			finalAmount,
+			finalTarget,
+			updatedGoal.startDate,
+			updatedGoal.endDate,
+		)
 
 		return {
 			deposit: { ...deposit, amount: Number(deposit.amount) },
@@ -376,13 +409,14 @@ export class GoalService {
 				...updatedGoal,
 				amount: finalTarget,
 				currentAmount: finalAmount,
-				progress: Number(((finalAmount / finalTarget) * 100).toFixed(2)),
-				isCompleted: finalAmount >= finalTarget,
+				progress,
+				isCompleted,
+				breakdown,
+				paceStatus,
 			},
-			message:
-				finalAmount >= finalTarget
-					? 'Goal completed!'
-					: 'Deposit added successfully',
+			message: isCompleted
+				? 'Goal completed!'
+				: 'Deposit added successfully',
 		}
 	}
 
