@@ -10,13 +10,16 @@ export const badgeVariants = cva(
 				secondary:
 					'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
 				destructive:
-					'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+					'border-destructive/30 bg-destructive/15 text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
 				outline:
 					'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
 				available:
 					'border-(--available-border) bg-(--available-bg) text-available',
 				unavailable:
 					'border-(--unavailable-border) bg-(--unavailable-bg) text-unavailable',
+				success: 'border-green-500/30 bg-green-500/15 text-primary',
+				warning: 'border-yellow-500/30 bg-yellow-500/15 text-yellow-500/95',
+				completed: 'border-teal-500/30 bg-teal-500/15 text-teal-500/95',
 			},
 			zShape: {
 				default: 'rounded-md',
