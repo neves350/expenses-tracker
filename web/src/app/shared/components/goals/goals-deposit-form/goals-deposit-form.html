@@ -1,0 +1,48 @@
+@if (goal) {
+  <div class="flex justify-center items-center mb-3 mt-3">
+    <span class="text-sm text-muted-foreground font-semibold"
+      >Progress: {{ goal.progress }}% · {{ formattedRemaining }} remaining</span
+    >
+  </div>
+}
+
+<form [formGroup]="form">
+  <!-- Amount Input -->
+  <div class="grid gap-2 mt-6">
+    <label for="amount">Deposit Amount</label>
+    <input
+      z-input
+      type="number"
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="amount"
+      placeholder="100"
+    />
+    @if (form.controls.amount.touched && form.controls.amount.errors?.['required']) {
+      <span class="text-xs text-destructive">Amount is required</span>
+    }
+  </div>
+
+  <!-- Date Picker -->
+  <div class="grid gap-2 mt-6">
+    <label for="date">Date</label>
+    <z-date-picker
+      placeholder="Pick a date"
+      zSize="sm"
+      zFormat="dd-MM-yyyy"
+      class="w-full [&>button]:w-full"
+      [value]="selectedDate"
+      (dateChange)="onDateChange($event)"
+    />
+  </div>
+
+  <!-- Note Input (Optional) -->
+  <div class="grid gap-2 mt-6">
+    <label for="title">Note (optional)</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="note"
+      placeholder="E.g: Month salary"
+    />
+  </div>
+</form>
