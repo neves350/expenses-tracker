@@ -20,7 +20,14 @@
 
     <!-- If doesn't have goals -->
     @if (hasGoals()) {
-      <app-goals-list [goals]="goals()" />
+      <z-tab-group zAlignTabs="center">
+        <z-tab [label]="'On Track (' + activeGoals().length + ')'">
+          <app-goals-list [goals]="activeGoals()" />
+        </z-tab>
+        <z-tab [label]="'Completed (' + completedGoals().length + ')'">
+          <app-goals-list [goals]="completedGoals()" />
+        </z-tab>
+      </z-tab-group>
     } @else {
       <z-card class="w-full h-full flex flex-col">
         <!-- Empty State -->

@@ -6,6 +6,10 @@ import { GoalsList } from '@/shared/components/goals/goals-list/goals-list'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
 import { ZardSheetService } from '@/shared/components/ui/sheet'
+import {
+	ZardTabComponent,
+	ZardTabGroupComponent,
+} from '@/shared/components/ui/tabs'
 
 @Component({
 	selector: 'app-goals',
@@ -14,6 +18,8 @@ import { ZardSheetService } from '@/shared/components/ui/sheet'
 		LucideAngularModule,
 		ZardCardComponent,
 		GoalsList,
+		ZardTabGroupComponent,
+		ZardTabComponent,
 	],
 	templateUrl: './goals.html',
 })
@@ -26,6 +32,8 @@ export class Goals {
 
 	readonly hasGoals = this.goalsService.hasGoals
 	readonly goals = this.goalsService.goals
+	readonly activeGoals = this.goalsService.activeGoals
+	readonly completedGoals = this.goalsService.completedGoals
 
 	ngOnInit(): void {
 		this.goalsService.loadGoals().subscribe()
