@@ -7,7 +7,7 @@ import { NgxSonnerToaster } from 'ngx-sonner'
 	imports: [RouterOutlet, NgxSonnerToaster],
 	template: `
 		<router-outlet />
-		<ngx-sonner-toaster richColors [expand]="true" />
+		<ngx-sonner-toaster richColors [expand]="true" position="bottom-center" />
 	`,
 })
 export class App {}

@@ -4,6 +4,10 @@
 
     <app-goal-summary [goal]="goal()" />
 
+    @if (goal().breakdown) {
+      <app-goal-breakdown [goal]="goal()" />
+    }
+
     <app-goal-saved-money [goal]="goal()" />
   </div>
 </main>
