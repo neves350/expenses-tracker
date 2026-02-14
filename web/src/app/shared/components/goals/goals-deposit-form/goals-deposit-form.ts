@@ -1,14 +1,10 @@
-import { DatePipe } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { GoalsService } from '@core/services/goals.service'
 import { CalendarIcon, LucideAngularModule } from 'lucide-angular'
-import { ZardCardComponent } from '../../ui/card'
 import { ZardDatePickerComponent } from '../../ui/date-picker'
 import { Z_MODAL_DATA, ZardDialogRef } from '../../ui/dialog'
-import { ZardDividerComponent } from '../../ui/divider'
 import { ZardInputDirective } from '../../ui/input'
-import { ZardProgressBarComponent } from '../../ui/progress-bar'
 import type { iDepositSheetData } from './goals-deposit-form.interface'
 
 @Component({
@@ -17,11 +13,7 @@ import type { iDepositSheetData } from './goals-deposit-form.interface'
 		ReactiveFormsModule,
 		ZardDatePickerComponent,
 		ZardInputDirective,
-		ZardCardComponent,
-		ZardProgressBarComponent,
 		LucideAngularModule,
-		DatePipe,
-		ZardDividerComponent,
 	],
 	templateUrl: './goals-deposit-form.html',
 })

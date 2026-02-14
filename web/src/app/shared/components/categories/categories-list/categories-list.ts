@@ -8,7 +8,6 @@ import { ZardBadgeComponent } from '../../ui/badge'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardCardComponent } from '../../ui/card'
 import { ZardDialogService } from '../../ui/dialog'
-import { ZardDividerComponent } from '../../ui/divider'
 import { CategoriesForm } from '../categories-form/categories-form'
 import type { iCategorySheetData } from '../categories-form/categories-form.interface'
 import { CATEGORY_ICON_MAP } from '../category-icons'
@@ -19,7 +18,6 @@ import { CATEGORY_ICON_MAP } from '../category-icons'
 		ZardCardComponent,
 		ZardButtonComponent,
 		LucideAngularModule,
-		ZardDividerComponent,
 		ZardBadgeComponent,
 	],
 	templateUrl: './categories-list.html',
