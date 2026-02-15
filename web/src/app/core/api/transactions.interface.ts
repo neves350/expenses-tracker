@@ -13,18 +13,25 @@ export enum TransactionType {
  */
 export interface Transaction {
 	id?: string
-	cardId: string
-	accountId?: string
+	cardId?: string
+	bankAccountId: string
 	categoryId: string
 	title: string
 	type: TransactionType
 	amount: number
 	date: Date
 	card?: TransactionCard
+	bankAccount?: TransactionBankAccount
 	category: TransactionCategory
 	isPaid: boolean
 	createdAt?: string
 	updatedAt?: string
+}
+
+export interface TransactionBankAccount {
+	id: string
+	name: string
+	balance: number
 }
 
 export interface TransactionCard {
@@ -47,8 +54,9 @@ export interface CreateTransactionRequest {
 	type: TransactionType
 	amount: number
 	date: Date
-	cardId: string
+	bankAccountId: string
 	categoryId: string
+	cardId?: string
 	isPaid?: boolean
 }
 
@@ -68,8 +76,9 @@ export interface UpdateTransactionRequest {
 	type?: TransactionType
 	amount?: number
 	date?: Date
-	cardId?: string
+	bankAccountId?: string
 	categoryId?: string
+	cardId?: string
 	isPaid?: boolean
 }
 

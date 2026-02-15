@@ -1,0 +1,91 @@
+<z-divider />
+
+<form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4 py-4">
+  @if (!isEditMode()) {
+    <div class="grid grid-cols-2 gap-4">
+      @for (transactionType of transactionTypes; track transactionType) {
+        <button
+          type="button"
+          class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center transition-colors"
+          [class]="getTypeClasses(transactionType)"
+          (click)="selectType(transactionType)"
+        >
+          <i-lucide
+            [img]="typeIcons[transactionType]"
+            class="size-6"
+            [class]="getTypeIconClasses(transactionType)"
+          />
+          <span class="text-sm font-semibold">{{ getTypeLabel(transactionType) }}</span>
+        </button>
+      }
+    </div>
+  }
+
+  <div class="grid gap-2">
+    <label for="amount">Amount</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="amount"
+      placeholder="90"
+    />
+    @if (form.controls.amount.touched && form.controls.amount.errors?.['required']) {
+      <span class="text-xs text-destructive">Amount is required</span>
+    }
+  </div>
+
+  <div class="grid gap-2">
+    <label for="title">Description</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="title"
+      placeholder="E.g: Electricity bill, Salary"
+    />
+    @if (form.controls.title.touched && form.controls.title.errors?.['required']) {
+      <span class="text-xs text-destructive">Description is required</span>
+    }
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="grid gap-2">
+      <label for="date">Date</label>
+      <z-date-picker
+        placeholder="Pick a date"
+        zSize="sm"
+        class="w-full [&>button]:w-full"
+        (dateChange)="onDateChange($event)"
+      />
+    </div>
+
+    <div class="grid gap-2">
+      <label for="categoryId">Category</label>
+      <z-select class="w-full" formControlName="categoryId">
+        @for (category of categories(); track category.id) {
+          <z-select-item [zValue]="$any(category.id)">
+            <span>{{ category.title }}</span>
+          </z-select-item>
+        }
+      </z-select>
+    </div>
+  </div>
+
+  <div class="grid gap-2">
+    <label for="bankAccountId">Account</label>
+    <z-select class="w-full" formControlName="bankAccountId">
+      @for (account of accounts(); track account.id) {
+        <z-select-item [zValue]="$any(account.id)">
+          <span>{{ account.name }}</span>
+        </z-select-item>
+      }
+    </z-select>
+  </div>
+
+  <div class="grid gap-2 border rounded-md border-input bg-transparent p-2">
+    <z-checkbox formControlName="isPaid" class="border-input">
+      <label class="text-sm p-1 font-semibold">{{
+        form.controls.type.value === 'EXPENSE' ? 'Already paid' : 'Already received'
+      }}</label>
+    </z-checkbox>
+  </div>
+</form>

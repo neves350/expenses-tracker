@@ -1,0 +1,169 @@
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+} from '@angular/core'
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { TransactionType } from '@core/api/transactions.interface'
+import { BankAccountsService } from '@core/services/bank-accounts.service'
+import { CardsService } from '@core/services/cards.service'
+import { CategoriesService } from '@core/services/categories.service'
+import { TransactionsService } from '@core/services/transactions.service'
+import {
+	LucideAngularModule,
+	type LucideIconData,
+	TrendingDownIcon,
+	TrendingUpIcon,
+} from 'lucide-angular'
+import { ZardCheckboxComponent } from '../../ui/checkbox'
+import { ZardDatePickerComponent } from '../../ui/date-picker'
+import { ZardDividerComponent } from '../../ui/divider'
+import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
+import { Z_SHEET_DATA, ZardSheetRef } from '../../ui/sheet'
+import type { iTransactionData } from './transactions-form.interface'
+
+@Component({
+	selector: 'app-transactions-form',
+	imports: [
+		ZardDividerComponent,
+		ReactiveFormsModule,
+		ZardSelectComponent,
+		ZardSelectItemComponent,
+		ZardDatePickerComponent,
+		LucideAngularModule,
+		ZardCheckboxComponent,
+	],
+	templateUrl: './transactions-form.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class TransactionsForm {
+	private readonly zData: iTransactionData = inject(Z_SHEET_DATA)
+	private readonly fb = inject(FormBuilder)
+	private readonly sheetRef = inject(ZardSheetRef)
+	private readonly transactionsService = inject(TransactionsService)
+	private readonly cardsService = inject(CardsService)
+	private readonly categoriesService = inject(CategoriesService)
+	private readonly bankAccountsService = inject(BankAccountsService)
+
+	readonly categories = this.categoriesService.expenseCategories
+	readonly accounts = this.bankAccountsService.bankAccounts
+
+	readonly transactionTypes = Object.values(TransactionType)
+	readonly isEditMode = computed(() => !!this.zData?.id)
+
+	readonly TrendingDownIcon = TrendingDownIcon
+	readonly TrendingUpIcon = TrendingUpIcon
+
+	form = this.fb.nonNullable.group({
+		title: ['', [Validators.required]],
+		type: [TransactionType.EXPENSE, [Validators.required]],
+		amount: [0 as number | null, [Validators.required, Validators.min(0.01)]],
+		date: ['', [Validators.required]],
+		bankAccountId: ['', [Validators.required]],
+		cardId: [''],
+		categoryId: ['', [Validators.required]],
+		isPaid: [false],
+	})
+
+	constructor() {
+		if (!this.cardsService.hasCards()) {
+			this.cardsService.loadCards().subscribe()
+		}
+		if (!this.categoriesService.hasCategories()) {
+			this.categoriesService.loadCategories().subscribe()
+		}
+		if (!this.bankAccountsService.bankAccounts().length) {
+			this.bankAccountsService.loadBankAccounts().subscribe()
+		}
+
+		if (this.zData?.id) {
+			this.form.patchValue({
+				title: this.zData.title ?? '',
+				type: this.zData.type ?? TransactionType.EXPENSE,
+				amount: this.zData.amount ?? 0,
+				date: this.zData.date
+					? this.zData.date.toISOString().split('T')[0]
+					: '',
+				bankAccountId: this.zData.bankAccountId ?? '',
+				cardId: this.zData.cardId ?? '',
+				categoryId: this.zData.categoryId ?? '',
+				isPaid: this.zData.isPaid ?? false,
+			})
+		}
+	}
+
+	readonly typeLabels: Record<TransactionType, string> = {
+		[TransactionType.EXPENSE]: 'Expense',
+		[TransactionType.INCOME]: 'Income',
+	}
+
+	getTypeLabel(type: TransactionType): string {
+		return this.typeLabels[type]
+	}
+
+	readonly typeIcons: Record<TransactionType, LucideIconData> = {
+		[TransactionType.EXPENSE]: this.TrendingDownIcon,
+		[TransactionType.INCOME]: this.TrendingUpIcon,
+	}
+
+	readonly typeDescriptions: Record<TransactionType, string> = {
+		[TransactionType.EXPENSE]: 'Expense',
+		[TransactionType.INCOME]: 'Income',
+	}
+
+	selectType(type: TransactionType): void {
+		this.form.controls.type.setValue(type)
+	}
+
+	getTypeClasses(transactionType: TransactionType): string {
+		const isSelected = this.form.controls.type.value === transactionType
+
+		if (!isSelected) return 'border-zinc-700'
+
+		return transactionType === TransactionType.INCOME
+			? 'border-primary bg-primary/10'
+			: 'border-destructive bg-destructive/10'
+	}
+
+	getTypeIconClasses(transactionType: TransactionType): string {
+		const isSelected = this.form.controls.type.value === transactionType
+
+		if (!isSelected) return 'text-muted-foreground'
+
+		return transactionType === TransactionType.INCOME
+			? 'text-primary'
+			: 'text-destructive'
+	}
+
+	onDateChange(date: Date | null) {
+		this.form.controls.date.setValue(date ? date.toISOString() : '')
+	}
+
+	submit(): void {
+		if (this.form.invalid) {
+			this.form.markAllAsTouched()
+			return
+		}
+
+		const formValue = this.form.getRawValue()
+		const payload = {
+			title: formValue.title,
+			type: formValue.type,
+			amount: Number(formValue.amount) || 0,
+			date: new Date(formValue.date),
+			bankAccountId: formValue.bankAccountId,
+			categoryId: formValue.categoryId,
+			...(formValue.cardId && { cardId: formValue.cardId }),
+			isPaid: formValue.isPaid,
+		}
+
+		const request$ = this.zData?.id
+			? this.transactionsService.update(this.zData.id, payload)
+			: this.transactionsService.create(payload)
+
+		request$.subscribe({
+			next: () => this.sheetRef.close(),
+		})
+	}
+}

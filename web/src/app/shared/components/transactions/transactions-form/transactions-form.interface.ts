@@ -6,6 +6,7 @@ export interface iTransactionData {
 	type?: TransactionType
 	amount?: number
 	date?: Date
+	bankAccountId?: string
 	cardId?: string
 	categoryId?: string
 	isPaid?: boolean
