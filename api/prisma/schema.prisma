@@ -204,6 +204,7 @@ model Transaction {
   type          Type
   amount        Decimal  @db.Decimal(12, 2)
   date          DateTime
+  isPaid        Boolean  @default(false) @map("is_paid")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 

@@ -22,6 +22,7 @@ export interface Transaction {
 	date: Date
 	card?: TransactionCard
 	category: TransactionCategory
+	isPaid: boolean
 	createdAt?: string
 	updatedAt?: string
 }
@@ -48,6 +49,7 @@ export interface CreateTransactionRequest {
 	date: Date
 	cardId: string
 	categoryId: string
+	isPaid?: boolean
 }
 
 /**
@@ -68,6 +70,7 @@ export interface UpdateTransactionRequest {
 	date?: Date
 	cardId?: string
 	categoryId?: string
+	isPaid?: boolean
 }
 
 /**

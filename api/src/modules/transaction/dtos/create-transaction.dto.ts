@@ -1,10 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
+	IsBoolean,
 	IsDate,
 	IsEnum,
 	IsNotEmpty,
 	IsNumber,
+	IsOptional,
 	IsPositive,
 	IsString,
 	IsUUID,
@@ -39,6 +41,11 @@ export class CreateTransactionDto {
 	@MaxDate(new Date(), { message: 'Date cannot be in the future' })
 	@ApiProperty()
 	date: Date
+
+	@IsOptional()
+	@IsBoolean()
+	@ApiPropertyOptional()
+	isPaid?: boolean
 
 	@IsString()
 	@IsNotEmpty()

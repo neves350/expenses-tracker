@@ -17,7 +17,7 @@ export class TransactionService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async create(dto: CreateTransactionDto, userId: string) {
-		const { title, type, date, cardId, categoryId } = dto
+		const { title, type, date, isPaid, cardId, categoryId } = dto
 
 		// validate amount > 0
 		if (dto.amount <= 0)
@@ -55,6 +55,7 @@ export class TransactionService {
 				type,
 				amount,
 				date,
+				isPaid,
 				card: { connect: { id: cardId } },
 				category: { connect: { id: categoryId } },
 			},

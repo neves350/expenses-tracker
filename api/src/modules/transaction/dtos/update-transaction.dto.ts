@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
+	IsBoolean,
 	IsDate,
 	IsEnum,
 	IsNumber,
@@ -25,30 +26,35 @@ export class UpdateTransactionDto {
 	@IsEnum(TransactionType)
 	@IsOptional()
 	@ApiPropertyOptional({ enum: TransactionType })
-	type: TransactionType
+	type?: TransactionType
 
 	@IsNumber()
 	@IsOptional()
 	@IsPositive({ message: 'Amount must be greater than 0' })
 	@ApiPropertyOptional()
-	amount: number
+	amount?: number
 
 	@Type(() => Date)
 	@IsOptional()
 	@IsDate()
 	@MaxDate(new Date(), { message: 'Date cannot be in the future' })
 	@ApiPropertyOptional()
-	date: Date
+	date?: Date
+
+	@IsOptional()
+	@IsBoolean()
+	@ApiPropertyOptional()
+	isPaid?: boolean
 
 	@IsString()
 	@IsUUID()
 	@IsOptional()
 	@ApiPropertyOptional()
-	cardId: string
+	cardId?: string
 
 	@IsString()
 	@IsUUID()
 	@IsOptional()
 	@ApiPropertyOptional()
-	categoryId: string
+	categoryId?: string
 }
