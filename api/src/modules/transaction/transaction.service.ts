@@ -87,14 +87,14 @@ export class TransactionService {
 			limit = 20,
 		} = dto
 
-		// search for user cards
-		const userCards = await this.prisma.card.findMany({
+		// search for user bank accounts
+		const userAccounts = await this.prisma.bankAccount.findMany({
 			where: { userId },
 			select: { id: true },
 		})
 
-		// handle edge case when user has no cards
-		if (userCards.length === 0) {
+		// handle edge case when user has no bank accounts
+		if (userAccounts.length === 0) {
 			return {
 				data: [],
 				meta: {
@@ -108,10 +108,12 @@ export class TransactionService {
 			}
 		}
 
-		const cardIds = userCards.map((card) => card.id)
+		const accountIds = userAccounts.map((account) => account.id)
 
 		// builds dynamically filter
-		const where: Prisma.TransactionWhereInput = { cardId: { in: cardIds } }
+		const where: Prisma.TransactionWhereInput = {
+			bankAccountId: { in: accountIds },
+		}
 
 		if (cardId) where.cardId = cardId
 		if (categoryId) where.categoryId = categoryId
@@ -141,6 +143,9 @@ export class TransactionService {
 				category: {
 					select: { id: true, title: true, type: true },
 				},
+				bankAccount: {
+					select: { id: true, name: true },
+				},
 			},
 		})
 
@@ -164,17 +169,17 @@ export class TransactionService {
 	}
 
 	async findOne(transactionId: string, userId: string) {
-		const userCards = await this.prisma.card.findMany({
+		const userAccounts = await this.prisma.bankAccount.findMany({
 			where: { userId },
 			select: { id: true },
 		})
 
-		const cardIds = userCards.map((c) => c.id)
+		const accountIds = userAccounts.map((a) => a.id)
 
 		const transaction = await this.prisma.transaction.findFirst({
 			where: {
 				id: transactionId,
-				cardId: { in: cardIds },
+				bankAccountId: { in: accountIds },
 			},
 			include: {
 				card: {
