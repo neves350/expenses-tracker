@@ -17,7 +17,7 @@ export class TransactionService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async create(dto: CreateTransactionDto, userId: string) {
-		const { title, type, date, isPaid, cardId, categoryId } = dto
+		const { title, type, date, isPaid, bankAccountId, cardId, categoryId } = dto
 
 		// validate amount > 0
 		if (dto.amount <= 0)
@@ -30,13 +30,15 @@ export class TransactionService {
 		// converts number to decimal
 		const amount = new Prisma.Decimal(dto.amount)
 
-		// validate user card
-		const card = await this.prisma.card.findFirst({
-			where: { id: cardId, userId },
-			select: { id: true },
-		})
+		// validate user card (optional)
+		if (cardId) {
+			const card = await this.prisma.card.findFirst({
+				where: { id: cardId, userId },
+				select: { id: true },
+			})
 
-		if (!card) throw new ForbiddenException('Card does not belong to user')
+			if (!card) throw new ForbiddenException('Card does not belong to user')
+		}
 
 		// validate category
 		const category = await this.prisma.category.findFirst({
@@ -49,6 +51,13 @@ export class TransactionService {
 
 		if (!category) throw new NotFoundException('Category not found')
 
+		const bankAccount = await this.prisma.bankAccount.findFirst({
+			where: { id: bankAccountId, userId },
+			select: { id: true },
+		})
+
+		if (!bankAccount) throw new NotFoundException('Category not found')
+
 		return this.prisma.transaction.create({
 			data: {
 				title,
@@ -56,7 +65,8 @@ export class TransactionService {
 				amount,
 				date,
 				isPaid,
-				card: { connect: { id: cardId } },
+				...(cardId && { card: { connect: { id: cardId } } }),
+				bankAccount: { connect: { id: bankAccountId } },
 				category: { connect: { id: categoryId } },
 			},
 		})
@@ -173,6 +183,9 @@ export class TransactionService {
 				category: {
 					select: { id: true, title: true, type: true },
 				},
+				bankAccount: {
+					select: { id: true, name: true, balance: true },
+				},
 			},
 		})
 
@@ -186,16 +199,29 @@ export class TransactionService {
 		userId: string,
 		dto: UpdateTransactionDto,
 	) {
-		// validate card belongs to user
-		const card = await this.prisma.card.findFirst({
-			where: { id: dto.cardId, userId },
-			select: { id: true },
-		})
+		// validate card belongs to user (optional)
+		if (dto.cardId) {
+			const card = await this.prisma.card.findFirst({
+				where: { id: dto.cardId, userId },
+				select: { id: true },
+			})
 
-		if (!card) throw new ForbiddenException('Card does not belong to user')
+			if (!card)
+				throw new ForbiddenException('Card does not belong to user')
+		}
+
+		if (dto.bankAccountId) {
+			const bankAccount = await this.prisma.bankAccount.findFirst({
+				where: { id: dto.bankAccountId, userId },
+				select: { id: true },
+			})
+
+			if (!bankAccount)
+				throw new ForbiddenException('Account does not belong to user')
+		}
 
 		const transaction = await this.prisma.transaction.findFirst({
-			where: { id: transactionId, cardId: { in: [card.id] } },
+			where: { id: transactionId },
 		})
 
 		if (!transaction) throw new NotFoundException('Transaction not found')
@@ -218,12 +244,15 @@ export class TransactionService {
 				card: {
 					select: { id: true, userId: true },
 				},
+				bankAccount: {
+					select: { id: true, name: true, balance: true },
+				},
 			},
 		})
 
 		if (!transaction) throw new NotFoundException('Transaction not found')
 
-		if (transaction.card.userId !== userId)
+		if (transaction.bankAccount.id !== userId)
 			throw new ForbiddenException('You cannot delete this transaction')
 
 		await this.prisma.transaction.delete({

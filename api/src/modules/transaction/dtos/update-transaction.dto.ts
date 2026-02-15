@@ -9,7 +9,6 @@ import {
 	IsPositive,
 	IsString,
 	IsUUID,
-	MaxDate,
 } from 'class-validator'
 
 enum TransactionType {
@@ -37,7 +36,6 @@ export class UpdateTransactionDto {
 	@Type(() => Date)
 	@IsOptional()
 	@IsDate()
-	@MaxDate(new Date(), { message: 'Date cannot be in the future' })
 	@ApiPropertyOptional()
 	date?: Date
 
@@ -51,6 +49,12 @@ export class UpdateTransactionDto {
 	@IsOptional()
 	@ApiPropertyOptional()
 	cardId?: string
+
+	@IsString()
+	@IsUUID()
+	@IsOptional()
+	@ApiPropertyOptional()
+	bankAccountId?: string
 
 	@IsString()
 	@IsUUID()
