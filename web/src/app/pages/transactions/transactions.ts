@@ -6,13 +6,19 @@ import {
 	PlusIcon,
 } from 'lucide-angular'
 import { TransactionsForm } from '@/shared/components/transactions/transactions-form/transactions-form'
+import { TransactionsList } from '@/shared/components/transactions/transactions-list/transactions-list'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
 import { ZardSheetService } from '@/shared/components/ui/sheet'
 
 @Component({
 	selector: 'app-transactions',
-	imports: [ZardButtonComponent, LucideAngularModule, ZardCardComponent],
+	imports: [
+		ZardButtonComponent,
+		LucideAngularModule,
+		ZardCardComponent,
+		TransactionsList,
+	],
 	templateUrl: './transactions.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

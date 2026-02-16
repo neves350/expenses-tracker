@@ -1,0 +1,90 @@
+<!-- Date -->
+<td z-table-cell>
+  <span class="text-sm font-medium">{{ formattedDate() }}</span>
+</td>
+
+<!-- Description -->
+<td z-table-cell>
+  <span class="text-sm font-medium flex flex-col"
+    >{{ transaction().title }}
+    <span class="text-xs font-medium text-muted-foreground">{{
+      transaction().type | lowercase
+    }}</span>
+  </span>
+</td>
+
+<!-- Account -->
+<td z-table-cell>
+  <z-badge zShape="soft" class="h-5 p-3" zType="outline">
+    {{ transaction().bankAccount?.name }}
+  </z-badge>
+</td>
+
+<!-- Category -->
+<td z-table-cell>
+  <z-badge zShape="soft" class="h-5 p-3" zType="outline">
+    {{ transaction().category.title }}
+  </z-badge>
+</td>
+
+<!-- Status -->
+<td z-table-cell>
+  <div class="size-8 flex items-center justify-center rounded-full" [class]="statusIcon().class">
+    <i-lucide [img]="statusIcon().icon" class="size-4" />
+  </div>
+</td>
+
+<!-- Amount -->
+<td z-table-cell>
+  <span class="text-sm font-semibold" [class]="amountClass()">
+    {{ formattedAmount() }}
+  </span>
+</td>
+
+<!-- Actions -->
+<td z-table-cell>
+  <z-button zPopover [zContent]="popoverContent" zSize="sm" zShape="circle" zType="outline">
+    <i-lucide [img]="EllipsisIcon" />
+  </z-button>
+
+  <ng-template #popoverContent>
+    <z-popover class="w-50 items-start">
+      <div class="flex flex-col gap-1">
+        <z-button
+          zPopoverClose
+          zType="ghost"
+          zSize="sm"
+          zFull
+          class="w-full justify-start"
+          (click)="duplicateTransaction()"
+        >
+          <i-lucide [img]="FilesIcon" class="h-4 w-4 mr-2" />
+          Duplicate
+        </z-button>
+        <z-button
+          zPopoverClose
+          zType="ghost"
+          zSize="sm"
+          zFull
+          class="w-full justify-start"
+          (click)="updateTransaction()"
+        >
+          <i-lucide [img]="SquarePenIcon" class="h-4 w-4 mr-2" />
+          Edit
+        </z-button>
+        <z-divider />
+        <z-button
+          zPopoverClose
+          zType="ghost"
+          zSize="sm"
+          zFull
+          class="text-destructive w-full justify-start"
+          (click)="deleteTransaction()"
+        >
+          <i-lucide [img]="Trash2Icon" class="h-4 w-4 mr-2" />
+          Delete
+        </z-button>
+      </div>
+    </z-popover>
+  </ng-template>
+</td>

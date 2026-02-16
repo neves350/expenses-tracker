@@ -1,0 +1,60 @@
+<div class="mt-4 overflow-hidden rounded-md border">
+  <table z-table zSize="comfortable">
+    <thead z-table-header class="bg-card-header">
+      <tr z-table-row>
+        <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('date')">
+          <div class="flex items-center gap-1">
+            Date
+            <i-lucide [img]="sortIcon('date')" class="size-3.5 text-muted-foreground" />
+          </div>
+        </th>
+        <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('description')">
+          <div class="flex items-center gap-1">
+            Description
+            <i-lucide [img]="sortIcon('description')" class="size-3.5 text-muted-foreground" />
+          </div>
+        </th>
+        <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('account')">
+          <div class="flex items-center gap-1">
+            Account
+            <i-lucide [img]="sortIcon('account')" class="size-3.5 text-muted-foreground" />
+          </div>
+        </th>
+        <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('category')">
+          <div class="flex items-center gap-1">
+            Category
+            <i-lucide [img]="sortIcon('category')" class="size-3.5 text-muted-foreground" />
+          </div>
+        </th>
+        <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('status')">
+          <div class="flex items-center gap-1">
+            Status
+            <i-lucide [img]="sortIcon('status')" class="size-3.5 text-muted-foreground" />
+          </div>
+        </th>
+        <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('amount')">
+          <div class="flex items-center gap-1">
+            Amount
+            <i-lucide [img]="sortIcon('amount')" class="size-3.5 text-muted-foreground" />
+          </div>
+        </th>
+        <th z-table-head class="w-20">Actions</th>
+      </tr>
+    </thead>
+    <tbody z-table-body class="bg-card">
+      @for (transaction of paginatedTransactions(); track transaction.id) {
+        <tr app-transactions-row [transaction]="transaction"></tr>
+      }
+    </tbody>
+    <caption z-table-caption class="bg-card-header">
+      <z-pagination
+        zType="table"
+        [zTotal]="totalPages()"
+        [zPageSize]="pageSize"
+        [zTotalItems]="transactions().length"
+        [(zPageIndex)]="currentPage"
+        [zSize]="'sm'"
+      />
+    </caption>
+  </table>
+</div>
