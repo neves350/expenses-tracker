@@ -77,13 +77,13 @@ export class TransactionsForm {
 			this.bankAccountsService.loadBankAccounts().subscribe()
 		}
 
-		if (this.zData?.id) {
+		if (this.zData) {
 			this.form.patchValue({
 				title: this.zData.title ?? '',
 				type: this.zData.type ?? TransactionType.EXPENSE,
 				amount: this.zData.amount ?? 0,
 				date: this.zData.date
-					? this.zData.date.toISOString().split('T')[0]
+					? new Date(this.zData.date).toISOString().split('T')[0]
 					: '',
 				bankAccountId: this.zData.bankAccountId ?? '',
 				cardId: this.zData.cardId ?? '',
