@@ -135,7 +135,7 @@ export class TransactionService {
 			where,
 			skip: (page - 1) * limit,
 			take: limit,
-			orderBy: { date: 'desc' },
+			orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
 			include: {
 				card: {
 					select: { id: true, name: true },
@@ -250,14 +250,14 @@ export class TransactionService {
 					select: { id: true, userId: true },
 				},
 				bankAccount: {
-					select: { id: true, name: true, balance: true },
+					select: { id: true, userId: true, name: true, balance: true },
 				},
 			},
 		})
 
 		if (!transaction) throw new NotFoundException('Transaction not found')
 
-		if (transaction.bankAccount.id !== userId)
+		if (transaction.bankAccount.userId !== userId)
 			throw new ForbiddenException('You cannot delete this transaction')
 
 		await this.prisma.transaction.delete({
