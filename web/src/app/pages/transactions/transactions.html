@@ -19,7 +19,7 @@
     <app-transactions-navigation />
 
     @if (hasTransactions()) {
-      <app-transactions-list [transactions]="transactions()" />
+      <app-transactions-list [transactions]="transactions()" [(currentPage)]="currentPage" />
     } @else {
       <z-card class="w-full h-full flex flex-col">
         <!-- Empty State -->
