@@ -7,6 +7,7 @@ import {
 } from 'lucide-angular'
 import { TransactionsForm } from '@/shared/components/transactions/transactions-form/transactions-form'
 import { TransactionsList } from '@/shared/components/transactions/transactions-list/transactions-list'
+import { TransactionsNavigation } from '@/shared/components/transactions/transactions-navigation/transactions-navigation'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
 import { ZardSheetService } from '@/shared/components/ui/sheet'
@@ -18,6 +19,7 @@ import { ZardSheetService } from '@/shared/components/ui/sheet'
 		LucideAngularModule,
 		ZardCardComponent,
 		TransactionsList,
+		TransactionsNavigation,
 	],
 	templateUrl: './transactions.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,

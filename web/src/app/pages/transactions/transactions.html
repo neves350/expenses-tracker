@@ -16,8 +16,9 @@
       </div>
     </div>
 
+    <app-transactions-navigation />
+
     @if (hasTransactions()) {
-      <!-- Transactions List -->
       <app-transactions-list [transactions]="transactions()" />
     } @else {
       <z-card class="w-full h-full flex flex-col">

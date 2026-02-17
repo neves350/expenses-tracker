@@ -27,6 +27,16 @@ export class TransactionsService {
 	readonly loading = signal<boolean>(false)
 	readonly error = signal<string | null>(null)
 
+	readonly selectedYear = signal(new Date().getFullYear())
+	readonly selectedMonth = signal(new Date().getMonth()) // 0-based
+
+	readonly monthLabel = computed(() =>
+		new Date(this.selectedYear(), this.selectedMonth()).toLocaleDateString(
+			'en-US',
+			{ month: 'long', year: 'numeric' },
+		),
+	)
+
 	readonly hasTransactions = computed(() => this.transactions().length > 0)
 
 	// Totals for the currently loaded transactions
@@ -80,13 +90,40 @@ export class TransactionsService {
 			}))
 	})
 
+	navigateMonth(direction: 1 | -1) {
+		let m = this.selectedMonth() + direction
+		let y = this.selectedYear()
+		if (m < 0) {
+			m = 11
+			y--
+		}
+		if (m > 11) {
+			m = 0
+			y++
+		}
+		this.selectedYear.set(y)
+		this.selectedMonth.set(m)
+	}
+
+	private getMonthDateRange(): { startDate: string; endDate: string } {
+		const start = new Date(this.selectedYear(), this.selectedMonth(), 1)
+		const end = new Date(this.selectedYear(), this.selectedMonth() + 1, 0)
+		return {
+			startDate: start.toISOString().slice(0, 10),
+			endDate: end.toISOString().slice(0, 10),
+		}
+	}
+
 	loadTransactions(
 		params?: TransactionsQueryParams,
 	): Observable<Transaction[]> {
 		this.loading.set(true)
 		this.error.set(null)
 
-		return this.transactionsApi.findAll(params).pipe(
+		const dateRange = this.getMonthDateRange()
+		const mergedParams = { ...dateRange, ...params }
+
+		return this.transactionsApi.findAll(mergedParams).pipe(
 			tap({
 				next: (response) => {
 					this.transactions.set(response.data)
