@@ -11,7 +11,6 @@ import {
 import { ZardPaginationComponent } from '../../ui/pagination'
 import {
 	ZardTableBodyComponent,
-	ZardTableCaptionComponent,
 	ZardTableComponent,
 	ZardTableHeadComponent,
 	ZardTableHeaderComponent,
@@ -38,7 +37,6 @@ type SortKey =
 		ZardTableRowComponent,
 		ZardTableHeadComponent,
 		ZardTableBodyComponent,
-		ZardTableCaptionComponent,
 	],
 	templateUrl: './transactions-list.html',
 })

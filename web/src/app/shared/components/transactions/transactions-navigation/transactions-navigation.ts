@@ -14,7 +14,6 @@ import {
 	LucideAngularModule,
 } from 'lucide-angular'
 import { ZardButtonComponent } from '../../ui/button'
-import { ZardCardComponent } from '../../ui/card'
 import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
 
 const MONTHS = [
@@ -37,7 +36,6 @@ const MONTHS = [
 	imports: [
 		NgClass,
 		ZardButtonComponent,
-		ZardCardComponent,
 		ZardSelectComponent,
 		ZardSelectItemComponent,
 		LucideAngularModule,

@@ -3,42 +3,42 @@
     <thead z-table-header class="bg-table">
       <tr z-table-row>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('date')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Date
             <i-lucide [img]="sortNumberIcon('date')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('description')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Description
             <i-lucide [img]="sortTextIcon('description')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('account')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Account
             <i-lucide [img]="sortTextIcon('account')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('category')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Category
             <i-lucide [img]="sortTextIcon('category')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('status')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Status
             <i-lucide [img]="sortTextIcon('status')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('amount')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Amount
             <i-lucide [img]="sortNumberIcon('amount')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
-        <th z-table-head class="w-20">Actions</th>
+        <th z-table-head class="w-20"></th>
       </tr>
     </thead>
     <tbody z-table-body class="bg-table">
