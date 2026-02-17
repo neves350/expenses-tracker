@@ -1,48 +1,48 @@
 <div class="mt-4 overflow-hidden rounded-md border">
   <table z-table zSize="comfortable">
-    <thead z-table-header class="bg-card">
+    <thead z-table-header class="bg-table">
       <tr z-table-row>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('title')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Goal
-            <i-lucide [img]="sortIcon('title')" class="size-3.5 text-muted-foreground" />
+            <i-lucide [img]="sortTextIcon('title')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('progress')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Progress
-            <i-lucide [img]="sortIcon('progress')" class="size-3.5 text-muted-foreground" />
+            <i-lucide [img]="sortNumberIcon('progress')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('amount')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Amount
-            <i-lucide [img]="sortIcon('amount')" class="size-3.5 text-muted-foreground" />
+            <i-lucide [img]="sortNumberIcon('amount')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
         <th z-table-head class="cursor-pointer select-none" (click)="toggleSort('status')">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-accent-foreground">
             Status
-            <i-lucide [img]="sortIcon('status')" class="size-3.5 text-muted-foreground" />
+            <i-lucide [img]="sortTextIcon('status')" class="size-3.5 text-muted-foreground" />
           </div>
         </th>
-        <th z-table-head class="w-20">Actions</th>
+        <th z-table-head class="w-20"></th>
       </tr>
     </thead>
-    <tbody z-table-body class="bg-card">
+    <tbody z-table-body class="bg-table">
       @for (goal of paginatedGoals(); track goal.id) {
         <tr app-goals-card [goal]="goal"></tr>
       }
     </tbody>
-    <caption z-table-caption class="bg-card">
-      <z-pagination
-        zType="table"
-        [zTotal]="totalPages()"
-        [zPageSize]="pageSize"
-        [zTotalItems]="goals().length"
-        [(zPageIndex)]="currentPage"
-        [zSize]="'sm'"
-      />
-    </caption>
   </table>
+</div>
+<div class="p-2">
+  <z-pagination
+    zType="table"
+    [zTotal]="totalPages()"
+    [zPageSize]="pageSize"
+    [zTotalItems]="goals().length"
+    [(zPageIndex)]="currentPage"
+    [zSize]="'sm'"
+  />
 </div>

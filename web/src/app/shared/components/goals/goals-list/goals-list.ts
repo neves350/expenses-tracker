@@ -7,16 +7,16 @@ import {
 } from '@angular/core'
 import type { Goal } from '@core/api/goals.interface'
 import {
-	ArrowDownIcon,
-	ArrowUpDownIcon,
-	ArrowUpIcon,
+	ArrowDown01Icon,
+	ArrowDownAZIcon,
+	ArrowUp01Icon,
+	ArrowUpAZIcon,
 	LucideAngularModule,
 	type LucideIconData,
 } from 'lucide-angular'
 import { ZardPaginationComponent } from '../../ui/pagination'
 import {
 	ZardTableBodyComponent,
-	ZardTableCaptionComponent,
 	ZardTableComponent,
 	ZardTableHeadComponent,
 	ZardTableHeaderComponent,
@@ -36,7 +36,6 @@ type SortKey = 'title' | 'progress' | 'amount' | 'status'
 		ZardTableRowComponent,
 		ZardTableHeadComponent,
 		ZardTableBodyComponent,
-		ZardTableCaptionComponent,
 		ZardPaginationComponent,
 	],
 	templateUrl: './goals-list.html',
@@ -94,9 +93,15 @@ export class GoalsList {
 		this.currentPage.set(1)
 	}
 
-	sortIcon(key: SortKey): LucideIconData {
+	sortTextIcon(key: SortKey): LucideIconData {
 		const current = this.sortState()
-		if (current.key !== key) return ArrowUpDownIcon
-		return current.direction === 'asc' ? ArrowUpIcon : ArrowDownIcon
+		if (current.key !== key) return ArrowDownAZIcon
+		return current.direction === 'asc' ? ArrowUpAZIcon : ArrowDownAZIcon
+	}
+
+	sortNumberIcon(key: SortKey): LucideIconData {
+		const current = this.sortState()
+		if (current.key !== key) return ArrowDown01Icon
+		return current.direction === 'asc' ? ArrowUp01Icon : ArrowDown01Icon
 	}
 }

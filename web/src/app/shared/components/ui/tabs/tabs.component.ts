@@ -34,7 +34,7 @@ import {
 	type ZardTabVariants,
 } from '@/shared/components/ui/tabs/tabs.variants'
 
-export type zPosition = 'top' | 'bottom' | 'left' | 'right'
+export type zPosition = 'top' | 'bottom' | 'left' | 'right' | 'custom'
 export type zAlign = 'center' | 'start' | 'end'
 
 @Component({
@@ -294,12 +294,12 @@ export class ZardTabGroupComponent implements AfterViewInit {
 
 	protected readonly navBeforeContent = computed(() => {
 		const position = this.zTabsPosition()
-		return position === 'top' || position === 'left'
+		return position === 'top' || position === 'left' || position === 'custom'
 	})
 
 	protected readonly isHorizontal = computed(() => {
 		const position = this.zTabsPosition()
-		return position === 'top' || position === 'bottom'
+		return position === 'top' || position === 'bottom' || position === 'custom'
 	})
 
 	protected readonly navGridClasses = computed(() => {

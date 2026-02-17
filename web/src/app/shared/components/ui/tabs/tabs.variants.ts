@@ -9,6 +9,7 @@ export const tabContainerVariants = cva('flex', {
 			bottom: 'flex-col',
 			left: 'flex-row',
 			right: 'flex-row',
+			custom: 'flex-col',
 		},
 	},
 	defaultVariants: {
@@ -25,6 +26,7 @@ export const tabNavVariants = cva(
 				bottom: 'flex-row border-t mt-4',
 				left: 'flex-col border-r mr-4 min-h-0',
 				right: 'flex-col border-l ml-4 min-h-0',
+				custom: 'flex-row border-0 mb-4',
 			},
 			zAlignTabs: {
 				start: 'justify-start',
@@ -48,6 +50,7 @@ export const tabButtonVariants = cva(
 				bottom: '',
 				left: '',
 				right: '',
+				custom: 'rounded-md',
 			},
 			isActive: {
 				true: '',
@@ -74,6 +77,11 @@ export const tabButtonVariants = cva(
 				zActivePosition: 'right',
 				isActive: true,
 				class: 'border-r-2 border-r-primary',
+			},
+			{
+				zActivePosition: 'custom',
+				isActive: true,
+				class: 'bg-income rounded-md font-semibold',
 			},
 		],
 		defaultVariants: {

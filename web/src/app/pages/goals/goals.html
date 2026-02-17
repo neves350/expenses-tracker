@@ -17,10 +17,8 @@
     </div>
 
     <!-- Cards with goals -->
-
-    <!-- If doesn't have goals -->
     @if (hasGoals()) {
-      <z-tab-group zAlignTabs="center">
+      <z-tab-group zAlignTabs="center" zTabsPosition="custom" zActivePosition="custom">
         <z-tab [label]="'On Track (' + activeGoals().length + ')'">
           <app-goals-list [goals]="activeGoals()" />
         </z-tab>
@@ -29,8 +27,8 @@
         </z-tab>
       </z-tab-group>
     } @else {
+      <!-- If doesn't have goals -->
       <z-card class="w-full h-full flex flex-col">
-        <!-- Empty State -->
         <div class="flex flex-col items-center justify-center p-6 mt-6">
           <div
             class="size-12 flex items-center justify-center rounded-lg bg-accent text-accent-foreground mb-4"
