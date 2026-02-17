@@ -1,9 +1,10 @@
 import { Component, computed, input, signal } from '@angular/core'
 import { Transaction } from '@core/api/transactions.interface'
 import {
-	ArrowDownIcon,
-	ArrowUpDownIcon,
-	ArrowUpIcon,
+	ArrowDown01Icon,
+	ArrowDownAZIcon,
+	ArrowUp01Icon,
+	ArrowUpAZIcon,
 	LucideAngularModule,
 	type LucideIconData,
 } from 'lucide-angular'
@@ -99,9 +100,15 @@ export class TransactionsList {
 		this.currentPage.set(1)
 	}
 
-	sortIcon(key: SortKey): LucideIconData {
+	sortTextIcon(key: SortKey): LucideIconData {
 		const current = this.sortState()
-		if (current.key !== key) return ArrowUpDownIcon
-		return current.direction === 'asc' ? ArrowUpIcon : ArrowDownIcon
+		if (current.key !== key) return ArrowDownAZIcon
+		return current.direction === 'asc' ? ArrowUpAZIcon : ArrowDownAZIcon
+	}
+
+	sortNumberIcon(key: SortKey): LucideIconData {
+		const current = this.sortState()
+		if (current.key !== key) return ArrowDown01Icon
+		return current.direction === 'asc' ? ArrowUp01Icon : ArrowDown01Icon
 	}
 }

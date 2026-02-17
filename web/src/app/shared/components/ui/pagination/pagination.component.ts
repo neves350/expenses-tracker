@@ -260,21 +260,25 @@ export class ZardPaginationEllipsisComponent {
         <div class="flex items-center gap-1">
           <span class="mr-2">Page {{ zPageIndex() }} of {{ zTotal() }}</span>
           <z-pagination-first
+            [class]="'border'"
             [zSize]="zSize()"
             [zDisabled]="zDisabled() || zPageIndex() === 1"
             (click)="goToPage(1)"
           />
           <z-pagination-previous
+            [class]="'border'"
             [zSize]="zSize()"
             [zDisabled]="zDisabled() || zPageIndex() === 1"
             (click)="goToPage(Math.max(1, zPageIndex() - 1))"
           />
           <z-pagination-next
+            [class]="'border'"
             [zSize]="zSize()"
             [zDisabled]="zDisabled() || zPageIndex() === zTotal()"
             (click)="goToPage(Math.min(zPageIndex() + 1, zTotal()))"
           />
           <z-pagination-last
+            [class]="'border'"
             [zSize]="zSize()"
             [zDisabled]="zDisabled() || zPageIndex() === zTotal()"
             (click)="goToPage(zTotal())"
