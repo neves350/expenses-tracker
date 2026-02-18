@@ -1,12 +1,14 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	computed,
 	effect,
 	inject,
 	signal,
 	untracked,
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
+import type { TransactionsQueryParams } from '@core/api/transactions.interface'
 import { TransactionsService } from '@core/services/transactions.service'
 import {
 	ArrowRightLeftIcon,
@@ -16,6 +18,7 @@ import {
 import { TransactionsForm } from '@/shared/components/transactions/transactions-form/transactions-form'
 import { TransactionsList } from '@/shared/components/transactions/transactions-list/transactions-list'
 import { TransactionsNavigation } from '@/shared/components/transactions/transactions-navigation/transactions-navigation'
+import { TransactionsSearch } from '@/shared/components/transactions/transactions-search/transactions-search'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
 import { ZardSheetService } from '@/shared/components/ui/sheet'
@@ -28,6 +31,7 @@ import { ZardSheetService } from '@/shared/components/ui/sheet'
 		ZardCardComponent,
 		TransactionsList,
 		TransactionsNavigation,
+		TransactionsSearch,
 	],
 	templateUrl: './transactions.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,10 +45,21 @@ export class Transactions {
 	readonly transactions = this.transactionsService.transactions
 	readonly loading = this.transactionsService.loading
 	readonly hasTransactions = this.transactionsService.hasTransactions
+
 	readonly currentPage = signal(1)
+	readonly searchQuery = signal('')
 
 	readonly PlusIcon = PlusIcon
 	readonly ArrowRightLeftIcon = ArrowRightLeftIcon
+
+	readonly filteredTransactions = computed(() => {
+		const query = this.searchQuery().toLowerCase().trim()
+		const txs = this.transactionsService.transactions()
+
+		return query
+			? txs.filter((t) => t.title.toLowerCase().includes(query))
+			: txs
+	})
 
 	constructor() {
 		this.readUrlParams()
@@ -83,6 +98,21 @@ export class Transactions {
 		})
 	}
 
+	onSearch(query: string) {
+		this.searchQuery.set(query)
+	}
+
+	onFilterChange(params: TransactionsQueryParams) {
+		this.currentPage.set(1)
+		this.transactionsService.loadTransactions(params).subscribe()
+	}
+
+	onFilterReset() {
+		this.searchQuery.set('')
+		this.currentPage.set(1)
+		this.transactionsService.loadTransactions().subscribe()
+	}
+
 	openSheet() {
 		this.sheetService.create({
 			zTitle: 'New Transaction',
@@ -100,10 +130,6 @@ export class Transactions {
 		})
 	}
 
-	/**
-	 * Reads URL query params on page load and applies them to signals.
-	 * This runs once — after that, signals are the source of truth.
-	 */
 	private readUrlParams() {
 		const params = this.route.snapshot.queryParamMap
 

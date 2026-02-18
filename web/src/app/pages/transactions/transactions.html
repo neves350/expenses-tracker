@@ -18,8 +18,17 @@
 
     <app-transactions-navigation />
 
+    <app-transactions-search
+      (search)="onSearch($event)"
+      (filterChange)="onFilterChange($event)"
+      (filterReset)="onFilterReset()"
+    />
+
     @if (hasTransactions()) {
-      <app-transactions-list [transactions]="transactions()" [(currentPage)]="currentPage" />
+      <app-transactions-list
+        [transactions]="filteredTransactions()"
+        [(currentPage)]="currentPage"
+      />
     } @else {
       <z-card class="w-full h-full flex flex-col">
         <!-- Empty State -->

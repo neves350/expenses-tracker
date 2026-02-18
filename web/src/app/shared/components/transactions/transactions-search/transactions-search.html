@@ -1,0 +1,89 @@
+<div class="flex items-center justify-start gap-4 mt-6 mb-6">
+  <div class="relative flex-1">
+    <i-lucide
+      [img]="SearchIcon"
+      class="absolute left-1.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
+    />
+
+    <input
+      z-input
+      placeholder="Search transactions..."
+      class="pl-9"
+      [value]="searchValue()"
+      (input)="onSearch($event)"
+    />
+  </div>
+
+  <z-divider zOrientation="vertical" class="h-5" />
+
+  <z-button zType="outline" zSize="sm" (click)="toggleFilter()" z-dropdown [zDropdownMenu]="filter">
+    <i-lucide [img]="FunnelIcon" class="size-4" />
+    Filter
+    @if (hasActivateFilters()) {
+      <span class="size-2 rounded-full bg-primary"></span>
+    }
+  </z-button>
+  <z-button zType="goalGhost" zSize="sm" (click)="reset()">
+    <i-lucide [img]="XIcon" class="size-4" />
+    Reset
+  </z-button>
+</div>
+
+<z-dropdown-menu-content #filter="zDropdownMenuContent" class="w-56">
+  <label class="text-sm p-2 font-semibold">Type</label>
+  <z-dropdown-menu-item
+    class="hover:bg-transparent focus:bg-transparent focus-visible:bg-transparent data-highlighted:bg-transparent cursor-default"
+  >
+    <z-select
+      placeholder="All"
+      zSize="sm"
+      zVariant="ghost"
+      [zValue]="filterType()"
+      (zSelectionChange)="applyFilter('type', $event)"
+      (click)="$event.stopPropagation()"
+    >
+      <z-select-item zValue="INCOME">Income</z-select-item>
+      <z-select-item zValue="EXPENSE">Expense</z-select-item>
+    </z-select>
+  </z-dropdown-menu-item>
+
+  <z-divider class="-mx-1 my-1" />
+
+  <label class="text-sm p-2 font-semibold">Category</label>
+  <z-dropdown-menu-item
+    class="hover:bg-transparent focus:bg-transparent focus-visible:bg-transparent data-highlighted:bg-transparent cursor-default"
+  >
+    <z-select
+      placeholder="All"
+      zSize="sm"
+      zVariant="ghost"
+      [zValue]="filterCategory()"
+      (zSelectionChange)="applyFilter('category', $event)"
+      (click)="$event.stopPropagation()"
+    >
+      @for (category of categories(); track category.id) {
+        <z-select-item [zValue]="category.id ?? ''">{{ category.title }}</z-select-item>
+      }
+    </z-select>
+  </z-dropdown-menu-item>
+
+  <z-divider class="-mx-1 my-1" />
+
+  <label class="text-sm p-2 font-semibold">Account</label>
+  <z-dropdown-menu-item
+    class="hover:bg-transparent focus:bg-transparent focus-visible:bg-transparent data-highlighted:bg-transparent cursor-default"
+  >
+    <z-select
+      placeholder="All"
+      zSize="sm"
+      zVariant="ghost"
+      [zValue]="filterAccount()"
+      (zSelectionChange)="applyFilter('account', $event)"
+      (click)="$event.stopPropagation()"
+    >
+      @for (account of accounts(); track account.id) {
+        <z-select-item [zValue]="account.id ?? ''">{{ account.name }}</z-select-item>
+      }
+    </z-select>
+  </z-dropdown-menu-item>
+</z-dropdown-menu-content>
