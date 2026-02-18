@@ -16,7 +16,7 @@ export class QueryStatisticsDto {
 	@IsOptional()
 	@IsUUID()
 	@ApiPropertyOptional()
-	walletId?: string
+	bankAccountId?: string
 
 	@IsOptional()
 	@IsDateString({}, { message: 'startDate must be a valid date (YYYY-MM-DD)' })
