@@ -10,13 +10,13 @@ export class TransactionFiltersService {
 	 */
 	buildFilters(userId: string, query: QueryStatisticsDto) {
 		const filters: any = {
-			card: {
+			bankAccount: {
 				userId,
 			},
 		}
 
-		if (query.cardId) {
-			filters.cardId = query.cardId
+		if (query.bankAccountId) {
+			filters.bankAccountId = query.bankAccountId
 		}
 
 		if (query.startDate || query.endDate) {
