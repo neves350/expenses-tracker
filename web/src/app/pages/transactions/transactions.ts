@@ -2,16 +2,14 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
-	effect,
 	inject,
 	signal,
-	untracked,
 } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
 import type { TransactionsQueryParams } from '@core/api/transactions.interface'
 import { TransactionsService } from '@core/services/transactions.service'
 import {
 	ArrowRightLeftIcon,
+	EllipsisIcon,
 	LucideAngularModule,
 	PlusIcon,
 } from 'lucide-angular'
@@ -39,8 +37,6 @@ import { ZardSheetService } from '@/shared/components/ui/sheet'
 export class Transactions {
 	private readonly transactionsService = inject(TransactionsService)
 	private readonly sheetService = inject(ZardSheetService)
-	private readonly route = inject(ActivatedRoute)
-	private readonly router = inject(Router)
 
 	readonly transactions = this.transactionsService.transactions
 	readonly loading = this.transactionsService.loading
@@ -51,6 +47,7 @@ export class Transactions {
 
 	readonly PlusIcon = PlusIcon
 	readonly ArrowRightLeftIcon = ArrowRightLeftIcon
+	readonly EllipsisIcon = EllipsisIcon
 
 	readonly filteredTransactions = computed(() => {
 		const query = this.searchQuery().toLowerCase().trim()
@@ -62,40 +59,7 @@ export class Transactions {
 	})
 
 	constructor() {
-		this.readUrlParams()
 		this.transactionsService.loadTransactions().subscribe()
-
-		// Reset page to 1 when month or year changes (skip first run)
-		let isFirstRun = true
-		effect(() => {
-			this.transactionsService.selectedMonth()
-			this.transactionsService.selectedYear()
-			if (isFirstRun) {
-				isFirstRun = false
-				return
-			}
-			untracked(() => this.currentPage.set(1))
-		})
-
-		// Keep URL in sync with current state
-		effect(() => {
-			const month = this.transactionsService.selectedMonth() + 1
-			const year = this.transactionsService.selectedYear()
-			const page = this.currentPage()
-
-			const now = new Date()
-			const queryParams: Record<string, string | null> = {
-				month: month !== now.getMonth() + 1 ? String(month) : null,
-				year: year !== now.getFullYear() ? String(year) : null,
-				page: page !== 1 ? String(page) : null,
-			}
-
-			this.router.navigate([], {
-				relativeTo: this.route,
-				queryParams,
-				replaceUrl: true,
-			})
-		})
 	}
 
 	onSearch(query: string) {
@@ -128,24 +92,5 @@ export class Transactions {
 			zCustomClasses:
 				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 		})
-	}
-
-	private readUrlParams() {
-		const params = this.route.snapshot.queryParamMap
-
-		const month = Number(params.get('month'))
-		if (month >= 1 && month <= 12) {
-			this.transactionsService.selectedMonth.set(month - 1)
-		}
-
-		const year = Number(params.get('year'))
-		if (year >= 2000 && year <= 2100) {
-			this.transactionsService.selectedYear.set(year)
-		}
-
-		const page = Number(params.get('page'))
-		if (page >= 1) {
-			this.currentPage.set(page)
-		}
 	}
 }

@@ -1,4 +1,4 @@
-import { Component, computed, input, model, signal } from '@angular/core'
+import { Component, computed, input, signal } from '@angular/core'
 import { Transaction } from '@core/api/transactions.interface'
 import {
 	ArrowDown01Icon,
@@ -44,7 +44,7 @@ export class TransactionsList {
 	readonly transactions = input.required<Transaction[]>()
 
 	protected readonly pageSize = 13
-	readonly currentPage = model(1)
+	readonly currentPage = signal(1)
 	protected readonly sortState = signal<{
 		key: SortKey
 		direction: 'asc' | 'desc'
