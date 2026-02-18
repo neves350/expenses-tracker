@@ -1,4 +1,4 @@
-import { LowerCasePipe } from '@angular/common'
+import { TitleCasePipe } from '@angular/common'
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -36,7 +36,7 @@ import type { iTransactionData } from '../transactions-form/transactions-form.in
 		ZardPopoverDirective,
 		ZardDividerComponent,
 		ZardBadgeComponent,
-		LowerCasePipe,
+		TitleCasePipe,
 	],
 	templateUrl: './transactions-row.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,7 +56,13 @@ export class TransactionsRow {
 	readonly statusIcon = computed(() => {
 		return this.transaction().isPaid
 			? { icon: CircleCheckIcon, class: 'text-income-foreground' }
-			: { icon: CircleXIcon, class: 'text-goal-foreground' }
+			: { icon: CircleXIcon, class: 'text-expense-foreground' }
+	})
+
+	readonly typeIcon = computed(() => {
+		return this.transaction().type === 'EXPENSE'
+			? { icon: CircleXIcon, class: 'text-expense-foreground' }
+			: { icon: CircleCheckIcon, class: 'text-income-foreground' }
 	})
 
 	readonly formattedAmount = computed(() => {

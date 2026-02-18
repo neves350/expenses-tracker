@@ -6,10 +6,13 @@
 <!-- Description -->
 <td z-table-cell>
   <span class="text-sm font-medium flex flex-col"
-    >{{ transaction().title }}
-    <span class="text-xs font-medium text-muted-foreground">{{
-      transaction().type | lowercase
-    }}</span>
+    >{{ transaction().title | titlecase }}
+    <div class="flex items-center mt-1">
+      <i-lucide [img]="typeIcon().icon" size="14" [class]="typeIcon().class" />
+      <span class="text-xs font-medium text-muted-foreground ml-2">
+        {{ transaction().type | titlecase }}
+      </span>
+    </div>
   </span>
 </td>
 
