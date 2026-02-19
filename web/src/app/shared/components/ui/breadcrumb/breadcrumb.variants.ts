@@ -44,7 +44,7 @@ export type ZardBreadcrumbWrapVariants = NonNullable<
 >
 
 export const breadcrumbItemVariants = cva(
-	'inline-flex items-center gap-1.5 transition-colors cursor-pointer hover:text-foreground last:text-foreground last:font-normal last:pointer-events-none',
+	'inline-flex items-center gap-1.5 transition-colors cursor-pointer hover:text-foreground last:text-foreground last:font-semibold last:pointer-events-none',
 )
 export type ZardBreadcrumbItemVariants = VariantProps<
 	typeof breadcrumbItemVariants

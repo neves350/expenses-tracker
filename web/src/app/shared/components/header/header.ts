@@ -1,49 +1,52 @@
 import { Component, computed, inject } from '@angular/core'
 import { toSignal } from '@angular/core/rxjs-interop'
 import { NavigationEnd, Router } from '@angular/router'
-import {
-	ArrowRightLeftIcon,
-	ChartAreaIcon,
-	GoalIcon,
-	LayoutDashboardIcon,
-	LucideAngularModule,
-	type LucideIconData,
-	SettingsIcon,
-	UserIcon,
-	WalletCardsIcon,
-} from 'lucide-angular'
+import { LucideAngularModule, SlashIcon } from 'lucide-angular'
 import { filter, map } from 'rxjs'
+import { BreadcrumbService } from '@/shared/services/breadcrumb.service'
 import { Theme } from '../theme/theme'
-import { ZardDividerComponent } from '../ui/divider'
-import { HlmSidebarService } from '../ui/spartan/sidebar/src'
+import {
+	ZardBreadcrumbComponent,
+	ZardBreadcrumbItemComponent,
+} from '../ui/breadcrumb'
 
-interface PageInfo {
-	title: string
-	icon: LucideIconData
+interface BreadcrumbItem {
+	label: string
+	url?: string
 }
 
-const PAGE_MAP: Record<string, PageInfo> = {
-	'/dashboard': { title: 'Dashboard', icon: LayoutDashboardIcon },
-	'/wallets': { title: 'Wallets', icon: WalletCardsIcon },
-	'/transactions': { title: 'Transactions', icon: ArrowRightLeftIcon },
-	'/statistics': { title: 'Statistics', icon: ChartAreaIcon },
-	'/goals': { title: 'Goals', icon: GoalIcon },
-	'/profile': { title: 'Profile', icon: UserIcon },
-	'/settings': { title: 'Settings', icon: SettingsIcon },
+const BREADCRUMB_MAP: Record<string, BreadcrumbItem[]> = {
+	'/dashboard': [{ label: 'Main Menu' }, { label: 'Dashboard' }],
+	'/transactions': [{ label: 'Finances' }, { label: 'Transactions' }],
+	'/cards': [{ label: 'Finances' }, { label: 'Cards' }],
+	'/accounts': [{ label: 'Finances' }, { label: 'Accounts' }],
+	'/account-details': [{ label: 'Finances' }, { label: 'Accounts' }],
+	'/categories': [{ label: 'Finances' }, { label: 'Categories' }],
+	'/goals': [{ label: 'Analytics' }, { label: 'Goals' }],
+	'/goal-details': [{ label: 'Analytics' }, { label: 'Goals' }],
+	'/statistics': [{ label: 'Analytics' }, { label: 'Statistics' }],
+	'/profile': [{ label: 'Others' }, { label: 'Profile' }],
+	'/settings': [{ label: 'Others' }, { label: 'Settings' }],
 }
 
 @Component({
 	selector: 'app-header',
-	imports: [Theme, LucideAngularModule, ZardDividerComponent],
+	imports: [
+		Theme,
+		ZardBreadcrumbComponent,
+		ZardBreadcrumbItemComponent,
+		LucideAngularModule,
+	],
 	templateUrl: './header.html',
-	styleUrl: './header.css',
 	host: {
 		class: 'flex-1',
 	},
 })
 export class Header {
 	private readonly router = inject(Router)
-	private readonly sidebarService = inject(HlmSidebarService)
+	private readonly breadcrumbsService = inject(BreadcrumbService)
+
+	readonly SlashIcon = SlashIcon
 
 	private readonly currentUrl = toSignal(
 		this.router.events.pipe(
@@ -53,12 +56,17 @@ export class Header {
 		{ initialValue: this.router.url },
 	)
 
-	readonly pageInfo = computed<PageInfo>(() => {
+	readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
 		const url = this.currentUrl()
-		return PAGE_MAP[url] ?? { title: 'Dashboard', icon: LayoutDashboardIcon }
-	})
+		const label = this.breadcrumbsService.label()
 
-	readonly showPageInfo = computed(() => {
-		return this.sidebarService.state() === 'collapsed' || this.sidebarService.isMobile()
+		// to match dynamic routes by prefix
+		const baseUrl = `/${url.split('/')[1]}`
+		const base = BREADCRUMB_MAP[baseUrl] ??
+			BREADCRUMB_MAP[url] ?? [{ label: 'Dashboard' }]
+
+		if (label) return [...base, { label }]
+
+		return base
 	})
 }
