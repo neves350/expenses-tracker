@@ -11,10 +11,10 @@ import { CardsService } from '@core/services/cards.service'
 import { CategoriesService } from '@core/services/categories.service'
 import { TransactionsService } from '@core/services/transactions.service'
 import {
+	ArrowDownIcon,
+	ArrowUpIcon,
 	LucideAngularModule,
 	type LucideIconData,
-	TrendingDownIcon,
-	TrendingUpIcon,
 } from 'lucide-angular'
 import { ZardCheckboxComponent } from '../../ui/checkbox'
 import { ZardDatePickerComponent } from '../../ui/date-picker'
@@ -51,15 +51,18 @@ export class TransactionsForm {
 
 	readonly transactionTypes = Object.values(TransactionType)
 	readonly isEditMode = computed(() => !!this.zData?.id)
+	readonly initialDate = computed(() =>
+		this.zData?.date ? new Date(this.zData.date) : new Date(),
+	)
 
-	readonly TrendingDownIcon = TrendingDownIcon
-	readonly TrendingUpIcon = TrendingUpIcon
+	readonly ArrowDownIcon = ArrowDownIcon
+	readonly ArrowUpIcon = ArrowUpIcon
 
 	form = this.fb.nonNullable.group({
 		title: ['', [Validators.required]],
 		type: [TransactionType.EXPENSE, [Validators.required]],
 		amount: [0 as number | null, [Validators.required, Validators.min(0.01)]],
-		date: ['', [Validators.required]],
+		date: [new Date().toISOString(), [Validators.required]],
 		bankAccountId: ['', [Validators.required]],
 		cardId: [''],
 		categoryId: ['', [Validators.required]],
@@ -103,8 +106,8 @@ export class TransactionsForm {
 	}
 
 	readonly typeIcons: Record<TransactionType, LucideIconData> = {
-		[TransactionType.EXPENSE]: this.TrendingDownIcon,
-		[TransactionType.INCOME]: this.TrendingUpIcon,
+		[TransactionType.EXPENSE]: this.ArrowDownIcon,
+		[TransactionType.INCOME]: this.ArrowUpIcon,
 	}
 
 	readonly typeDescriptions: Record<TransactionType, string> = {
