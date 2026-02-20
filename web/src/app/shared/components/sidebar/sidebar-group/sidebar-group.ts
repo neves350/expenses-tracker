@@ -2,15 +2,15 @@ import { Component, computed, inject } from '@angular/core'
 import { RouterLink, RouterLinkActive } from '@angular/router'
 import {
 	ArrowRightLeftIcon,
-	ChartAreaIcon,
+	ChartNoAxesColumnIncreasingIcon,
 	GoalIcon,
 	LandmarkIcon,
 	LayoutDashboardIcon,
 	LucideAngularModule,
 	type LucideIconData,
 	SettingsIcon,
-	TagsIcon,
-	WalletCardsIcon,
+	TagIcon,
+	WalletIcon,
 } from 'lucide-angular'
 import { ZardDividerComponent } from '../../ui/divider'
 import {
@@ -65,7 +65,7 @@ export class SidebarGroup {
 		{
 			title: 'Cards',
 			url: '/cards',
-			icon: WalletCardsIcon,
+			icon: WalletIcon,
 		},
 		{
 			title: 'Accounts',
@@ -75,7 +75,7 @@ export class SidebarGroup {
 		{
 			title: 'Categories',
 			url: '/categories',
-			icon: TagsIcon,
+			icon: TagIcon,
 		},
 	]
 
@@ -83,7 +83,7 @@ export class SidebarGroup {
 		{
 			title: 'Statistics',
 			url: '/statistics',
-			icon: ChartAreaIcon,
+			icon: ChartNoAxesColumnIncreasingIcon,
 		},
 		{
 			title: 'Goals',

@@ -1,11 +1,16 @@
 <hlm-sidebar collapsible="icon">
   <hlm-sidebar-header
-    class="flex flex-row items-center gap-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 m-1.5 mb-[-19px]"
+    class="flex flex-row items-center gap-4 justify-between group-data-[collapsible=icon]:justify-center m-1.5 mb-[-19px] group-data-[collapsible=icon]:p-2.5 group-data-[collapsible=icon]:mb-[-15px]"
   >
-    <z-button zType="sidebarGhost" routerLink="/" class="flex items-center cursor-pointer">
-      <z-avatar zSrc="spendly-icon.svg" zAlt="Application logo" zSize="sm" />
-      <span class="font-bold group-data-[collapsible=icon]:hidden text-md ml-2">Spendly</span>
+    <z-button
+      zType="sidebarGhost"
+      routerLink="/"
+      class="flex items-center cursor-pointer group-data-[collapsible=icon]:hidden"
+    >
+      <z-avatar zSrc="spendly-logo.svg" zAlt="Application logo" zSize="sm" zShape="rounded" />
+      <span class="font-bold text-md ml-2">SPENDLY</span>
     </z-button>
+    <button hlmSidebarTrigger></button>
   </hlm-sidebar-header>
 
   <z-divider zOrientation="horizontal" />
