@@ -5,11 +5,13 @@
       @for (item of mainItem; track item.title) {
         <li hlmSidebarMenuItem>
           <a
+            #rla="routerLinkActive"
             hlmSidebarMenuButton
             [routerLink]="item.url"
+            routerLinkActive
             [tooltip]="item.title"
             [tooltipDisabled]="!isCollapsed()"
-            [routerLinkActive]="isCollapsedClass()"
+            [class]="rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''"
           >
             <i-lucide [img]="item.icon" class="size-5 mb-1" />
             @if (!isCollapsed()) {
@@ -29,11 +31,13 @@
       @for (item of financeItem; track item.title) {
         <li hlmSidebarMenuItem>
           <a
+            #rla="routerLinkActive"
             hlmSidebarMenuButton
             [routerLink]="item.url"
+            routerLinkActive
             [tooltip]="item.title"
             [tooltipDisabled]="!isCollapsed()"
-            [routerLinkActive]="isCollapsedClass()"
+            [class]="rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''"
           >
             <i-lucide [img]="item.icon" class="size-5 mb-1" />
             @if (!isCollapsed()) {
@@ -53,11 +57,13 @@
       @for (item of analyticsItem; track item.title) {
         <li hlmSidebarMenuItem>
           <a
+            #rla="routerLinkActive"
             hlmSidebarMenuButton
             [routerLink]="item.url"
+            routerLinkActive
             [tooltip]="item.title"
             [tooltipDisabled]="!isCollapsed()"
-            [routerLinkActive]="isCollapsedClass()"
+            [class]="rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''"
           >
             <i-lucide [img]="item.icon" class="size-5 mb-1" />
             @if (!isCollapsed()) {
@@ -77,11 +83,13 @@
       @for (item of othersItem; track item.title) {
         <li hlmSidebarMenuItem>
           <a
+            #rla="routerLinkActive"
             hlmSidebarMenuButton
             [routerLink]="item.url"
+            routerLinkActive
             [tooltip]="item.title"
             [tooltipDisabled]="!isCollapsed()"
-            [routerLinkActive]="isCollapsedClass()"
+            [class]="rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''"
           >
             <i-lucide [img]="item.icon" class="size-5 mb-1" />
             @if (!isCollapsed()) {

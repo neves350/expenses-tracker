@@ -42,11 +42,11 @@ export class SidebarGroup {
 		() => this.sidebarService.state() === 'collapsed',
 	)
 
-	readonly isCollapsedClass = computed(() =>
-		this.isCollapsed()
-			? 'text-sidebar-accent bg-sidebar-group font-semibold border-0 rounded-md'
-			: 'text-sidebar-accent bg-sidebar-group font-semibold border-l-3 border-sidebar-accent pl-4',
-	)
+	readonly activeExpandedClass =
+		'text-sidebar-accent bg-sidebar-group font-semibold border-l-3 border-sidebar-accent pl-4'
+
+	readonly activeCollapsedClass =
+		'text-sidebar-accent bg-sidebar-group font-semibold border-0 rounded-md'
 
 	readonly mainItem: MenuItem[] = [
 		{
