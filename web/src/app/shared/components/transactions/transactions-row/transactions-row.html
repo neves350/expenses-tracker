@@ -1,15 +1,15 @@
 <!-- Date -->
 <td z-table-cell>
-  <span class="text-sm font-medium">{{ formattedDate() }}</span>
+  <span class="text-sm text-muted-foreground font-medium">{{ formattedDate() }}</span>
 </td>
 
 <!-- Description -->
 <td z-table-cell>
   <span class="text-sm font-medium flex flex-col"
     >{{ transaction().title | titlecase }}
-    <div class="flex items-center mt-1">
-      <i-lucide [img]="typeIcon().icon" size="14" [class]="typeIcon().class" />
-      <span class="text-xs font-medium text-muted-foreground ml-2">
+    <div class="flex items-center mt-1" [class]="typeIcon().class">
+      <span class="size-2 rounded-full animate-pulse" [class]="typeIcon().dot"></span>
+      <span class="text-xs ml-2">
         {{ transaction().type | titlecase }}
       </span>
     </div>
@@ -18,22 +18,23 @@
 
 <!-- Account -->
 <td z-table-cell>
-  <z-badge zShape="soft" class="h-5 p-3" zType="outline">
+  <z-badge zShape="soft" class="h-5 p-3 text-muted-foreground" zType="outline">
     {{ transaction().bankAccount?.name }}
   </z-badge>
 </td>
 
 <!-- Category -->
 <td z-table-cell>
-  <z-badge zShape="soft" class="h-5 p-3" zType="outline">
+  <z-badge zShape="pill" class="h-5 p-3" zType="outline">
     {{ transaction().category.title }}
   </z-badge>
 </td>
 
 <!-- Status -->
 <td z-table-cell>
-  <div class="size-8 flex items-center justify-center rounded-full" [class]="statusIcon().class">
-    <i-lucide [img]="statusIcon().icon" class="size-4" />
+  <div class="flex items-center gap-2" [class]="statusIcon().class">
+    <span class="size-2 rounded-full animate-pulse" [class]="statusIcon().dot"></span>
+    {{ statusIcon().label }}
   </div>
 </td>
 

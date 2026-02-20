@@ -9,8 +9,6 @@ import {
 import { Transaction } from '@core/api/transactions.interface'
 import { TransactionsService } from '@core/services/transactions.service'
 import {
-	CircleCheckIcon,
-	CircleXIcon,
 	EllipsisIcon,
 	FilesIcon,
 	LucideAngularModule,
@@ -55,14 +53,28 @@ export class TransactionsRow {
 
 	readonly statusIcon = computed(() => {
 		return this.transaction().isPaid
-			? { icon: CircleCheckIcon, class: 'text-income-foreground' }
-			: { icon: CircleXIcon, class: 'text-expense-foreground' }
+			? {
+					dot: 'bg-income-foreground shadow-[0_0_6px_var(--color-income-foreground)]',
+					label: 'Completed',
+					class: 'text-income-foreground font-medium',
+				}
+			: {
+					dot: 'bg-goal-foreground shadow-[0_0_6px_var(--color-goal-foreground)]',
+					label: 'Pending',
+					class: 'text-goal-foreground font-medium',
+				}
 	})
 
 	readonly typeIcon = computed(() => {
 		return this.transaction().type === 'EXPENSE'
-			? { icon: CircleXIcon, class: 'text-expense-foreground' }
-			: { icon: CircleCheckIcon, class: 'text-income-foreground' }
+			? {
+					dot: 'bg-expense-foreground shadow-[0_0_6px_var(--color-expense-foreground)]',
+					class: 'text-expense-foreground font-medium',
+				}
+			: {
+					dot: 'bg-income-foreground shadow-[0_0_6px_var(--color-income-foreground)]',
+					class: 'text-income-foreground font-medium',
+				}
 	})
 
 	readonly formattedAmount = computed(() => {

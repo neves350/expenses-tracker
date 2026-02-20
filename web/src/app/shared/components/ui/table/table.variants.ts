@@ -12,7 +12,7 @@ export const tableVariants = cva(
 			zSize: {
 				default: '',
 				compact: '[&_td]:py-2 [&_th]:py-2',
-				comfortable: '[&_td]:py-4 [&_th]:py-4',
+				comfortable: '[&_td]:py-4 [&_th]:py-4 [&_td]:px-4 [&_th]:px-4',
 			},
 		},
 		defaultVariants: {

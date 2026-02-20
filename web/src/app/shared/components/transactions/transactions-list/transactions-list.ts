@@ -43,8 +43,9 @@ type SortKey =
 export class TransactionsList {
 	readonly transactions = input.required<Transaction[]>()
 
-	protected readonly pageSize = 13
 	readonly currentPage = signal(1)
+
+	protected readonly pageSize = 15
 	protected readonly sortState = signal<{
 		key: SortKey
 		direction: 'asc' | 'desc'
