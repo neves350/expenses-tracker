@@ -1,4 +1,4 @@
-<z-card class="flex justify-around gap-2">
+<div class="flex items-center justify-between px-4 py-3 gap-4 bg-card border rounded-md">
   <app-transactions-navigation />
 
   <app-transactions-search
@@ -6,4 +6,4 @@
     (filterChange)="onFilterChange($event)"
     (filterReset)="onFilterReset()"
   />
-</z-card>
+</div>

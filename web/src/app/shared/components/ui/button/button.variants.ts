@@ -24,6 +24,8 @@ export const buttonVariants = cva(
 					'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
 				goalGhost:
 					'border shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:hover:bg-input/50',
+				todayBtn:
+					'border shadow-xs hover:bg-income/50 text-income-foreground border-income-foreground',
 				sidebarGhost: '',
 				link: 'text-primary underline-offset-4 hover:underline',
 			},

@@ -1,46 +1,15 @@
-<div class="flex items-center gap-4 px-4 p-0">
-  <!-- Year selector -->
-  <z-select
-    class="shrink-0 w-20"
-    [zValue]="selectedYear()"
-    zSize="sm"
-    (zSelectionChange)="onYearChange($event)"
+<div class="flex items-center justify-start gap-4">
+  <z-button zType="ghost" zSize="sm" (click)="prevMonth()">
+    <i-lucide [img]="ChevronLeftIcon" class="size-4" />
+  </z-button>
+  <span class="text-sm font-medium w-30 text-center">{{ monthLabel() }}</span>
+  <z-button zType="ghost" zSize="sm" (click)="nextMonth()">
+    <i-lucide [img]="ChevronRightIcon" class="size-4" />
+  </z-button>
+
+  <z-divider zOrientation="vertical" class="h-5" />
+
+  <z-button class="shrink-0" [zType]="todayButtonType()" zSize="sm" (click)="goToToday()"
+    >Today</z-button
   >
-    @for (year of years(); track year) {
-      <z-select-item [zValue]="year">{{ year }}</z-select-item>
-    }
-  </z-select>
-
-  <!-- Scroll months -->
-  <div class="flex-1 min-w-0 flex items-center gap-1 border rounded-md">
-    <z-button zType="ghost" zSize="sm" zShape="default" (click)="scroll(-1)">
-      <i-lucide [img]="ChevronLeftIcon" class="size-4" />
-    </z-button>
-
-    <div class="flex-1 min-w-0 overflow-hidden">
-      <div #monthScroll class="flex gap-1 overflow-x-auto scrollbar-none mx-auto w-fit max-w-full">
-        @for (month of months; track $index) {
-          <button
-            type="button"
-            class="shrink-0 flex flex-col items-center px-4 py-1 rounded-md cursor-pointer transition-colors border"
-            [ngClass]="{
-              'border-primary text-primary': selectedMonth() === $index,
-              'border-transparent font-medium': selectedMonth() !== $index,
-            }"
-            (click)="selectMonth($index)"
-          >
-            <span class="text-sm font-medium">{{ month }}</span>
-            <span class="text-xs text-muted-foreground">{{ selectedYear() }}</span>
-          </button>
-        }
-      </div>
-    </div>
-
-    <z-button zType="ghost" zSize="sm" zShape="default" (click)="scroll(1)">
-      <i-lucide [img]="ChevronRightIcon" class="size-4" />
-    </z-button>
-  </div>
-
-  <!-- Today button -->
-  <z-button class="shrink-0" zType="outline" zSize="sm" (click)="goToToday()">Today</z-button>
 </div>

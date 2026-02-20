@@ -1,5 +1,5 @@
-<div class="flex items-center justify-start gap-4 mt-6 mb-6">
-  <div class="relative flex-1">
+<div class="flex items-center justify-end gap-4">
+  <div class="relative">
     <i-lucide
       [img]="SearchIcon"
       class="absolute left-1.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
@@ -16,7 +16,13 @@
 
   <z-divider zOrientation="vertical" class="h-5" />
 
-  <z-button zType="outline" zSize="sm" (click)="toggleFilter()" z-dropdown [zDropdownMenu]="filter">
+  <z-button
+    zType="goalGhost"
+    zSize="sm"
+    (click)="toggleFilter()"
+    z-dropdown
+    [zDropdownMenu]="filter"
+  >
     <i-lucide [img]="FunnelIcon" class="size-4" />
     Filter
     @if (hasActivateFilters()) {
