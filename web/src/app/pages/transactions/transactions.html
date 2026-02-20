@@ -8,33 +8,15 @@
         </span>
       </h1>
 
-      @if (hasTransactions()) {
-        <div class="flex items-center gap-3">
-          <z-button zType="outline" (click)="openSheet()">
-            <i-lucide [img]="PlusIcon" />
-            New Transaction
-          </z-button>
-          <z-button zType="outline" z-dropdown [zDropdownMenu]="menu">
-            <i-lucide [img]="EllipsisIcon" />
-          </z-button>
-        </div>
-      } @else {
-        <div class="flex items-center gap-3">
-          <z-button zType="outline" (click)="openSheet()">
-            <i-lucide [img]="PlusIcon" />
-            New Transaction
-          </z-button>
-        </div>
-      }
+      <div class="flex items-center gap-3">
+        <z-button zType="outline" (click)="openSheet()">
+          <i-lucide [img]="PlusIcon" />
+          New Transaction
+        </z-button>
+      </div>
     </div>
 
-    <app-transactions-navigation />
-
-    <app-transactions-search
-      (search)="onSearch($event)"
-      (filterChange)="onFilterChange($event)"
-      (filterReset)="onFilterReset()"
-    />
+    <app-transactions-toolbar />
 
     @if (hasTransactions()) {
       <app-transactions-list [transactions]="filteredTransactions()" />
@@ -67,18 +49,4 @@
       </z-card>
     }
   </div>
-
-  <z-dropdown-menu-content #menu="zDropdownMenuContent" class="w-56">
-    <z-dropdown-menu-item (click)="markAllAsPaid()">
-      <i-lucide [img]="CalendarCheck2Icon" class="mr-2 size-4" />
-      Mark all as paid
-    </z-dropdown-menu-item>
-
-    <z-divider class="-mx-1 my-1" />
-
-    <z-dropdown-menu-item class="text-destructive" (click)="deleteAll()">
-      <i-lucide [img]="Trash2Icon" class="mr-2 size-4" />
-      Delete all
-    </z-dropdown-menu-item>
-  </z-dropdown-menu-content>
 </main>
