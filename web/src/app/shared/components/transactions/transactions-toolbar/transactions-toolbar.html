@@ -1,0 +1,9 @@
+<z-card class="flex justify-around gap-2">
+  <app-transactions-navigation />
+
+  <app-transactions-search
+    (search)="onSearch($event)"
+    (filterChange)="onFilterChange($event)"
+    (filterReset)="onFilterReset()"
+  />
+</z-card>
