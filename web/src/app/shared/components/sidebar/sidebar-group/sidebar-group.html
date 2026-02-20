@@ -1,7 +1,7 @@
 <hlm-sidebar-group>
   <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden">Main Menu</div>
   <div hlmSidebarGroupContent>
-    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+    <ul hlmSidebarMenu class="p-2 mr-1 gap-2">
       @for (item of mainItem; track item.title) {
         <li hlmSidebarMenuItem>
           <a
@@ -11,9 +11,14 @@
             routerLinkActive
             [tooltip]="item.title"
             [tooltipDisabled]="!isCollapsed()"
-            [class]="rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''"
+            [class]="
+              rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''
+            "
           >
-            <i-lucide [img]="item.icon" class="size-5 mb-1" />
+            <i-lucide
+              [img]="item.icon"
+              class="size-5 mb-1 group-data-[collapsible=icon]:size-6 group-data-[collapsible=icon]:mb-1.5 group-data-[collapsible=icon]:mr-1"
+            />
             @if (!isCollapsed()) {
               <span class="m-4">{{ item.title }}</span>
             }
@@ -27,7 +32,7 @@
 
   <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden">Finances</div>
   <div hlmSidebarGroupContent>
-    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+    <ul hlmSidebarMenu class="p-2 mr-1 gap-2 group-data-[collapsible=icon]:gap-3">
       @for (item of financeItem; track item.title) {
         <li hlmSidebarMenuItem>
           <a
@@ -37,9 +42,14 @@
             routerLinkActive
             [tooltip]="item.title"
             [tooltipDisabled]="!isCollapsed()"
-            [class]="rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''"
+            [class]="
+              rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''
+            "
           >
-            <i-lucide [img]="item.icon" class="size-5 mb-1" />
+            <i-lucide
+              [img]="item.icon"
+              class="size-5 mb-1 group-data-[collapsible=icon]:size-6 group-data-[collapsible=icon]:mb-1.5 group-data-[collapsible=icon]:mr-1"
+            />
             @if (!isCollapsed()) {
               <span class="m-4">{{ item.title }}</span>
             }
@@ -53,7 +63,7 @@
 
   <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden">Analytics</div>
   <div hlmSidebarGroupContent>
-    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+    <ul hlmSidebarMenu class="p-2 mr-1 gap-2 group-data-[collapsible=icon]:gap-3">
       @for (item of analyticsItem; track item.title) {
         <li hlmSidebarMenuItem>
           <a
@@ -63,9 +73,14 @@
             routerLinkActive
             [tooltip]="item.title"
             [tooltipDisabled]="!isCollapsed()"
-            [class]="rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''"
+            [class]="
+              rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''
+            "
           >
-            <i-lucide [img]="item.icon" class="size-5 mb-1" />
+            <i-lucide
+              [img]="item.icon"
+              class="size-5 mb-1 group-data-[collapsible=icon]:size-6 group-data-[collapsible=icon]:mb-1.5 group-data-[collapsible=icon]:mr-1"
+            />
             @if (!isCollapsed()) {
               <span class="m-4">{{ item.title }}</span>
             }
@@ -79,7 +94,7 @@
 
   <div hlmSidebarGroupLabel class="group-data-[collapsible=icon]:hidden">Others</div>
   <div hlmSidebarGroupContent>
-    <ul hlmSidebarMenu class="p-2 mr-2 gap-2">
+    <ul hlmSidebarMenu class="p-2 mr-1 gap-2">
       @for (item of othersItem; track item.title) {
         <li hlmSidebarMenuItem>
           <a
@@ -89,9 +104,14 @@
             routerLinkActive
             [tooltip]="item.title"
             [tooltipDisabled]="!isCollapsed()"
-            [class]="rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''"
+            [class]="
+              rla.isActive ? (isCollapsed() ? activeCollapsedClass : activeExpandedClass) : ''
+            "
           >
-            <i-lucide [img]="item.icon" class="size-5 mb-1" />
+            <i-lucide
+              [img]="item.icon"
+              class="size-5 mb-1 group-data-[collapsible=icon]:size-6 group-data-[collapsible=icon]:mb-1.5 group-data-[collapsible=icon]:mr-1"
+            />
             @if (!isCollapsed()) {
               <span class="m-4">{{ item.title }}</span>
             }
