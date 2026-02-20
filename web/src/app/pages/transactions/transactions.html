@@ -9,7 +9,7 @@
       </h1>
 
       <div class="flex items-center gap-3">
-        <z-button zType="outline" (click)="openSheet()">
+        <z-button zType="default" (click)="openSheet()">
           <i-lucide [img]="PlusIcon" />
           New Transaction
         </z-button>
@@ -21,7 +21,7 @@
     @if (hasTransactions()) {
       <app-transactions-list [transactions]="filteredTransactions()" />
     } @else {
-      <z-card class="w-full h-full flex flex-col">
+      <z-card class="w-full h-full flex flex-col mt-4">
         <!-- Empty State -->
         <div class="flex flex-col items-center justify-center p-6 mt-6">
           <div
