@@ -1,13 +1,12 @@
 import { Component, inject, signal } from '@angular/core'
 import type { TransactionsQueryParams } from '@core/api/transactions.interface'
 import { TransactionsService } from '@core/services/transactions.service'
-import { ZardCardComponent } from '../../ui/card'
 import { TransactionsNavigation } from '../transactions-navigation/transactions-navigation'
 import { TransactionsSearch } from '../transactions-search/transactions-search'
 
 @Component({
 	selector: 'app-transactions-toolbar',
-	imports: [TransactionsNavigation, TransactionsSearch, ZardCardComponent],
+	imports: [TransactionsNavigation, TransactionsSearch],
 	templateUrl: './transactions-toolbar.html',
 })
 export class TransactionsToolbar {

@@ -8,7 +8,7 @@
     <input
       z-input
       placeholder="Search transactions..."
-      class="pl-9"
+      class="pl-9 w-80"
       [value]="searchValue()"
       (input)="onSearch($event)"
     />
@@ -29,13 +29,15 @@
       <span class="size-2 rounded-full bg-primary"></span>
     }
   </z-button>
-  <z-button zType="goalGhost" zSize="sm" (click)="reset()">
-    <i-lucide [img]="XIcon" class="size-4" />
-    Reset
-  </z-button>
+  @if (hasActivateFilters()) {
+    <z-button zType="goalGhost" zSize="sm" (click)="reset()">
+      <i-lucide [img]="XIcon" class="size-4" />
+      Reset
+    </z-button>
+  }
 </div>
 
-<z-dropdown-menu-content #filter="zDropdownMenuContent" class="w-56">
+<z-dropdown-menu-content #filter="zDropdownMenuContent" class="w-62">
   <label class="text-sm p-2 font-semibold">Type</label>
   <z-dropdown-menu-item
     class="hover:bg-transparent focus:bg-transparent focus-visible:bg-transparent data-highlighted:bg-transparent cursor-default"
