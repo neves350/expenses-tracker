@@ -1,0 +1,51 @@
+<div class="grid grid-cols-3 gap-4 mt-4 items-stretch">
+  <!-- Income -->
+  <z-card class="mb-2 h-full flex flex-col border-4">
+    <div class="flex items-start justify-between">
+      <div class="size-10 flex items-center justify-center rounded-lg bg-income">
+        <i-lucide [img]="ArrowUpIcon" class="size-5 text-income-foreground" />
+      </div>
+      <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
+        <span class="truncate text-sm text-muted-foreground font-medium">Incomes</span>
+        <span class="truncate text-lg text-income-foreground font-semibold">
+          +{{ monthSummary().income | number: '1.2-2' }}€
+        </span>
+      </div>
+    </div>
+  </z-card>
+
+  <!-- Expenses -->
+  <z-card class="mb-2 h-full flex flex-col">
+    <div class="flex items-start justify-between">
+      <div class="size-10 flex items-center justify-center rounded-lg bg-expense">
+        <i-lucide [img]="ArrowDownIcon" class="size-5 text-expense-foreground" />
+      </div>
+      <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
+        <span class="truncate text-sm text-muted-foreground font-medium">Expenses</span>
+        <span class="truncate text-lg text-expense-foreground font-semibold">
+          -{{ monthSummary().expenses | number: '1.2-2' }}€
+        </span>
+      </div>
+    </div>
+  </z-card>
+
+  <!-- Net Balance -->
+  <z-card class="mb-2 h-full flex flex-col">
+    <div class="flex items-start justify-between">
+      <div class="size-10 flex items-center justify-center rounded-lg bg-transfer">
+        <i-lucide [img]="CoinsIcon" class="size-5 text-transfer-foreground" />
+      </div>
+      <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
+        <span class="truncate text-sm text-muted-foreground font-medium">Net Balance</span>
+        <span
+          class="truncate text-lg font-semibold"
+          [class]="
+            monthSummary().balance >= 0 ? 'text-income-foreground' : 'text-expense-foreground'
+          "
+        >
+          {{ monthSummary().balance | number: '1.2-2' }}€
+        </span>
+      </div>
+    </div>
+  </z-card>
+</div>
