@@ -4,18 +4,18 @@ import {
 	Component,
 	computed,
 	inject,
-	type OnInit,
 } from '@angular/core'
 import { RouterLink } from '@angular/router'
+import { TransactionsService } from '@core/services/transactions.service'
 import { TransfersService } from '@core/services/transfers.service'
 import {
+	ArrowDownIcon,
 	ArrowRightLeftIcon,
+	ArrowUpIcon,
 	ChevronRightIcon,
 	LucideAngularModule,
-	ScanBarcodeIcon,
-	TrendingDownIcon,
-	TrendingUpIcon,
 } from 'lucide-angular'
+import { Movement, MovementType } from '@/interfaces/movements.interface'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardCardComponent } from '../../ui/card'
 
@@ -31,33 +31,73 @@ import { ZardCardComponent } from '../../ui/card'
 	templateUrl: './dashboard-transactions.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardTransactions implements OnInit {
-	readonly ScanBarcodeIcon = ScanBarcodeIcon
-	readonly TrendingUpIcon = TrendingUpIcon
-	readonly TrendingDownIcon = TrendingDownIcon
-	readonly ChevronRightIcon = ChevronRightIcon
-	readonly ArrowRightLeftIcon = ArrowRightLeftIcon
-
+export class DashboardTransactions {
 	private readonly transfersService = inject(TransfersService)
+	private readonly transactionsService = inject(TransactionsService)
 
 	readonly hasTransfers = this.transfersService.hasTransfers
+	readonly hasTransactions = this.transactionsService.hasTransactions
 	readonly loading = this.transfersService.loading
 
-	readonly recentTransfers = computed(() =>
-		this.transfersService
-			.transfers()
-			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-			.slice(0, 3),
-	)
+	readonly ArrowRightLeftIcon = ArrowRightLeftIcon
+	readonly ChevronRightIcon = ChevronRightIcon
 
-	formatAmount(amount: number, currency = 'EUR'): string {
-		return new Intl.NumberFormat('pt-PT', {
-			style: 'currency',
-			currency,
-		}).format(Number(amount))
+	readonly iconMap = {
+		transfer: {
+			icon: ArrowRightLeftIcon,
+			bg: 'bg-transfer text-transfer-foreground',
+			amountClass: 'text-transfer',
+		},
+		income: {
+			icon: ArrowUpIcon,
+			bg: 'bg-income text-income-foreground',
+			amountClass: 'text-income-foreground',
+		},
+		expense: {
+			icon: ArrowDownIcon,
+			bg: 'bg-expense text-expense-foreground',
+			amountClass: 'text-expense-foreground',
+		},
 	}
 
-	ngOnInit(): void {
+	readonly recentMovements = computed((): Movement[] => {
+		const fmt = (amount: number, currency = 'EUR') =>
+			new Intl.NumberFormat('pt-PT', { style: 'currency', currency }).format(
+				Number(amount),
+			)
+
+		const transfers: Movement[] = this.transfersService
+			.transfers()
+			.map((t) => ({
+				id: t.id ?? '',
+				type: 'transfer' as MovementType,
+				label: t.description || 'Transfer',
+				subtitle: `${t.fromAccount?.name} → ${t.toAccount?.name}`,
+				amount: `-${fmt(t.amount, t.fromAccount?.currency)}`,
+				date: new Date(t.date),
+			}))
+
+		const transactions: Movement[] = this.transactionsService
+			.transactions()
+			.map((t) => ({
+				id: t.id ?? '',
+				type:
+					t.type === 'INCOME'
+						? ('income' as MovementType)
+						: ('expense' as MovementType),
+				label: t.title,
+				subtitle: t.category?.title ?? '',
+				amount: `${t.type === 'INCOME' ? '+' : '-'}${fmt(t.amount)}`,
+				date: new Date(t.date),
+			}))
+
+		return [...transfers, ...transactions]
+			.sort((a, b) => b.date.getTime() - a.date.getTime())
+			.slice(0, 4)
+	})
+
+	constructor() {
 		this.transfersService.loadTransfers().subscribe()
+		this.transactionsService.loadTransactions().subscribe()
 	}
 }

@@ -1,64 +1,58 @@
 <z-card class="w-full h-full flex flex-col">
   <h1 class="font-semibold flex">
-    <i-lucide [img]="ScanBarcodeIcon" class="mr-1" />
-    Recent transactions
+    <i-lucide [img]="ArrowRightLeftIcon" class="mr-1" />
+    Recent movements
   </h1>
 
-  @if (hasTransfers()) {
-  <!-- Se existirem transactions -->
-  <div class="flex-1 mt-4 mb-2">
-    @for (transfer of recentTransfers(); track transfer.id) {
-    <div class="flex w-full items-center outline-none p-2">
+  @if (hasTransfers() || hasTransactions()) {
+    <div class="flex-1 mt-4 mb-2">
+      @for (movement of recentMovements(); track movement.id) {
+        <div class="flex w-full items-center outline-none p-2">
+          <div
+            class="size-12 flex items-center justify-center rounded-full"
+            [class]="iconMap[movement.type].bg"
+          >
+            <i-lucide [img]="iconMap[movement.type].icon" class="size-6" />
+          </div>
+
+          <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
+            <span class="truncate text-sm font-medium">{{ movement.label }}</span>
+            <span class="truncate text-xs text-muted-foreground"
+              >{{ movement.subtitle }} · {{ movement.date | date: 'd MMM' }}</span
+            >
+          </div>
+
+          <div class="ml-4 text-right text-sm">
+            <span class="font-semibold" [class]="iconMap[movement.type].amountClass">
+              {{ movement.amount }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="flex flex-col items-center justify-center mt-4">
+      <z-button class="cursor-pointer" zType="ghost" routerLink="/transactions">
+        View movements
+        <i-lucide [img]="ChevronRightIcon" />
+      </z-button>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center p-6 mt-6">
       <div
-        class="size-12 flex items-center justify-center rounded-full bg-transfer text-transfer-foreground"
+        class="size-12 flex items-center justify-center rounded-xl bg-accent text-accent-foreground mb-4"
       >
         <span class="material-symbols-outlined text-3xl">
-          <i-lucide [img]="TrendingDownIcon" class="my-icon" />
+          <i-lucide [img]="ArrowRightLeftIcon" class="my-icon" />
         </span>
       </div>
 
-      <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
-        <span class="truncate text-sm font-medium">{{ transfer.description || 'Transfer' }}</span>
-        <span class="truncate text-xs text-muted-foreground"
-          >From <span class="truncate font-bold">{{ transfer.fromAccount?.name }}</span> to
-          <span class="truncate font-bold">{{ transfer.toAccount?.name }}</span> ·
-          {{ transfer.date | date : 'd MMM' }}</span
-        >
-      </div>
-
-      <div class="ml-4 grid flex-1 text-right text-sm leading-tight">
-        <span class="truncate text-sm text-transfer font-semibold"
-          >-{{ formatAmount(transfer.amount, transfer.fromAccount?.currency) }}</span
-        >
+      <div class="flex flex-col items-center text-center">
+        <div class="space-y-2 mt-6">
+          <p>No movements yet</p>
+          <span>Add transactions to view them here</span>
+        </div>
       </div>
     </div>
-
-    }
-  </div>
-
-  <div class="flex flex-col items-center justify-center mt-4">
-    <z-button class="cursor-pointer" zType="ghost" routerLink="/transactions">
-      View transactions
-      <i-lucide [img]="ChevronRightIcon" />
-    </z-button>
-  </div>
-  } @else {
-  <!-- Se não existirem transactions -->
-  <div class="flex flex-col items-center justify-center p-6 mt-6">
-    <div
-      class="size-12 flex items-center justify-center rounded-xl bg-accent text-accent-foreground mb-4"
-    >
-      <span class="material-symbols-outlined text-3xl">
-        <i-lucide [img]="ArrowRightLeftIcon" class="my-icon" />
-      </span>
-    </div>
-
-    <div class="flex flex-col items-center text-center">
-      <div class="space-y-2 mt-6">
-        <p>No transactions yet</p>
-        <span>Add transactions to view them here</span>
-      </div>
-    </div>
-  </div>
   }
 </z-card>
