@@ -58,7 +58,10 @@ export class TransactionsSearch {
 
 	readonly hasActivateFilters = computed(
 		() =>
-			!!this.filterType() || !!this.filterCategory() || !!this.filterAccount(),
+			!!this.filterType() ||
+			!!this.filterCategory() ||
+			!!this.filterAccount() ||
+			!!this.searchValue(),
 	)
 	readonly categories = this.categoriesService.categories
 	readonly accounts = this.bankAccountsService.bankAccounts
