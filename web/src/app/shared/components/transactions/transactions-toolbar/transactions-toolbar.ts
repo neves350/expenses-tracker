@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core'
+import { Component, inject, output, signal } from '@angular/core'
 import type { TransactionsQueryParams } from '@core/api/transactions.interface'
 import { TransactionsService } from '@core/services/transactions.service'
 import { TransactionsNavigation } from '../transactions-navigation/transactions-navigation'
@@ -15,8 +15,11 @@ export class TransactionsToolbar {
 	readonly currentPage = signal(1)
 	readonly searchQuery = signal('')
 
+	readonly searchChange = output<string>()
+
 	onSearch(query: string) {
 		this.searchQuery.set(query)
+		this.searchChange.emit(query)
 	}
 
 	onFilterChange(params: TransactionsQueryParams) {
@@ -26,6 +29,7 @@ export class TransactionsToolbar {
 
 	onFilterReset() {
 		this.searchQuery.set('')
+		this.searchChange.emit('')
 		this.currentPage.set(1)
 		this.transactionsService.loadTransactions().subscribe()
 	}
