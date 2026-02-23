@@ -9,27 +9,31 @@
       </h1>
 
       <div class="flex items-center gap-3">
-        <app-statistics-filter />
+        <app-statistics-filter (filterChange)="onFilterChange($event)" />
       </div>
     </div>
 
-    <z-card class="w-full h-full flex flex-col mt-4">
-      <div class="flex flex-col items-center justify-center p-6 mt-6">
-        <div
-          class="size-12 flex items-center justify-center rounded-lg bg-accent text-accent-foreground mb-4"
-        >
-          <i-lucide [img]="ChartPieIcon" />
-        </div>
+    @if (hasData()) {
+      <app-statistics-summary />
+    } @else {
+      <z-card class="w-full h-full flex flex-col mt-4">
+        <div class="flex flex-col items-center justify-center p-6 mt-6">
+          <div
+            class="size-12 flex items-center justify-center rounded-lg bg-accent text-accent-foreground mb-4"
+          >
+            <i-lucide [img]="ChartPieIcon" />
+          </div>
 
-        <div class="flex flex-col items-center text-center">
-          <div class="space-y-2 mt-6">
-            <p class="font-medium">No activity.</p>
-            <span class="text-muted-foreground">
-              You haven't registered anything this month yet.
-            </span>
+          <div class="flex flex-col items-center text-center">
+            <div class="space-y-2 mt-6">
+              <p class="font-medium">No activity.</p>
+              <span class="text-muted-foreground">
+                You haven't registered anything this month yet.
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </z-card>
+      </z-card>
+    }
   </div>
 </main>
