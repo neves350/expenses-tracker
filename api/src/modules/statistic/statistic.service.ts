@@ -4,6 +4,7 @@ import { Type } from 'src/generated/prisma/enums'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
 import { ByCategoryQueryDto } from './dtos/by-category-query.dto'
 import { ByCategoryResponseDto } from './dtos/by-category-response.dto'
+import { DailyTotalsResponseDto } from './dtos/daily-totals-response.dto'
 import { OverviewResponseDto } from './dtos/overview-response.dto'
 import { QueryStatisticsDto } from './dtos/query-statistics.dto'
 import { TrendsResponseDto } from './dtos/trends-response-dto'
@@ -150,6 +151,68 @@ export class StatisticService {
 				income: incomeChange,
 				balance: balanceChange,
 			},
+		}
+	}
+
+	async dailyTotals(
+		userId: string,
+		query: QueryStatisticsDto,
+	): Promise<DailyTotalsResponseDto> {
+		const filters = this.transactionFiltersService.buildFilters(userId, query)
+
+		const results = await this.prisma.transaction.groupBy({
+			by: ['date', 'type'],
+			where: filters,
+			_sum: { amount: true },
+			orderBy: { date: 'asc' },
+		})
+
+		const startDate = filters.date?.gte as Date
+		const endDate = filters.date?.lte as Date
+
+		const map = new Map<string, { income: number; expenses: number }>()
+
+		for (const row of results) {
+			const dayKey = row.date.toISOString().slice(0, 10)
+			const entry = map.get(dayKey) ?? { income: 0, expenses: 0 }
+
+			const amount = NumberHelper.toNumber(row._sum.amount)
+
+			if (row.type === Type.INCOME) {
+				entry.income += amount
+			} else {
+				entry.expenses += amount
+			}
+
+			map.set(dayKey, entry)
+		}
+
+		// fill days without transactions
+		const labels: string[] = []
+		const income: number[] = []
+		const expenses: number[] = []
+		const balance: number[] = []
+
+		const cursor = new Date(startDate)
+		cursor.setUTCHours(0, 0, 0, 0)
+
+		while (cursor <= endDate) {
+			const key = cursor.toISOString().slice(0, 10)
+			const entry = map.get(key) ?? { income: 0, expenses: 0 }
+
+			labels.push(key)
+			income.push(entry.income)
+			expenses.push(entry.expenses)
+			balance.push(entry.income - entry.expenses)
+
+			cursor.setUTCDate(cursor.getUTCDate() + 1)
+		}
+
+		return {
+			labels,
+			income,
+			expenses,
+			balance,
 		}
 	}
 
