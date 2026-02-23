@@ -1,0 +1,76 @@
+<div class="grid grid-cols-3 items-center gap-3">
+  <z-card class="flex flex-col">
+    <div class="flex items-center justify-between mb-6">
+      <span class="text-[16px] font-medium text-muted-foreground">Income</span>
+      <i-lucide [img]="BanknoteArrowUpIcon" class="size-5 text-muted-foreground" />
+    </div>
+
+    <span class="text-2xl font-semibold mt-2">+{{ totalIncome() | number: '1.2-2' }}€</span>
+
+    <div class="flex items-center gap-1 mt-2">
+      <z-badge
+        class="text-sm"
+        [class]="incomePositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+        [zType]="incomePositive() ? 'positive' : 'negative'"
+      >
+        <i-lucide
+          [img]="incomePositive() ? ArrowUpIcon : ArrowDownIcon"
+          class="size-3"
+          [class]="incomePositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+        />
+        {{ incomeChange() >= 0 ? '+' : '' }}{{ incomeChange() }}%</z-badge
+      >
+      <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+    </div>
+  </z-card>
+
+  <z-card class="flex flex-col">
+    <div class="flex items-center justify-between mb-6">
+      <span class="text-[16px] font-medium text-muted-foreground">Expenses</span>
+      <i-lucide [img]="BanknoteArrowDownIcon" class="size-5 text-muted-foreground" />
+    </div>
+
+    <span class="text-2xl font-semibold mt-2">+{{ totalExpenses() | number: '1.2-2' }}€</span>
+
+    <div class="flex items-center gap-1 mt-2">
+      <z-badge
+        class="text-sm"
+        [class]="expensesPositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+        [zType]="expensesPositive() ? 'positive' : 'negative'"
+      >
+        <i-lucide
+          [img]="expensesPositive() ? ArrowUpIcon : ArrowDownIcon"
+          class="size-3"
+          [class]="expensesPositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+        />
+        {{ expensesChange() >= 0 ? '+' : '' }}{{ expensesChange() }}%</z-badge
+      >
+      <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+    </div>
+  </z-card>
+
+  <z-card class="flex flex-col">
+    <div class="flex items-center justify-between mb-6">
+      <span class="text-[16px] font-medium text-muted-foreground">Net Balance</span>
+      <i-lucide [img]="WalletIcon" class="size-5 text-muted-foreground" />
+    </div>
+
+    <span class="text-2xl font-semibold mt-2">+{{ totalBalance() | number: '1.2-2' }}€</span>
+
+    <div class="flex items-center gap-1 mt-2">
+      <z-badge
+        class="text-sm"
+        [class]="balancePositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+        [zType]="balancePositive() ? 'positive' : 'negative'"
+      >
+        <i-lucide
+          [img]="balancePositive() ? ArrowUpIcon : ArrowDownIcon"
+          class="size-3"
+          [class]="balancePositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+        />
+        {{ balanceChange() >= 0 ? '+' : '' }}{{ balanceChange() }}%</z-badge
+      >
+      <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+    </div>
+  </z-card>
+</div>
