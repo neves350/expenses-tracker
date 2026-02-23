@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core'
+import { computed, Injectable, inject, signal } from '@angular/core'
 import { StatisticsApi } from '@core/api/statistics.api'
 import type {
 	StatisticsByCategory,
@@ -19,6 +19,25 @@ export class StatisticsService {
 	readonly byCategory = signal<StatisticsByCategory[] | null>(null)
 	readonly loading = signal<boolean>(false)
 	readonly error = signal<string | null>(null)
+
+	readonly hasData = computed(() => {
+		const overview = this.overview()
+		return overview !== null && overview.transactionCount > 0
+	})
+
+	readonly expenseCategories = computed(() => {
+		const data = this.byCategory()
+		if (!data) return []
+		const group = data.find((item) => item.type === 'EXPENSE')
+		return group?.categories ?? []
+	})
+
+	readonly incomeCategories = computed(() => {
+		const data = this.byCategory()
+		if (!data) return []
+		const group = data.find((item) => item.type === 'INCOME')
+		return group?.categories ?? []
+	})
 
 	loadStatistics(
 		params?: StatisticsQueryParams,
