@@ -1,5 +1,10 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+	ApiBearerAuth,
+	ApiOkResponse,
+	ApiOperation,
+	ApiTags,
+} from '@nestjs/swagger'
 import {
 	ApiByCategoryResponses,
 	ApiOverviewResponses,
@@ -9,6 +14,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { ByCategoryQueryDto } from './dtos/by-category-query.dto'
 import { ByCategoryResponseDto } from './dtos/by-category-response.dto'
+import { DailyTotalsResponseDto } from './dtos/daily-totals-response.dto'
 import { OverviewResponseDto } from './dtos/overview-response.dto'
 import { QueryStatisticsDto } from './dtos/query-statistics.dto'
 import { TrendsResponseDto } from './dtos/trends-response-dto'
@@ -64,5 +70,21 @@ export class StatisticController {
 		@Query() query: QueryStatisticsDto,
 	): Promise<TrendsResponseDto> {
 		return this.statisticService.getTrends(user.userId, query)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get('daily-totals')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Get daily totals',
+		description:
+			'Get the daily totals results about income, expenses and net balance.',
+	})
+	@ApiOkResponse({ type: DailyTotalsResponseDto })
+	async dailyTotals(
+		@CurrentUser() user,
+		@Query() query: QueryStatisticsDto,
+	): Promise<DailyTotalsResponseDto> {
+		return this.statisticService.dailyTotals(user.userId, query)
 	}
 }
