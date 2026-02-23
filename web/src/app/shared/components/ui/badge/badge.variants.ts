@@ -20,6 +20,10 @@ export const badgeVariants = cva(
 				success: 'border-green-500/30 bg-green-500/15 text-primary',
 				warning: 'border-yellow-500/30 bg-yellow-500/15 text-yellow-500/95',
 				completed: 'border-teal-500/30 bg-teal-500/15 text-teal-500/95',
+				positive:
+					'border-(--income-foreground-border) bg-(--income)/70 text-income-foreground',
+				negative:
+					'border-(--expense-foreground-border) bg-(--destructive)/10 text-expense-foreground',
 			},
 			zShape: {
 				default: 'rounded-md',
