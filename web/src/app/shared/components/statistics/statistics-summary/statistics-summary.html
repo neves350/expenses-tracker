@@ -7,20 +7,36 @@
 
     <span class="text-2xl font-semibold mt-2">+{{ totalIncome() | number: '1.2-2' }}€</span>
 
-    <div class="flex items-center gap-1 mt-2">
-      <z-badge
-        class="text-sm"
-        [class]="incomePositive() ? 'text-income-foreground' : 'text-expense-foreground'"
-        [zType]="incomePositive() ? 'positive' : 'negative'"
-      >
-        <i-lucide
-          [img]="incomePositive() ? ArrowUpIcon : ArrowDownIcon"
-          class="size-3"
-          [class]="incomePositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+    <div class="flex items-end justify-between gap-1 mt-2">
+      <div class="flex flex-wrap items-center gap-1">
+        <z-badge
+          class="text-sm"
+          [class]="incomeChange() >= 0 ? 'text-income-foreground' : 'text-expense-foreground'"
+          [zType]="incomeChange() >= 0 ? 'positive' : 'negative'"
+        >
+          <i-lucide
+            [img]="incomeChange() >= 0 ? ArrowUpIcon : ArrowDownIcon"
+            class="size-3"
+            [class]="incomeChange() >= 0 ? 'text-income-foreground' : 'text-expense-foreground'"
+          />
+          {{ incomeChange() >= 0 ? '+' : '' }}{{ incomeChange() }}%</z-badge
+        >
+        <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+      </div>
+
+      @if (incomeSparkline(); as spark) {
+        <apx-chart
+          class="shrink-0 -mb-1 -mr-2"
+          [series]="spark.series!"
+          [chart]="spark.chart!"
+          [colors]="spark.colors!"
+          [stroke]="spark.stroke!"
+          [xaxis]="spark.xaxis!"
+          [yaxis]="spark.yaxis!"
+          [grid]="spark.grid!"
+          [tooltip]="spark.tooltip!"
         />
-        {{ incomeChange() >= 0 ? '+' : '' }}{{ incomeChange() }}%</z-badge
-      >
-      <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+      }
     </div>
   </z-card>
 
@@ -32,20 +48,36 @@
 
     <span class="text-2xl font-semibold mt-2">+{{ totalExpenses() | number: '1.2-2' }}€</span>
 
-    <div class="flex items-center gap-1 mt-2">
-      <z-badge
-        class="text-sm"
-        [class]="expensesPositive() ? 'text-income-foreground' : 'text-expense-foreground'"
-        [zType]="expensesPositive() ? 'positive' : 'negative'"
-      >
-        <i-lucide
-          [img]="expensesPositive() ? ArrowUpIcon : ArrowDownIcon"
-          class="size-3"
-          [class]="expensesPositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+    <div class="flex items-end justify-between gap-1 mt-2">
+      <div class="flex flex-wrap items-center gap-1">
+        <z-badge
+          class="text-sm"
+          [class]="expensesChange() >= 0 ? 'text-income-foreground' : 'text-expense-foreground'"
+          [zType]="expensesChange() >= 0 ? 'positive' : 'negative'"
+        >
+          <i-lucide
+            [img]="expensesChange() >= 0 ? ArrowUpIcon : ArrowDownIcon"
+            class="size-3"
+            [class]="expensesChange() >= 0 ? 'text-income-foreground' : 'text-expense-foreground'"
+          />
+          {{ expensesChange() >= 0 ? '+' : '' }}{{ expensesChange() }}%</z-badge
+        >
+        <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+      </div>
+
+      @if (expenseSparkline(); as spark) {
+        <apx-chart
+          class="shrink-0 -mb-1 -mr-2"
+          [series]="spark.series!"
+          [chart]="spark.chart!"
+          [colors]="spark.colors!"
+          [stroke]="spark.stroke!"
+          [xaxis]="spark.xaxis!"
+          [yaxis]="spark.yaxis!"
+          [grid]="spark.grid!"
+          [tooltip]="spark.tooltip!"
         />
-        {{ expensesChange() >= 0 ? '+' : '' }}{{ expensesChange() }}%</z-badge
-      >
-      <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+      }
     </div>
   </z-card>
 
@@ -57,20 +89,36 @@
 
     <span class="text-2xl font-semibold mt-2">+{{ totalBalance() | number: '1.2-2' }}€</span>
 
-    <div class="flex items-center gap-1 mt-2">
-      <z-badge
-        class="text-sm"
-        [class]="balancePositive() ? 'text-income-foreground' : 'text-expense-foreground'"
-        [zType]="balancePositive() ? 'positive' : 'negative'"
-      >
-        <i-lucide
-          [img]="balancePositive() ? ArrowUpIcon : ArrowDownIcon"
-          class="size-3"
-          [class]="balancePositive() ? 'text-income-foreground' : 'text-expense-foreground'"
+    <div class="flex items-end justify-between gap-1 mt-2">
+      <div class="flex flex-wrap items-center gap-1">
+        <z-badge
+          class="text-sm"
+          [class]="balanceChange() >= 0 ? 'text-income-foreground' : 'text-expense-foreground'"
+          [zType]="balanceChange() >= 0 ? 'positive' : 'negative'"
+        >
+          <i-lucide
+            [img]="balanceChange() >= 0 ? ArrowUpIcon : ArrowDownIcon"
+            class="size-3"
+            [class]="balanceChange() >= 0 ? 'text-income-foreground' : 'text-expense-foreground'"
+          />
+          {{ balanceChange() >= 0 ? '+' : '' }}{{ balanceChange() }}%</z-badge
+        >
+        <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+      </div>
+
+      @if (balanceSparkline(); as spark) {
+        <apx-chart
+          class="shrink-0 -mb-1 -mr-2"
+          [series]="spark.series!"
+          [chart]="spark.chart!"
+          [colors]="spark.colors!"
+          [stroke]="spark.stroke!"
+          [xaxis]="spark.xaxis!"
+          [yaxis]="spark.yaxis!"
+          [grid]="spark.grid!"
+          [tooltip]="spark.tooltip!"
         />
-        {{ balanceChange() >= 0 ? '+' : '' }}{{ balanceChange() }}%</z-badge
-      >
-      <span class="text-sm text-muted-foreground">compared to {{ periodLabel() }}</span>
+      }
     </div>
   </z-card>
 </div>
