@@ -36,6 +36,7 @@ import type { ClassValue } from 'clsx'
 import { filter } from 'rxjs'
 
 import { mergeClasses, transform } from '@/shared/utils/merge-classes'
+import { LucideAngularModule, type LucideIconData } from 'lucide-angular'
 import { ZardBadgeComponent } from '../badge'
 import { ZardIconComponent } from '../icon'
 import {
@@ -53,7 +54,7 @@ const COMPACT_MODE_WIDTH_THRESHOLD = 100
 
 @Component({
 	selector: 'z-select, [z-select]',
-	imports: [CommonModule, OverlayModule, ZardBadgeComponent, ZardIconComponent],
+	imports: [CommonModule, OverlayModule, LucideAngularModule, ZardBadgeComponent, ZardIconComponent],
 	template: `
     <button
       type="button"
@@ -68,6 +69,9 @@ const COMPACT_MODE_WIDTH_THRESHOLD = 100
       (click)="toggle()"
       (focus)="onFocus()"
     >
+      @if (zIcon()) {
+        <i-lucide [img]="zIcon()!" class="size-4 shrink-0 text-muted-foreground" />
+      }
       <span class="flex flex-1 flex-wrap items-center gap-2">
         @let labels = selectedLabels();
         @for (label of labels; track index; let index = $index) {
@@ -152,6 +156,7 @@ export class ZardSelectComponent implements ControlValueAccessor, OnDestroy {
 	readonly zLabel = input<string>('')
 	readonly zMaxLabelCount = input<number>(1)
 	readonly zMultiple = input<boolean>(false)
+	readonly zIcon = input<LucideIconData | null>(null)
 	readonly zPlaceholder = input<string>('Select an option...')
 	readonly zSize = input<ZardSelectSizeVariants>('default')
 	readonly zValue = model<string | string[]>(this.zMultiple() ? [] : '')
