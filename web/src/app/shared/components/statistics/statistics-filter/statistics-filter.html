@@ -1,20 +1,7 @@
 <div class="flex items-center justify-between gap-3">
-  <z-select [zValue]="'week'">
+  <z-select [zValue]="period()" [zIcon]="CalendarDaysIcon" (zSelectionChange)="onPeriodChange($event)">
     <z-select-item zValue="week">Last Week</z-select-item>
     <z-select-item zValue="month">Last Month</z-select-item>
     <z-select-item zValue="year">Last Year</z-select-item>
-    <z-select-item zValue="all">Max Time</z-select-item>
-  </z-select>
-
-  <z-select
-    class="w-full"
-    formControlName="bankAccountId"
-    zPlaceholder="Select an account (optional)"
-  >
-    @for (account of accounts(); track account.id) {
-      <z-select-item [zValue]="$any(account.id)">
-        <span>{{ account.name }}</span>
-      </z-select-item>
-    }
   </z-select>
 </div>

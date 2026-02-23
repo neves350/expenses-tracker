@@ -1,5 +1,9 @@
-import { Component, inject } from '@angular/core'
-import { BankAccountsService } from '@core/services/bank-accounts.service'
+import { Component, output, signal } from '@angular/core'
+import {
+	PeriodType,
+	type StatisticsQueryParams,
+} from '@core/api/statistics.interface'
+import { CalendarDaysIcon } from 'lucide-angular'
 import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
 
 @Component({
@@ -8,11 +12,19 @@ import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
 	templateUrl: './statistics-filter.html',
 })
 export class StatisticsFilter {
-	private readonly bankAccountsService = inject(BankAccountsService)
+	readonly period = signal<PeriodType>(PeriodType.MONTH)
+	readonly CalendarDaysIcon = CalendarDaysIcon
 
-	readonly accounts = this.bankAccountsService.bankAccounts
+	readonly filterChange = output<StatisticsQueryParams>()
 
-	constructor() {
-		this.bankAccountsService.loadBankAccounts().subscribe()
+	onPeriodChange(value: string | string[]) {
+		this.period.set(value as PeriodType)
+		this.emitFilter()
+	}
+
+	private emitFilter() {
+		this.filterChange.emit({
+			period: this.period(),
+		})
 	}
 }
