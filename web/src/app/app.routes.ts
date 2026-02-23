@@ -109,6 +109,12 @@ export const routes: Routes = [
 				},
 			},
 			{
+				path: 'statistics',
+				title: 'Statistics',
+				loadComponent: () =>
+					import('./pages/statistics/statistics').then((m) => m.Statistics),
+			},
+			{
 				path: 'profile',
 				title: 'Profile',
 				loadComponent: () =>
