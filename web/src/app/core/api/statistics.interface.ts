@@ -78,3 +78,13 @@ export interface StatisticsByCategory {
 	totalTransactions: number
 	categories: CategoryBreakdownItem[]
 }
+
+/**
+ * DAILY TOTALS
+ */
+export interface StatisticsDailyTotals {
+	labels: string[]
+	income: number[]
+	expenses: number[]
+	balance: number[]
+}

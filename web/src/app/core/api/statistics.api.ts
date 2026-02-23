@@ -4,6 +4,7 @@ import { Observable } from 'rxjs'
 import { environment } from 'src/environments/environment'
 import type {
 	StatisticsByCategory,
+	StatisticsDailyTotals,
 	StatisticsOverview,
 	StatisticsQueryParams,
 	StatisticsTrends,
@@ -44,6 +45,21 @@ export class StatisticsApi {
 	): Observable<StatisticsByCategory[]> {
 		return this.http.get<StatisticsByCategory[]>(
 			`${this.baseUrl}/by-category`,
+			{
+				withCredentials: true,
+				params: params as Record<string, string> | undefined,
+			},
+		)
+	}
+
+	/**
+	 * GET DAILY TOTALS
+	 */
+	getDailyTotals(
+		params?: StatisticsQueryParams,
+	): Observable<StatisticsDailyTotals[]> {
+		return this.http.get<StatisticsDailyTotals[]>(
+			`${this.baseUrl}/daily-totals`,
 			{
 				withCredentials: true,
 				params: params as Record<string, string> | undefined,

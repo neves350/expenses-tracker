@@ -1,11 +1,12 @@
 import { computed, Injectable, inject, signal } from '@angular/core'
 import { StatisticsApi } from '@core/api/statistics.api'
 import {
+	PeriodType,
 	type StatisticsByCategory,
+	type StatisticsDailyTotals,
 	type StatisticsOverview,
 	type StatisticsQueryParams,
 	type StatisticsTrends,
-	PeriodType,
 } from '@core/api/statistics.interface'
 import { forkJoin, Observable, tap } from 'rxjs'
 
@@ -19,6 +20,7 @@ export class StatisticsService {
 	readonly overview = signal<StatisticsOverview | null>(null)
 	readonly trends = signal<StatisticsTrends | null>(null)
 	readonly byCategory = signal<StatisticsByCategory[] | null>(null)
+	readonly dailyTotals = signal<StatisticsDailyTotals[] | null>(null)
 	readonly loading = signal<boolean>(false)
 	readonly error = signal<string | null>(null)
 
@@ -53,7 +55,12 @@ export class StatisticsService {
 	loadStatistics(
 		params?: StatisticsQueryParams,
 	): Observable<
-		[StatisticsOverview, StatisticsTrends, StatisticsByCategory[]]
+		[
+			StatisticsOverview,
+			StatisticsTrends,
+			StatisticsByCategory[],
+			StatisticsDailyTotals[],
+		]
 	> {
 		this.loading.set(true)
 		this.error.set(null)
@@ -63,12 +70,14 @@ export class StatisticsService {
 			this.statisticsApi.getOverview(params),
 			this.statisticsApi.getTrends(params),
 			this.statisticsApi.getByCategory(params),
+			this.statisticsApi.getDailyTotals(params),
 		]).pipe(
 			tap({
-				next: ([overview, trends, byCategory]) => {
+				next: ([overview, trends, byCategory, dailyTotals]) => {
 					this.overview.set(overview)
 					this.trends.set(trends)
 					this.byCategory.set(byCategory)
+					this.dailyTotals.set(dailyTotals)
 					this.loading.set(false)
 				},
 				error: (err) => {
