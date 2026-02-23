@@ -1,10 +1,11 @@
 import { computed, Injectable, inject, signal } from '@angular/core'
 import { StatisticsApi } from '@core/api/statistics.api'
-import type {
-	StatisticsByCategory,
-	StatisticsOverview,
-	StatisticsQueryParams,
-	StatisticsTrends,
+import {
+	type StatisticsByCategory,
+	type StatisticsOverview,
+	type StatisticsQueryParams,
+	type StatisticsTrends,
+	PeriodType,
 } from '@core/api/statistics.interface'
 import { forkJoin, Observable, tap } from 'rxjs'
 
@@ -14,11 +15,21 @@ import { forkJoin, Observable, tap } from 'rxjs'
 export class StatisticsService {
 	private readonly statisticsApi = inject(StatisticsApi)
 
+	readonly period = signal<PeriodType>(PeriodType.MONTH)
 	readonly overview = signal<StatisticsOverview | null>(null)
 	readonly trends = signal<StatisticsTrends | null>(null)
 	readonly byCategory = signal<StatisticsByCategory[] | null>(null)
 	readonly loading = signal<boolean>(false)
 	readonly error = signal<string | null>(null)
+
+	readonly periodLabel = computed(() => {
+		const labels: Record<PeriodType, string> = {
+			[PeriodType.WEEK]: 'last week',
+			[PeriodType.MONTH]: 'last month',
+			[PeriodType.YEAR]: 'last year',
+		}
+		return labels[this.period()]
+	})
 
 	readonly hasData = computed(() => {
 		const overview = this.overview()
@@ -46,6 +57,7 @@ export class StatisticsService {
 	> {
 		this.loading.set(true)
 		this.error.set(null)
+		if (params?.period) this.period.set(params.period)
 
 		return forkJoin([
 			this.statisticsApi.getOverview(params),
