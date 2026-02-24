@@ -1,0 +1,40 @@
+<z-card class="mt-6">
+  <div class="flex justify-between items-start">
+    <h1 class="font-semibold flex items-center">Spending by category</h1>
+
+    <div class="flex items-center gap-3">
+      <z-select [zValue]="selectedType()" (zSelectionChange)="onTypeChange($event)">
+        <z-select-item zValue="EXPENSE">Expenses</z-select-item>
+        <z-select-item zValue="INCOME">Income</z-select-item>
+      </z-select>
+    </div>
+  </div>
+
+  @if (chartOptions()) {
+    <div class="relative mt-4">
+      <apx-chart
+        #chart
+        [series]="chartOptions()!.series!"
+        [chart]="chartOptions()!.chart!"
+        [labels]="chartOptions()!.labels!"
+        [colors]="chartOptions()!.colors!"
+        [legend]="chartOptions()!.legend!"
+        [plotOptions]="chartOptions()!.plotOptions!"
+        [dataLabels]="chartOptions()!.dataLabels!"
+        [tooltip]="chartOptions()!.tooltip!"
+        [stroke]="chartOptions()!.stroke!"
+        [responsive]="chartOptions()!.responsive!"
+      />
+      <span
+        class="absolute left-1/2 top-[52%] -translate-x-1/2 text-xs text-muted-foreground pointer-events-none"
+      >
+        {{ totalTransactions() }} transactions
+      </span>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center min-h-[380px] text-muted-foreground">
+      <i-lucide [img]="TagsIcon" class="size-10 mb-2" />
+      <p>No category data for this period.</p>
+    </div>
+  }
+</z-card>

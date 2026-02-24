@@ -19,7 +19,8 @@ export class StatisticsService {
 	readonly period = signal<PeriodType>(PeriodType.MONTH)
 	readonly overview = signal<StatisticsOverview | null>(null)
 	readonly trends = signal<StatisticsTrends | null>(null)
-	readonly byCategory = signal<StatisticsByCategory[] | null>(null)
+	readonly expenseByCategory = signal<StatisticsByCategory | null>(null)
+	readonly incomeByCategory = signal<StatisticsByCategory | null>(null)
 	readonly dailyTotals = signal<StatisticsDailyTotals[] | null>(null)
 	readonly loading = signal<boolean>(false)
 	readonly error = signal<string | null>(null)
@@ -39,17 +40,11 @@ export class StatisticsService {
 	})
 
 	readonly expenseCategories = computed(() => {
-		const data = this.byCategory()
-		if (!data) return []
-		const group = data.find((item) => item.type === 'EXPENSE')
-		return group?.categories ?? []
+		return this.expenseByCategory()?.categories ?? []
 	})
 
 	readonly incomeCategories = computed(() => {
-		const data = this.byCategory()
-		if (!data) return []
-		const group = data.find((item) => item.type === 'INCOME')
-		return group?.categories ?? []
+		return this.incomeByCategory()?.categories ?? []
 	})
 
 	loadStatistics(
@@ -58,7 +53,8 @@ export class StatisticsService {
 		[
 			StatisticsOverview,
 			StatisticsTrends,
-			StatisticsByCategory[],
+			StatisticsByCategory,
+			StatisticsByCategory,
 			StatisticsDailyTotals[],
 		]
 	> {
@@ -69,14 +65,22 @@ export class StatisticsService {
 		return forkJoin([
 			this.statisticsApi.getOverview(params),
 			this.statisticsApi.getTrends(params),
-			this.statisticsApi.getByCategory(params),
+			this.statisticsApi.getByCategory({ ...params, type: 'EXPENSE' }),
+			this.statisticsApi.getByCategory({ ...params, type: 'INCOME' }),
 			this.statisticsApi.getDailyTotals(params),
 		]).pipe(
 			tap({
-				next: ([overview, trends, byCategory, dailyTotals]) => {
+				next: ([
+					overview,
+					trends,
+					expenseByCategory,
+					incomeByCategory,
+					dailyTotals,
+				]) => {
 					this.overview.set(overview)
 					this.trends.set(trends)
-					this.byCategory.set(byCategory)
+					this.expenseByCategory.set(expenseByCategory)
+					this.incomeByCategory.set(incomeByCategory)
 					this.dailyTotals.set(dailyTotals)
 					this.loading.set(false)
 				},

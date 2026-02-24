@@ -42,14 +42,11 @@ export class StatisticsApi {
 	 */
 	getByCategory(
 		params?: StatisticsQueryParams,
-	): Observable<StatisticsByCategory[]> {
-		return this.http.get<StatisticsByCategory[]>(
-			`${this.baseUrl}/by-category`,
-			{
-				withCredentials: true,
-				params: params as Record<string, string> | undefined,
-			},
-		)
+	): Observable<StatisticsByCategory> {
+		return this.http.get<StatisticsByCategory>(`${this.baseUrl}/by-category`, {
+			withCredentials: true,
+			params: params as Record<string, string> | undefined,
+		})
 	}
 
 	/**

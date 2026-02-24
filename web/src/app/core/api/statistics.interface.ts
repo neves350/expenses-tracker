@@ -12,6 +12,7 @@ export interface StatisticsQueryParams {
 	bankAccountId?: string
 	startDate?: string
 	endDate?: string
+	type?: string
 }
 
 /**

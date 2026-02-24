@@ -3,6 +3,7 @@ import type { StatisticsQueryParams } from '@core/api/statistics.interface'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
 import { StatisticsService } from '@core/services/statistics.service'
 import { ChartPieIcon, LucideAngularModule } from 'lucide-angular'
+import { StatisticsCategories } from '@/shared/components/statistics/statistics-categories/statistics-categories'
 import { StatisticsFilter } from '@/shared/components/statistics/statistics-filter/statistics-filter'
 import { StatisticsSummary } from '@/shared/components/statistics/statistics-summary/statistics-summary'
 import { ZardCardComponent } from '@/shared/components/ui/card'
@@ -14,6 +15,7 @@ import { ZardCardComponent } from '@/shared/components/ui/card'
 		LucideAngularModule,
 		StatisticsFilter,
 		StatisticsSummary,
+		StatisticsCategories,
 	],
 	templateUrl: './statistics.html',
 })
