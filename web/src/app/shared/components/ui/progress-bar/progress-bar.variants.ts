@@ -6,6 +6,9 @@ export const containerProgressBarVariants = cva('w-full transition-all', {
 			default: 'bg-primary/20',
 			destructive: 'bg-destructive/20',
 			accent: 'bg-chart-1/20',
+			income: 'bg-income-foreground/20',
+			expense: 'bg-expense-foreground/20',
+			balance: 'bg-balance-foreground/20',
 		},
 		zSize: {
 			default: 'h-2',
@@ -37,6 +40,9 @@ export const progressBarVariants = cva('h-full transition-all', {
 			default: 'bg-primary',
 			destructive: 'bg-destructive',
 			accent: 'bg-chart-1',
+			income: 'bg-income-foreground',
+			expense: 'bg-expense-foreground',
+			balance: 'bg-balance-foreground',
 		},
 		zShape: {
 			default: 'rounded-full',

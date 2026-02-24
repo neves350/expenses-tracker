@@ -1,8 +1,10 @@
 import { Component, inject } from '@angular/core'
 import type { StatisticsQueryParams } from '@core/api/statistics.interface'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
+import { CategoriesService } from '@core/services/categories.service'
 import { StatisticsService } from '@core/services/statistics.service'
 import { ChartPieIcon, LucideAngularModule } from 'lucide-angular'
+import { StatisticsBreakdown } from '@/shared/components/statistics/statistics-breakdown/statistics-breakdown'
 import { StatisticsCategories } from '@/shared/components/statistics/statistics-categories/statistics-categories'
 import { StatisticsFilter } from '@/shared/components/statistics/statistics-filter/statistics-filter'
 import { StatisticsPeriod } from '@/shared/components/statistics/statistics-period/statistics-period'
@@ -18,13 +20,16 @@ import { ZardCardComponent } from '@/shared/components/ui/card'
 		StatisticsSummary,
 		StatisticsCategories,
 		StatisticsPeriod,
+		StatisticsBreakdown,
 	],
 	templateUrl: './statistics.html',
 })
 export class Statistics {
 	private readonly bankAccountsService = inject(BankAccountsService)
 	private readonly statisticsService = inject(StatisticsService)
+	private readonly categoriesService = inject(CategoriesService)
 
+	readonly categories = this.categoriesService.categories
 	readonly accounts = this.bankAccountsService.bankAccounts
 	readonly hasData = this.statisticsService.hasData
 	readonly ChartPieIcon = ChartPieIcon
@@ -34,6 +39,7 @@ export class Statistics {
 		this.statisticsService
 			.loadStatistics({ period: this.statisticsService.period() })
 			.subscribe()
+		this.categoriesService.loadCategories().subscribe()
 	}
 
 	onFilterChange(params: StatisticsQueryParams) {
