@@ -1,0 +1,41 @@
+<z-card class="mt-6">
+  <div class="flex justify-between items-start">
+    <div>
+      <h1 class="font-semibold flex items-center gap-2">Compare periods</h1>
+      <p class="text-sm text-muted-foreground mt-1">Current vs previous period</p>
+    </div>
+  </div>
+
+  @if (chartOptions()) {
+    <div class="mt-4">
+      <apx-chart
+        #chart
+        [series]="chartOptions()!.series!"
+        [chart]="chartOptions()!.chart!"
+        [xaxis]="chartOptions()!.xaxis!"
+        [yaxis]="chartOptions()!.yaxis!"
+        [colors]="chartOptions()!.colors!"
+        [legend]="chartOptions()!.legend!"
+        [plotOptions]="chartOptions()!.plotOptions!"
+        [dataLabels]="chartOptions()!.dataLabels!"
+        [tooltip]="chartOptions()!.tooltip!"
+        [grid]="chartOptions()!.grid!"
+        [responsive]="chartOptions()!.responsive!"
+      />
+    </div>
+
+    @if (changes()) {
+      <div class="flex items-center justify-center gap-6 mt-2">
+        @for (change of changes(); track change.label) {
+          <div class="flex items-center gap-1.5 text-sm">
+            <span class="text-muted-foreground">{{ change.label }}</span>
+            <z-badge [zType]="change.type">
+              <i-lucide [img]="change.icon" class="size-3 mr-0.5" />
+              {{ change.value }}
+            </z-badge>
+          </div>
+        }
+      </div>
+    }
+  }
+</z-card>

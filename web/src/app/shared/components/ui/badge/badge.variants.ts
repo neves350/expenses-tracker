@@ -24,6 +24,8 @@ export const badgeVariants = cva(
 					'border-(--income-foreground-border) bg-(--income)/70 text-income-foreground',
 				negative:
 					'border-(--expense-foreground-border) bg-(--destructive)/10 text-expense-foreground',
+				balance:
+					'border-balance-foreground/30 bg-balance/70 text-balance-foreground',
 			},
 			zShape: {
 				default: 'rounded-md',
