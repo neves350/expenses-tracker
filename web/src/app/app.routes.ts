@@ -59,6 +59,12 @@ export const routes: Routes = [
 					),
 			},
 			{
+				path: 'recurrings',
+				title: 'Recurrings',
+				loadComponent: () =>
+					import('./pages/recurrings/recurrings').then((m) => m.Recurrings),
+			},
+			{
 				path: 'cards',
 				title: 'Cards',
 				loadComponent: () => import('./pages/cards/cards').then((m) => m.Cards),
