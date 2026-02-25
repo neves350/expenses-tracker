@@ -8,6 +8,7 @@ import {
 	LayoutDashboardIcon,
 	LucideAngularModule,
 	type LucideIconData,
+	RepeatIcon,
 	SettingsIcon,
 	TagIcon,
 	WalletIcon,
@@ -61,6 +62,11 @@ export class SidebarGroup {
 			title: 'Transactions',
 			url: '/transactions',
 			icon: ArrowRightLeftIcon,
+		},
+		{
+			title: 'Recurrings',
+			url: '/recurrings',
+			icon: RepeatIcon,
 		},
 		{
 			title: 'Cards',
