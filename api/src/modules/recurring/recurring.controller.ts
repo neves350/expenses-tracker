@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Patch,
+	Post,
+	UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { CreateRecurringDto } from './dtos/create-recurring.dto'
+import { UpdateRecurringDto } from './dtos/update-recurring.dto'
 import { RecurringService } from './recurring.service'
 
 @ApiTags('Recurrings')
@@ -36,5 +45,20 @@ export class RecurringController {
 	})
 	async findAll(@CurrentUser() user) {
 		return this.recurringService.findAll(user.userId)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Patch(':id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Update recurring transaction by id',
+		description: 'Updates the recurring transaction information.',
+	})
+	async update(
+		@Param('id') id: string,
+		@Body() dto: UpdateRecurringDto,
+		@CurrentUser() user,
+	) {
+		return this.recurringService.update(id, user.userId, dto)
 	}
 }

@@ -2,10 +2,12 @@ import {
 	BadRequestException,
 	ForbiddenException,
 	Injectable,
+	NotFoundException,
 } from '@nestjs/common'
 import { Prisma } from 'src/generated/prisma/client'
 import { PrismaService } from 'src/infrastructure/db/prisma.service'
 import { CreateRecurringDto } from './dtos/create-recurring.dto'
+import { UpdateRecurringDto } from './dtos/update-recurring.dto'
 
 @Injectable()
 export class RecurringService {
@@ -91,5 +93,34 @@ export class RecurringService {
 		})
 
 		return { recurrings, total: recurrings.length }
+	}
+
+	async update(recurringId: string, userId: string, dto: UpdateRecurringDto) {
+		if (dto.bankAccountId) {
+			const bankAccount = await this.prisma.bankAccount.findFirst({
+				where: { id: dto.bankAccountId, userId },
+				select: { id: true },
+			})
+
+			if (!bankAccount)
+				throw new ForbiddenException('Account does not belong to user')
+		}
+
+		const recurring = await this.prisma.recurring.findFirst({
+			where: { id: recurringId },
+		})
+
+		if (!recurring)
+			throw new NotFoundException('Recurring transaction not found')
+
+		const amount = dto.amount ? new Prisma.Decimal(dto.amount) : undefined
+
+		return this.prisma.recurring.update({
+			where: { id: recurringId },
+			data: {
+				...dto,
+				amount,
+			},
+		})
 	}
 }
