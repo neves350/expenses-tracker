@@ -123,4 +123,24 @@ export class RecurringService {
 			},
 		})
 	}
+
+	async delete(recurringId: string, userId: string) {
+		const recurring = await this.prisma.recurring.findFirst({
+			where: {
+				id: recurringId,
+				bankAccount: { userId },
+			},
+		})
+
+		if (!recurring)
+			throw new NotFoundException('Recurring transaction not found')
+
+		await this.prisma.recurring.delete({
+			where: {
+				id: recurringId,
+			},
+		})
+
+		return { message: 'Recurring transaction deleted successfully' }
+	}
 }

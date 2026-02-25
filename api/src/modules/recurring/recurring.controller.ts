@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Patch,
@@ -60,5 +61,16 @@ export class RecurringController {
 		@CurrentUser() user,
 	) {
 		return this.recurringService.update(id, user.userId, dto)
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Delete(':id')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Delete recurring transaction by id',
+		description: 'Deletes the recurring transaction information.',
+	})
+	async delete(@Param('id') id: string, @CurrentUser() user) {
+		return this.recurringService.delete(id, user.userId)
 	}
 }
