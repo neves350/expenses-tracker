@@ -209,22 +209,23 @@ model Transaction {
 }
 
 model Recurring {
-  id            String      @id @default(uuid())
-  cardId        String?     @map("card_id")
-  bankAccountId String      @map("bank_account_id")
-  categoryId    String      @map("category_id")
+  id            String         @id @default(uuid())
+  cardId        String?        @map("card_id")
+  bankAccountId String         @map("bank_account_id")
+  categoryId    String         @map("category_id")
   description   String
   type          Type
-  amount        Decimal     @db.Decimal(12, 2)
-  monthDay      Int?        @map("month_day")
+  amount        Decimal        @db.Decimal(12, 2)
+  monthDay      Int?           @map("month_day")
   frequency     Frequency
-  startDate     DateTime    @default(now()) @map("start_date")
-  endDate       DateTime?   @map("end_date")
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
-  card          Card?       @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  paymentMethod PaymentMethod? @map("payment_method")
+  startDate     DateTime       @default(now()) @map("start_date")
+  endDate       DateTime?      @map("end_date")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  card          Card?          @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  bankAccount   BankAccount    @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
 
   @@map("recurrings")
 }
@@ -237,4 +238,9 @@ enum Type {
 enum Frequency {
   MONTH
   ANNUAL
+}
+
+enum PaymentMethod {
+  MONEY
+  CARD
 }
