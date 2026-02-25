@@ -20,7 +20,6 @@ import { NgxSonnerToaster, toast } from 'ngx-sonner'
 		RouterLink,
 	],
 	templateUrl: './recover.html',
-	styleUrl: './recover.css',
 })
 export class Recover {
 	readonly MailIcon = MailIcon

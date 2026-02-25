@@ -8,7 +8,6 @@ import { IncomeCard } from './income-card/income-card'
 	selector: 'app-dashboard-card',
 	imports: [BalanceCard, IncomeCard, ExpenseCard, GoalCard],
 	templateUrl: './dashboard-card.html',
-	styleUrl: './dashboard-card.css',
 })
 export class DashboardCard {
 	// Sample data - replace with actual data from API/Service

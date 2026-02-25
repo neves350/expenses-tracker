@@ -20,7 +20,6 @@ import { NgxSonnerToaster, toast } from 'ngx-sonner'
 		RouterLink,
 	],
 	templateUrl: './login.html',
-	styleUrl: './login.css',
 })
 export class Login {
 	readonly WalletMinimalIcon = WalletMinimalIcon

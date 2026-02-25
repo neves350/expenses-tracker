@@ -1,8 +1,8 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
-	OnInit,
 	inject,
+	OnInit,
 } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
@@ -26,7 +26,6 @@ import { NgxSonnerToaster, toast } from 'ngx-sonner'
 		RouterLink,
 	],
 	templateUrl: './reset.html',
-	styleUrl: './reset.css',
 })
 export class Reset implements OnInit {
 	readonly MailOpenIcon = MailOpenIcon
@@ -40,7 +39,10 @@ export class Reset implements OnInit {
 	private readonly authService = inject(AuthService)
 
 	form = this.fb.nonNullable.group({
-		code: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
+		code: [
+			'',
+			[Validators.required, Validators.minLength(5), Validators.maxLength(5)],
+		],
 		password: ['', [Validators.minLength(6), Validators.required]],
 	})
 

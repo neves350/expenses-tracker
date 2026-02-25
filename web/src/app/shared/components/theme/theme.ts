@@ -7,7 +7,6 @@ import { ZardButtonComponent } from '../ui/button'
 	selector: 'app-theme',
 	imports: [ZardButtonComponent, LucideAngularModule],
 	templateUrl: './theme.html',
-	styleUrl: './theme.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Theme {

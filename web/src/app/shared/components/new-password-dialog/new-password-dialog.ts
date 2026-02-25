@@ -15,7 +15,6 @@ const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/
 	selector: 'app-new-password-dialog',
 	imports: [ReactiveFormsModule, ZardInputDirective, LucideAngularModule],
 	templateUrl: './new-password-dialog.html',
-	styleUrl: './new-password-dialog.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewPasswordDialog {

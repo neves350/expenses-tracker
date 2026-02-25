@@ -14,6 +14,5 @@ import { DashboardTransactions } from '@/shared/components/dashboard/dashboard-t
 		DashboardTransactions,
 	],
 	templateUrl: './dashboard.html',
-	styleUrl: './dashboard.css',
 })
 export class Dashboard {}

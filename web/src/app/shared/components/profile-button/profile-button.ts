@@ -26,7 +26,6 @@ import { ZardDropdownImports } from '../ui/dropdown'
 		RouterLink,
 	],
 	templateUrl: './profile-button.html',
-	styleUrl: './profile-button.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileButton {
