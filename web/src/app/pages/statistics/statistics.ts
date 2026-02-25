@@ -7,6 +7,7 @@ import { ChartPieIcon, LucideAngularModule } from 'lucide-angular'
 import { StatisticsBreakdown } from '@/shared/components/statistics/statistics-breakdown/statistics-breakdown'
 import { StatisticsCategories } from '@/shared/components/statistics/statistics-categories/statistics-categories'
 import { StatisticsFilter } from '@/shared/components/statistics/statistics-filter/statistics-filter'
+import { StatisticsInsights } from '@/shared/components/statistics/statistics-insights/statistics-insights'
 import { StatisticsPeriod } from '@/shared/components/statistics/statistics-period/statistics-period'
 import { StatisticsSummary } from '@/shared/components/statistics/statistics-summary/statistics-summary'
 import { ZardCardComponent } from '@/shared/components/ui/card'
@@ -21,6 +22,7 @@ import { ZardCardComponent } from '@/shared/components/ui/card'
 		StatisticsCategories,
 		StatisticsPeriod,
 		StatisticsBreakdown,
+		StatisticsInsights,
 	],
 	templateUrl: './statistics.html',
 })
