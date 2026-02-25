@@ -69,4 +69,27 @@ export class RecurringService {
 			},
 		})
 	}
+
+	async findAll(userId: string) {
+		const userAccounts = await this.prisma.bankAccount.findMany({
+			where: { userId },
+			select: { id: true },
+		})
+
+		const accountIds = userAccounts.map((a) => a.id)
+
+		const recurrings = await this.prisma.recurring.findMany({
+			where: {
+				bankAccountId: { in: accountIds },
+			},
+			orderBy: { createdAt: 'desc' },
+			include: {
+				category: {
+					select: { id: true, title: true, type: true },
+				},
+			},
+		})
+
+		return { recurrings, total: recurrings.length }
+	}
 }
