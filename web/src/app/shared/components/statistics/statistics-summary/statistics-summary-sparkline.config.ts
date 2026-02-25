@@ -65,7 +65,7 @@ export function createSparklineChartOptions(
 				enabled: true,
 			},
 			animations: {
-				enabled: false,
+				enabled: true,
 			},
 		},
 		colors: [color],
