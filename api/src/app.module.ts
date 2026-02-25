@@ -9,6 +9,7 @@ import { CardModule } from './modules/card/card.module'
 import { CategoryModule } from './modules/category/category.module'
 import { ExportModule } from './modules/export/export.module'
 import { GoalModule } from './modules/goal/goal.module'
+import { RecurringModule } from './modules/recurring/recurring.module'
 import { StatisticModule } from './modules/statistic/statistic.module'
 import { TransactionModule } from './modules/transaction/transaction.module'
 import { TransferModule } from './modules/transfer/transfer.module'
@@ -30,6 +31,7 @@ import { UsersModule } from './modules/users/users.module'
 		GoalModule,
 		BankAccountModule,
 		TransferModule,
+		RecurringModule,
 	],
 	controllers: [],
 	providers: [],
