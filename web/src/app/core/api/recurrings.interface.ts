@@ -13,7 +13,7 @@ export enum FrequencyType {
 	ANNUAL = 'ANNUAL',
 }
 
-export enum PaymentMethod {
+export enum PaymentMethodType {
 	MONEY = 'MONEY',
 	CARD = 'CARD',
 }
@@ -31,7 +31,7 @@ export interface Recurring {
 	amount: number
 	monthDay?: number
 	frequency: FrequencyType
-	paymentMethod?: PaymentMethod
+	paymentMethod?: PaymentMethodType
 	startDate: Date
 	endDate?: Date
 	category: RecurringCategory
@@ -54,7 +54,7 @@ export interface CreateRecurringRequest {
 	amount: number
 	monthDay?: number
 	frequency: FrequencyType
-	paymentMethod?: PaymentMethod
+	paymentMethod?: PaymentMethodType
 	startDate: Date
 	endDate?: Date
 	bankAccountId: string
@@ -79,7 +79,7 @@ export interface UpdateRecurringRequest {
 	amount?: number
 	monthDay?: number
 	frequency?: FrequencyType
-	paymentMethod?: PaymentMethod
+	paymentMethod?: PaymentMethodType
 	startDate?: Date
 	endDate?: Date
 	bankAccountId?: string
