@@ -1,0 +1,174 @@
+<z-divider />
+
+<form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4 py-4">
+  @if (!isEditMode()) {
+    <div class="grid grid-cols-2 gap-4">
+      @for (recurringType of recurringTypes; track recurringType) {
+        <button
+          type="button"
+          class="flex cursor-pointer justify-center items-center gap-2 rounded-2xl border-2 p-4 text-center transition-colors"
+          [class]="getTypeClasses(recurringType)"
+          (click)="selectType(recurringType)"
+        >
+          <i-lucide
+            [img]="typeIcons[recurringType]"
+            class="size-5"
+            [class]="getTypeIconClasses(recurringType)"
+          />
+          <span class="text-sm font-semibold">{{ getTypeLabel(recurringType) }}</span>
+        </button>
+      }
+    </div>
+  }
+
+  <div class="grid gap-2">
+    <label for="description" class="text-sm">Description</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="description"
+      placeholder="E.g: Netflix, Salary, House rent..."
+    />
+    @if (form.controls.description.touched && form.controls.description.errors?.['required']) {
+      <span class="text-xs text-destructive">Description is required</span>
+    }
+  </div>
+
+  <div class="grid gap-2">
+    <label for="amount" class="text-sm">Amount</label>
+    <input
+      z-input
+      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+      formControlName="amount"
+      placeholder="100"
+    />
+    @if (form.controls.amount.touched && form.controls.amount.errors?.['required']) {
+      <span class="text-xs text-destructive">Amount is required</span>
+    }
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="grid gap-2">
+      <label for="monthDay" class="text-sm">Month Day</label>
+      <z-select class="w-full" formControlName="monthDay">
+        @for (day of days; track day) {
+          <z-select-item [zValue]="'' + day">
+            <span>{{ day }}</span>
+          </z-select-item>
+        }
+      </z-select>
+      @if (form.controls.monthDay.touched && form.controls.monthDay.errors?.['required']) {
+        <span class="text-xs text-destructive">Month day is required</span>
+      }
+    </div>
+
+    <div class="grid gap-2">
+      <label for="frequency" class="text-sm">Frequency</label>
+      <z-select class="w-full" formControlName="frequency">
+        @for (frequencyType of frequencyTypes; track frequencyType) {
+          <z-select-item [zValue]="frequencyType">
+            <span>{{ getTypeFrequencies(frequencyType) }}</span>
+          </z-select-item>
+        }
+      </z-select>
+      @if (form.controls.frequency.touched && form.controls.frequency.errors?.['required']) {
+        <span class="text-xs text-destructive">Frequency is required</span>
+      }
+    </div>
+  </div>
+
+  <div class="grid gap-2">
+    <label for="categoryId" class="text-sm">Category</label>
+    <z-select class="w-full" formControlName="categoryId" zPlaceholder="Select a category">
+      @for (category of categories(); track category.id) {
+        <z-select-item [zValue]="$any(category.id)">
+          <span>{{ category.title }}</span>
+        </z-select-item>
+      }
+    </z-select>
+    @if (form.controls.categoryId.touched && form.controls.categoryId.errors?.['required']) {
+      <span class="text-xs text-destructive">Category is required</span>
+    }
+  </div>
+
+  @if (form.controls.type.value === 'EXPENSE') {
+    <div class="grid gap-2">
+      <label for="paymentMethod" class="text-sm">Payment Method</label>
+
+      <div class="grid grid-cols-2 gap-3">
+        @for (paymentMethodType of paymentMethodTypes; track paymentMethodType) {
+          <button
+            type="button"
+            class="flex cursor-pointer justify-center items-center gap-2 rounded-md border-2 p-2 text-center transition-colors"
+            [class]="getPaymentsClasses(paymentMethodType)"
+            (click)="selectPayments(paymentMethodType)"
+          >
+            <i-lucide
+              [img]="paymentIcons[paymentMethodType]"
+              class="size-4"
+              [class]="getPaymentsIconClasses(paymentMethodType)"
+            />
+            <span class="text-xs font-semibold">{{ getPaymentLabel(paymentMethodType) }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (form.controls.paymentMethod.value === 'CARD') {
+      <div class="grid gap-2">
+        <label for="cardId" class="text-sm">Card</label>
+        <z-select class="w-full" formControlName="cardId" zPlaceholder="Select a card">
+          @for (card of cards(); track card.id) {
+            <z-select-item [zValue]="$any(card.id)">
+              <span>{{ card.name }}</span>
+            </z-select-item>
+          }
+        </z-select>
+        @if (form.controls.cardId.touched && form.controls.cardId.errors?.['required']) {
+          <span class="text-xs text-destructive">Card is required</span>
+        }
+      </div>
+    }
+  }
+
+  <div class="grid gap-2">
+    <label for="bankAccountId" class="text-sm">Account</label>
+    <z-select class="w-full" formControlName="bankAccountId" zPlaceholder="Select a account">
+      @for (account of accounts(); track account.id) {
+        <z-select-item [zValue]="$any(account.id)">
+          <span>{{ account.name }}</span>
+        </z-select-item>
+      }
+    </z-select>
+    @if (form.controls.bankAccountId.touched && form.controls.bankAccountId.errors?.['required']) {
+      <span class="text-xs text-destructive">Account is required</span>
+    }
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="grid gap-2">
+      <label for="startDate" class="text-sm">Start Date</label>
+      <z-date-picker
+        zSize="sm"
+        zFormat="dd-MM-yyyy"
+        class="w-full [&>button]:w-full"
+        [value]="selectedDate"
+        (dateChange)="onStartDateChange($event)"
+      />
+      @if (form.controls.startDate.touched && form.controls.startDate.errors?.['required']) {
+        <span class="text-xs text-destructive">Start date is required</span>
+      }
+    </div>
+
+    <div class="grid gap-2">
+      <label for="endDate" class="text-sm">End Date (Optional)</label>
+      <z-date-picker
+        placeholder="No end date"
+        zSize="sm"
+        zFormat="dd-MM-yyyy"
+        class="w-full [&>button]:w-full"
+        (dateChange)="onEndDateChange($event)"
+      />
+    </div>
+  </div>
+</form>

@@ -14,13 +14,13 @@
           [zContent]="popoverContent"
           zPlacement="right"
           zTrigger="hover"
-          zType="outline"
+          zType="ghost"
         >
           <i-lucide [img]="CircleAlertIcon" />
         </z-button>
       </div>
       <div class="flex items-center gap-3">
-        <z-button zType="default">
+        <z-button zType="default" (click)="openDialog()">
           <i-lucide [img]="PlusIcon" />
           New Recurring
         </z-button>
@@ -59,7 +59,7 @@
         </div>
 
         <div class="flex flex-col items-center justify-center mt-4">
-          <z-button class="cursor-pointer">
+          <z-button class="cursor-pointer" (click)="openDialog()">
             <i-lucide [img]="PlusIcon" />
             New Recurring
           </z-button>
