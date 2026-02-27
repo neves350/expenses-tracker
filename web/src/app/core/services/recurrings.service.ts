@@ -1,9 +1,11 @@
 import { computed, Injectable, inject, signal } from '@angular/core'
 import { RecurringsApi } from '@core/api/recurrings.api'
-import type {
-	CreateRecurringRequest,
-	Recurring,
-	UpdateRecurringRequest,
+import {
+	type CreateRecurringRequest,
+	FrequencyType,
+	type Recurring,
+	RecurringType,
+	type UpdateRecurringRequest,
 } from '@core/api/recurrings.interface'
 import { map, Observable, switchMap, tap } from 'rxjs'
 
@@ -17,6 +19,25 @@ export class RecurringsService {
 	readonly loading = signal<boolean>(false)
 	readonly error = signal<string | null>(null)
 	readonly hasRecurrings = computed(() => this.recurrings().length > 0)
+
+	readonly monthSummary = computed(() => {
+		let income = 0
+		let expenses = 0
+
+		for (const recurring of this.recurrings()) {
+			const amount = Number(recurring.amount)
+			const monthly =
+				recurring.frequency === FrequencyType.ANNUAL ? amount / 12 : amount
+
+			if (recurring.type === RecurringType.INCOME) {
+				income += monthly
+			} else {
+				expenses += monthly
+			}
+		}
+
+		return { income, expenses, balance: income - expenses }
+	})
 
 	loadRecurrings(): Observable<Recurring[]> {
 		this.loading.set(true)

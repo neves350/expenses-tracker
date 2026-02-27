@@ -8,6 +8,7 @@ import {
 } from 'lucide-angular'
 import { RecurringsCard } from '@/shared/components/recurrings/recurrings-card/recurrings-card'
 import { RecurringsForm } from '@/shared/components/recurrings/recurrings-form/recurrings-form'
+import { RecurringsSummary } from '@/shared/components/recurrings/recurrings-summary/recurrings-summary'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
 import { ZardDialogService } from '@/shared/components/ui/dialog'
@@ -27,6 +28,7 @@ import {
 		ZardPopoverComponent,
 		RecurringsCard,
 		ZardLoaderComponent,
+		RecurringsSummary,
 	],
 	templateUrl: './recurrings.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,

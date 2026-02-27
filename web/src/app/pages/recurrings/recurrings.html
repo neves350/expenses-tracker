@@ -46,6 +46,7 @@
         <span class="text-sm text-muted-foreground">Loading recurring transactions!</span>
       </div>
     } @else if (hasRecurrings()) {
+      <app-recurrings-summary />
       <app-recurrings-card [recurrings]="recurrings()" />
     } @else {
       <z-card class="flex flex-col mt-4">

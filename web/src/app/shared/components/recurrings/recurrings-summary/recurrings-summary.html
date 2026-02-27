@@ -1,0 +1,22 @@
+<z-card class="mb-8 py-6">
+  <div class="grid grid-cols-3 w-full">
+    <div class="text-center flex flex-col border-r border-border">
+      <span class="text-xs text-muted-foreground mb-1">Income/month</span>
+      <span class="text-2xl font-semibold text-income-foreground"
+        >+{{ monthSummary().income | currency: 'EUR' }}</span
+      >
+    </div>
+    <div class="text-center flex flex-col border-r border-border">
+      <span class="text-xs text-muted-foreground mb-1">Expenses/month</span>
+      <span class="text-2xl font-semibold text-expense-foreground"
+        >-{{ monthSummary().expenses | currency: 'EUR' }}</span
+      >
+    </div>
+    <div class="text-center flex flex-col">
+      <span class="text-xs text-muted-foreground mb-1">Balance/month</span>
+      <span class="text-2xl font-semibold text-income-foreground">
+        {{ balanceSign() }}{{ adsBalance() | currency: 'EUR' }}</span
+      >
+    </div>
+  </div>
+</z-card>
