@@ -17,8 +17,9 @@ import { TransactionsSummary } from '@/shared/components/transactions/transactio
 import { TransactionsToolbar } from '@/shared/components/transactions/transactions-toolbar/transactions-toolbar'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
+import { ZardDialogService } from '@/shared/components/ui/dialog'
 import { ZardDropdownImports } from '@/shared/components/ui/dropdown'
-import { ZardSheetService } from '@/shared/components/ui/sheet'
+import { ZardLoaderComponent } from '@/shared/components/ui/loader'
 
 @Component({
 	selector: 'app-transactions',
@@ -30,16 +31,17 @@ import { ZardSheetService } from '@/shared/components/ui/sheet'
 		TransactionsList,
 		TransactionsToolbar,
 		TransactionsSummary,
+		ZardLoaderComponent,
 	],
 	templateUrl: './transactions.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Transactions {
 	private readonly transactionsService = inject(TransactionsService)
-	private readonly sheetService = inject(ZardSheetService)
+	private readonly dialogService = inject(ZardDialogService)
 
 	readonly transactions = this.transactionsService.transactions
-	readonly loading = this.transactionsService.loading
+	readonly isLoading = this.transactionsService.loading
 	readonly hasTransactions = this.transactionsService.hasTransactions
 
 	readonly PlusIcon = PlusIcon
@@ -60,20 +62,19 @@ export class Transactions {
 			: txs
 	})
 
-	openSheet() {
-		this.sheetService.create({
+	openDialog() {
+		this.dialogService.create({
 			zTitle: 'New Transaction',
 			zContent: TransactionsForm,
-			zSide: 'right',
-			zWidth: '500px',
+			zWidth: '600px',
 			zHideFooter: false,
-			zOkText: 'Add Transaction',
+			zOkText: 'Create Transaction',
 			zOnOk: (instance: TransactionsForm) => {
 				instance.submit()
 				return false
 			},
 			zCustomClasses:
-				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
+				'rounded-2xl border-4 [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 		})
 	}
 }

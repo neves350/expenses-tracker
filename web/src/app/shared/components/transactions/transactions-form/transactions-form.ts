@@ -4,6 +4,7 @@ import {
 	computed,
 	inject,
 } from '@angular/core'
+import { toSignal } from '@angular/core/rxjs-interop'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { TransactionType } from '@core/api/transactions.interface'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
@@ -18,9 +19,9 @@ import {
 } from 'lucide-angular'
 import { ZardCheckboxComponent } from '../../ui/checkbox'
 import { ZardDatePickerComponent } from '../../ui/date-picker'
+import { Z_MODAL_DATA, ZardDialogRef } from '../../ui/dialog'
 import { ZardDividerComponent } from '../../ui/divider'
 import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
-import { Z_SHEET_DATA, ZardSheetRef } from '../../ui/sheet'
 import type { iTransactionData } from './transactions-form.interface'
 
 @Component({
@@ -38,9 +39,9 @@ import type { iTransactionData } from './transactions-form.interface'
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsForm {
-	private readonly zData: iTransactionData = inject(Z_SHEET_DATA)
+	private readonly zData: iTransactionData = inject(Z_MODAL_DATA)
 	private readonly fb = inject(FormBuilder)
-	private readonly sheetRef = inject(ZardSheetRef)
+	private readonly dialogRef = inject(ZardDialogRef)
 	private readonly transactionsService = inject(TransactionsService)
 	private readonly cardsService = inject(CardsService)
 	private readonly categoriesService = inject(CategoriesService)
@@ -68,6 +69,16 @@ export class TransactionsForm {
 		categoryId: ['', [Validators.required]],
 		isPaid: [false],
 	})
+
+	private readonly selectedType = toSignal(
+		this.form.controls.type.valueChanges,
+		{ initialValue: this.form.controls.type.value },
+	)
+	readonly filteredCategories = computed(() =>
+		this.selectedType() === TransactionType.INCOME
+			? this.categoriesService.incomeCategories()
+			: this.categoriesService.expenseCategories(),
+	)
 
 	constructor() {
 		if (!this.cardsService.hasCards()) {
@@ -97,7 +108,7 @@ export class TransactionsForm {
 	}
 
 	readonly typeLabels: Record<TransactionType, string> = {
-		[TransactionType.EXPENSE]: 'Expense',
+		[TransactionType.EXPENSE]: 'Expenses',
 		[TransactionType.INCOME]: 'Income',
 	}
 
@@ -111,7 +122,7 @@ export class TransactionsForm {
 	}
 
 	readonly typeDescriptions: Record<TransactionType, string> = {
-		[TransactionType.EXPENSE]: 'Expense',
+		[TransactionType.EXPENSE]: 'Expenses',
 		[TransactionType.INCOME]: 'Income',
 	}
 
@@ -125,8 +136,8 @@ export class TransactionsForm {
 		if (!isSelected) return 'border-zinc-700'
 
 		return transactionType === TransactionType.INCOME
-			? 'border-primary bg-primary/10'
-			: 'border-destructive bg-destructive/10'
+			? 'border-income-foreground bg-income-foreground/10'
+			: 'border-expense-foreground bg-expense-foreground/10'
 	}
 
 	getTypeIconClasses(transactionType: TransactionType): string {
@@ -135,8 +146,8 @@ export class TransactionsForm {
 		if (!isSelected) return 'text-muted-foreground'
 
 		return transactionType === TransactionType.INCOME
-			? 'text-primary'
-			: 'text-destructive'
+			? 'text-income-foreground'
+			: 'text-expense-foreground'
 	}
 
 	onDateChange(date: Date | null) {
@@ -166,7 +177,7 @@ export class TransactionsForm {
 			: this.transactionsService.create(payload)
 
 		request$.subscribe({
-			next: () => this.sheetRef.close(),
+			next: () => this.dialogRef.close(),
 		})
 	}
 }
