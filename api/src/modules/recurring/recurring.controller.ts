@@ -6,6 +6,7 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 	UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
@@ -70,7 +71,15 @@ export class RecurringController {
 		summary: 'Delete recurring transaction by id',
 		description: 'Deletes the recurring transaction information.',
 	})
-	async delete(@Param('id') id: string, @CurrentUser() user) {
-		return this.recurringService.delete(id, user.userId)
+	async delete(
+		@Param('id') id: string,
+		@Query('deleteTransactions') deleteTransactions,
+		@CurrentUser() user,
+	) {
+		return this.recurringService.delete(
+			id,
+			user.userId,
+			deleteTransactions === 'true',
+		)
 	}
 }

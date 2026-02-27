@@ -124,7 +124,11 @@ export class RecurringService {
 		})
 	}
 
-	async delete(recurringId: string, userId: string) {
+	async delete(
+		recurringId: string,
+		userId: string,
+		deleteTransactions = false,
+	) {
 		const recurring = await this.prisma.recurring.findFirst({
 			where: {
 				id: recurringId,
@@ -135,11 +139,31 @@ export class RecurringService {
 		if (!recurring)
 			throw new NotFoundException('Recurring transaction not found')
 
-		await this.prisma.recurring.delete({
-			where: {
-				id: recurringId,
-			},
-		})
+		if (deleteTransactions) {
+			const transactions = await this.prisma.transaction.findMany({
+				where: { recurringId },
+				select: { id: true, type: true, amount: true, bankAccountId: true },
+			})
+
+			await this.prisma.$transaction(async (tx) => {
+				// reverse balance
+				for (const t of transactions) {
+					const reverseAmount =
+						t.type === 'INCOME' ? -Number(t.amount) : Number(t.amount)
+
+					await tx.bankAccount.update({
+						where: { id: t.bankAccountId },
+						data: { balance: { increment: reverseAmount } },
+					})
+				}
+
+				await tx.transaction.deleteMany({ where: { recurringId } })
+				await tx.transaction.delete({ where: { id: recurringId } })
+			})
+		} else {
+			// transactions stay, recurringId stay null (onDelete: SetNull)
+			await this.prisma.recurring.delete({ where: { id: recurringId } })
+		}
 
 		return { message: 'Recurring transaction deleted successfully' }
 	}
