@@ -31,6 +31,7 @@ import { ZardButtonComponent } from '../../ui/button'
 import { ZardDialogService } from '../../ui/dialog'
 import { RecurringsForm } from '../recurrings-form/recurrings-form'
 import type { iRecurringSheetData } from '../recurrings-form/recurrings-form.interface'
+import { DeleteRecurringDialog } from './delete-recurring-dialog'
 
 @Component({
 	selector: 'app-recurrings-card',
@@ -129,15 +130,18 @@ export class RecurringsCard {
 
 		return this.dialogService.create({
 			zTitle: `Remove ${recurring.description}?`,
-			zDescription: 'This action cannot be undone.',
+			zContent: DeleteRecurringDialog,
 			zCancelText: 'Cancel',
 			zOkText: 'Delete Recurring',
 			zWidth: '450px',
 			zOkDestructive: true,
-			zOnOk: async () => {
+			zOnOk: async (instance: DeleteRecurringDialog) => {
 				try {
 					const message = await lastValueFrom(
-						this.recurringsService.delete(recurringId),
+						this.recurringsService.delete(
+							recurringId,
+							instance.deleteTransactions(),
+						),
 					)
 					toast.success(message)
 					this.recurringsService.loadRecurrings().subscribe()
