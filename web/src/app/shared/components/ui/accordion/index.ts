@@ -1,0 +1,5 @@
+export * from '@/shared/components/ui/accordion/accordion.component'
+export * from '@/shared/components/ui/accordion/accordion.imports'
+export * from '@/shared/components/ui/accordion/accordion.variants'
+export * from '@/shared/components/ui/accordion/accordion-item.component'
+export * from '@/shared/components/ui/accordion/accordion-trigger.directive'
