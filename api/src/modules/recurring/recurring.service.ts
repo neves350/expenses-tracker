@@ -55,20 +55,58 @@ export class RecurringService {
 
 		if (!bankAccount) throw new ForbiddenException('Account not found')
 
-		return this.prisma.recurring.create({
-			data: {
-				type,
-				description,
-				amount,
-				monthDay,
-				frequency,
-				paymentMethod,
-				...(cardId && { card: { connect: { id: cardId } } }),
-				bankAccount: { connect: { id: bankAccountId } },
-				category: { connect: { id: categoryId } },
-				startDate,
-				endDate,
-			},
+		return this.prisma.$transaction(async (tx) => {
+			const recurring = await tx.recurring.create({
+				data: {
+					type,
+					description,
+					amount,
+					monthDay,
+					frequency,
+					paymentMethod,
+					...(cardId && { card: { connect: { id: cardId } } }),
+					bankAccount: { connect: { id: bankAccountId } },
+					category: { connect: { id: categoryId } },
+					startDate,
+					endDate,
+				},
+			})
+
+			// generate transaction if monthDay === today
+			const today = new Date()
+			const shouldGenerate =
+				monthDay === today.getDate() && new Date(startDate) <= today
+
+			if (shouldGenerate) {
+				const balanceChange =
+					type === 'INCOME' ? Number(amount) : -Number(amount)
+
+				await tx.transaction.create({
+					data: {
+						title: description,
+						type,
+						amount,
+						date: today,
+						isPaid: true,
+						recurring: { connect: { id: recurring.id } },
+						bankAccount: { connect: { id: bankAccountId } },
+						category: { connect: { id: categoryId } },
+						...(cardId && { card: { connect: { id: cardId } } }),
+					},
+				})
+
+				await tx.bankAccount.update({
+					where: { id: bankAccountId },
+					data: { balance: { increment: balanceChange } },
+				})
+
+				await tx.recurring.update({
+					where: { id: recurring.id },
+					data: { lastGeneratedAt: today },
+				})
+			}
+
+			return recurring
 		})
 	}
 
@@ -161,7 +199,7 @@ export class RecurringService {
 				await tx.recurring.delete({ where: { id: recurringId } })
 			})
 		} else {
-			// transactions stay, recurringId stay null (onDelete: SetNull)
+			// transactions stay, recurringId stay null (onDelete:)
 			await this.prisma.recurring.delete({ where: { id: recurringId } })
 		}
 
