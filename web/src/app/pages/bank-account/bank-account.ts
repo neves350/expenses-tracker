@@ -12,6 +12,7 @@ import { BankAccountsTotal } from '@/shared/components/bank-accounts/bank-accoun
 import { TransfersForm } from '@/shared/components/transfers/transfers-form/transfers-form'
 import { ZardButtonComponent } from '@/shared/components/ui/button'
 import { ZardCardComponent } from '@/shared/components/ui/card'
+import { ZardLoaderComponent } from '@/shared/components/ui/loader'
 import { ZardSheetService } from '@/shared/components/ui/sheet'
 
 @Component({
@@ -22,6 +23,7 @@ import { ZardSheetService } from '@/shared/components/ui/sheet'
 		ZardCardComponent,
 		BankAccountsList,
 		BankAccountsTotal,
+		ZardLoaderComponent,
 	],
 	templateUrl: './bank-account.html',
 })
@@ -35,7 +37,7 @@ export class BankAccount implements OnInit {
 
 	// Expose service signals to template
 	readonly accounts = this.bankAccountsService.bankAccounts
-	readonly loading = this.bankAccountsService.loading
+	readonly isLoading = this.bankAccountsService.loading
 	readonly hasBankAccounts = this.bankAccountsService.hasBankAccounts
 
 	ngOnInit(): void {

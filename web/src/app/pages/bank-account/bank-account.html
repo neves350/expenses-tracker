@@ -18,37 +18,42 @@
       </div>
     </div>
 
-    @if (hasBankAccounts()) {
-    <app-bank-accounts-total />
-    <!-- Accounts List -->
-    <app-bank-accounts-list [accounts]="accounts()" />
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center gap-2 min-h-[60vh]">
+        <z-loader />
+        <span class="text-sm text-muted-foreground">Loading accounts...</span>
+      </div>
+    } @else if (hasBankAccounts()) {
+      <app-bank-accounts-total />
+      <!-- Accounts List -->
+      <app-bank-accounts-list [accounts]="accounts()" />
     } @else {
-    <z-card class="w-full h-full flex flex-col">
-      <!-- Empty State -->
-      <div class="flex flex-col items-center justify-center p-6 mt-6">
-        <div
-          class="size-12 flex items-center justify-center rounded-lg bg-accent text-accent-foreground mb-4"
-        >
-          <i-lucide [img]="CoinsIcon" />
-        </div>
+      <z-card class="w-full h-full flex flex-col">
+        <!-- Empty State -->
+        <div class="flex flex-col items-center justify-center p-6 mt-6">
+          <div
+            class="size-12 flex items-center justify-center rounded-lg bg-accent text-accent-foreground mb-4"
+          >
+            <i-lucide [img]="CoinsIcon" />
+          </div>
 
-        <div class="flex flex-col items-center text-center">
-          <div class="space-y-2 mt-6">
-            <p class="font-medium">No accounts added</p>
-            <span class="text-muted-foreground">
-              Add your accounts to track spending and available balance.
-            </span>
+          <div class="flex flex-col items-center text-center">
+            <div class="space-y-2 mt-6">
+              <p class="font-medium">No accounts added</p>
+              <span class="text-muted-foreground">
+                Add your accounts to track spending and available balance.
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center justify-center mt-4">
+            <z-button class="cursor-pointer" (click)="openSheet()">
+              <i-lucide [img]="PlusIcon" />
+              Add account
+            </z-button>
           </div>
         </div>
-
-        <div class="flex flex-col items-center justify-center mt-4">
-          <z-button class="cursor-pointer" (click)="openSheet()">
-            <i-lucide [img]="PlusIcon" />
-            Add account
-          </z-button>
-        </div>
-      </div>
-    </z-card>
+      </z-card>
     }
   </div>
 </main>
