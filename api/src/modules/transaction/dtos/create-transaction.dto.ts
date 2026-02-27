@@ -62,10 +62,4 @@ export class CreateTransactionDto {
 	@IsUUID()
 	@ApiProperty()
 	categoryId: string
-
-	@IsOptional()
-	@IsString()
-	@IsUUID()
-	@ApiPropertyOptional()
-	recurringId?: string
 }

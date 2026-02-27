@@ -55,10 +55,4 @@ export class UpdateTransactionDto {
 	@IsOptional()
 	@ApiPropertyOptional()
 	bankAccountId?: string
-
-	@IsString()
-	@IsUUID()
-	@IsOptional()
-	@ApiPropertyOptional()
-	categoryId?: string
 }
