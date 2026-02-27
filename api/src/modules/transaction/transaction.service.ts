@@ -287,6 +287,21 @@ export class TransactionService {
 			where: { id: transactionId },
 		})
 
+		await this.prisma.$transaction(async (tx) => {
+			await tx.transaction.delete({ where: { id: transactionId } })
+
+			// reverse the action
+			const reverseAmount =
+				transaction.type === 'INCOME'
+					? -Number(transaction.amount)
+					: Number(transaction.amount)
+
+			await tx.bankAccount.update({
+				where: { id: transaction.bankAccountId },
+				data: { balance: { increment: reverseAmount } },
+			})
+		})
+
 		return { message: 'Transaction deleted successfully' }
 	}
 }
