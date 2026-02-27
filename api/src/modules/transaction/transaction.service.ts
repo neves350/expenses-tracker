@@ -17,7 +17,16 @@ export class TransactionService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async create(dto: CreateTransactionDto, userId: string) {
-		const { title, type, date, isPaid, bankAccountId, cardId, categoryId } = dto
+		const {
+			title,
+			type,
+			date,
+			isPaid,
+			bankAccountId,
+			cardId,
+			categoryId,
+			recurringId,
+		} = dto
 
 		// validate amount > 0
 		if (dto.amount <= 0)
@@ -56,20 +65,35 @@ export class TransactionService {
 			select: { id: true },
 		})
 
-		if (!bankAccount) throw new NotFoundException('Category not found')
+		if (!bankAccount) throw new NotFoundException('Account not found')
 
-		return this.prisma.transaction.create({
-			data: {
-				title,
-				type,
-				amount,
-				date,
-				isPaid,
-				...(cardId && { card: { connect: { id: cardId } } }),
-				bankAccount: { connect: { id: bankAccountId } },
-				category: { connect: { id: categoryId } },
-			},
+		const transaction = this.prisma.$transaction(async (tx) => {
+			await tx.transaction.create({
+				data: {
+					title,
+					type,
+					amount,
+					date,
+					isPaid,
+					...(recurringId && { recurring: { connect: { id: recurringId } } }),
+					...(cardId && { card: { connect: { id: cardId } } }),
+					bankAccount: { connect: { id: bankAccountId } },
+					category: { connect: { id: categoryId } },
+				},
+			})
+
+			// update balance
+			await tx.bankAccount.update({
+				where: { id: bankAccountId },
+				data: {
+					balance: {
+						increment: type === 'INCOME' ? amount : -Number(amount),
+					},
+				},
+			})
 		})
+
+		return transaction
 	}
 
 	async findAll(
@@ -211,8 +235,7 @@ export class TransactionService {
 				select: { id: true },
 			})
 
-			if (!card)
-				throw new ForbiddenException('Card does not belong to user')
+			if (!card) throw new ForbiddenException('Card does not belong to user')
 		}
 
 		if (dto.bankAccountId) {
