@@ -1,0 +1,155 @@
+import { CurrencyPipe, TitleCasePipe } from '@angular/common'
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	input,
+} from '@angular/core'
+import {
+	FrequencyType,
+	Recurring,
+	RecurringType,
+} from '@core/api/recurrings.interface'
+import { RecurringsService } from '@core/services/recurrings.service'
+import {
+	ArrowDownIcon,
+	ArrowUpIcon,
+	LucideAngularModule,
+	type LucideIconData,
+	PencilIcon,
+	Trash2Icon,
+} from 'lucide-angular'
+import { toast } from 'ngx-sonner'
+import { lastValueFrom } from 'rxjs'
+import {
+	ZardAccordionComponent,
+	ZardAccordionItemComponent,
+	ZardAccordionTriggerDirective,
+} from '../../ui/accordion'
+import { ZardBadgeComponent } from '../../ui/badge'
+import { ZardButtonComponent } from '../../ui/button'
+import { ZardDialogService } from '../../ui/dialog'
+import { RecurringsForm } from '../recurrings-form/recurrings-form'
+import type { iRecurringSheetData } from '../recurrings-form/recurrings-form.interface'
+
+@Component({
+	selector: 'app-recurrings-card',
+	imports: [
+		ZardAccordionComponent,
+		ZardAccordionItemComponent,
+		ZardAccordionTriggerDirective,
+		ZardBadgeComponent,
+		ZardButtonComponent,
+		LucideAngularModule,
+		CurrencyPipe,
+		TitleCasePipe,
+	],
+	templateUrl: './recurrings-card.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class RecurringsCard {
+	readonly recurrings = input.required<Recurring[]>()
+
+	private readonly dialogService = inject(ZardDialogService)
+	private readonly recurringsService = inject(RecurringsService)
+
+	readonly PencilIcon = PencilIcon
+	readonly Trash2Icon = Trash2Icon
+
+	private readonly typeMap: Record<
+		RecurringType,
+		{
+			icon: LucideIconData
+			style: string
+			cost: string
+			sign: string
+		}
+	> = {
+		[RecurringType.INCOME]: {
+			icon: ArrowUpIcon,
+			style: 'bg-income-foreground/10 text-income-foreground',
+			cost: 'text-income-foreground',
+			sign: '+',
+		},
+		[RecurringType.EXPENSE]: {
+			icon: ArrowDownIcon,
+			style: 'bg-expense-foreground/10 text-expense-foreground',
+			cost: 'text-expense-foreground',
+			sign: '-',
+		},
+	}
+
+	typeInfo(r: Recurring) {
+		return this.typeMap[r.type]
+	}
+
+	monthlyCost(r: Recurring): number {
+		const amount = Number(r.amount)
+		return r.frequency === FrequencyType.ANNUAL ? amount / 12 : amount
+	}
+
+	annualCost(r: Recurring): number {
+		const amount = Number(r.amount)
+		return r.frequency === FrequencyType.MONTH ? amount * 12 : amount
+	}
+
+	editRecurring(recurring: Recurring) {
+		this.dialogService.create({
+			zTitle: 'Edit Recurring Transaction',
+			zContent: RecurringsForm,
+			zWidth: '700px',
+			zHideFooter: false,
+			zOkText: 'Save Changes',
+			zOnOk: (instance: RecurringsForm) => {
+				instance.submit()
+				return false
+			},
+			zCustomClasses:
+				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5 border-4',
+			zData: {
+				id: recurring.id,
+				type: recurring.type,
+				description: recurring.description,
+				amount: recurring.amount,
+				monthDay: recurring.monthDay,
+				frequency: recurring.frequency,
+				categoryId: recurring.categoryId,
+				paymentMethod: recurring.paymentMethod,
+				cardId: recurring.cardId,
+				bankAccountId: recurring.bankAccountId,
+				startDate: recurring.startDate,
+				endDate: recurring.endDate,
+			} as unknown as iRecurringSheetData,
+		})
+	}
+
+	deleteRecurring(recurring: Recurring) {
+		const recurringId = recurring.id
+		if (!recurringId) return
+
+		return this.dialogService.create({
+			zTitle: `Remove ${recurring.description}?`,
+			zDescription: 'This action cannot be undone.',
+			zCancelText: 'Cancel',
+			zOkText: 'Delete Recurring',
+			zWidth: '450px',
+			zOkDestructive: true,
+			zOnOk: async () => {
+				try {
+					const message = await lastValueFrom(
+						this.recurringsService.delete(recurringId),
+					)
+					toast.success(message)
+					this.recurringsService.loadRecurrings().subscribe()
+					return true
+				} catch (err: unknown) {
+					const error = err as { error?: { message?: string } }
+					toast.error(
+						error.error?.message || 'Failed to delete recurring transaction.',
+					)
+					return false
+				}
+			},
+		})
+	}
+}
