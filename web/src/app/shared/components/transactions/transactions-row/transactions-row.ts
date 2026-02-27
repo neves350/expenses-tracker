@@ -12,6 +12,7 @@ import {
 	EllipsisIcon,
 	FilesIcon,
 	LucideAngularModule,
+	RepeatIcon,
 	SquarePenIcon,
 	Trash2Icon,
 } from 'lucide-angular'
@@ -50,6 +51,7 @@ export class TransactionsRow {
 	readonly SquarePenIcon = SquarePenIcon
 	readonly Trash2Icon = Trash2Icon
 	readonly FilesIcon = FilesIcon
+	readonly RepeatIcon = RepeatIcon
 
 	readonly statusIcon = computed(() => {
 		return this.transaction().isPaid
@@ -169,7 +171,7 @@ export class TransactionsRow {
 			zTitle: `Remove ${this.transaction().title}?`,
 			zDescription: 'This action cannot be undone.',
 			zCancelText: 'Cancel',
-			zOkText: 'Delete Goal',
+			zOkText: 'Delete Transaction',
 			zOkDestructive: true,
 			zOnOk: async () => {
 				try {
