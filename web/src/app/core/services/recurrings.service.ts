@@ -86,11 +86,11 @@ export class RecurringsService {
 			)
 	}
 
-	delete(recurringId: string): Observable<string> {
+	delete(recurringId: string, deleteTransactions = false): Observable<string> {
 		this.loading.set(true)
 
 		return this.recurringsApi
-			.delete(recurringId)
+			.delete(recurringId, deleteTransactions)
 			.pipe(
 				switchMap((response) =>
 					this.loadRecurrings().pipe(map(() => response.message)),

@@ -16,6 +16,7 @@ export interface Transaction {
 	cardId?: string
 	bankAccountId: string
 	categoryId: string
+	recurringId?: string | null
 	title: string
 	type: TransactionType
 	amount: number

@@ -57,9 +57,12 @@ export class RecurringsApi {
 	/**
 	 * DELETE RECURRING
 	 */
-	delete(recurringId: string): Observable<RecurringActionResponse> {
+	delete(
+		recurringId: string,
+		deleteTransactions = false,
+	): Observable<RecurringActionResponse> {
 		return this.http.delete<RecurringActionResponse>(
-			`${this.baseUrl}/${recurringId}`,
+			`${this.baseUrl}/${recurringId}?deleteTransactions=${deleteTransactions}`,
 			{
 				withCredentials: true,
 			},
