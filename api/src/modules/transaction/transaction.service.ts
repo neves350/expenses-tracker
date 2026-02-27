@@ -237,20 +237,43 @@ export class TransactionService {
 				throw new ForbiddenException('Account does not belong to user')
 		}
 
-		const transaction = await this.prisma.transaction.findFirst({
+		const oldTransaction = await this.prisma.transaction.findFirst({
 			where: { id: transactionId },
 		})
 
-		if (!transaction) throw new NotFoundException('Transaction not found')
+		if (!oldTransaction) throw new NotFoundException('Transaction not found')
 
 		const amount = dto.amount ? new Prisma.Decimal(dto.amount) : undefined
 
-		return this.prisma.transaction.update({
-			where: { id: transactionId },
-			data: {
-				...dto,
-				amount,
-			},
+		return this.prisma.$transaction(async (tx) => {
+			// reverse old transaction balance
+			const oldReverse =
+				oldTransaction.type === 'INCOME'
+					? -Number(oldTransaction.amount)
+					: Number(oldTransaction.amount)
+
+			await tx.bankAccount.update({
+				where: { id: oldTransaction.bankAccountId },
+				data: { balance: { increment: oldReverse } },
+			})
+
+			const updated = await tx.transaction.update({
+				where: { id: transactionId },
+				data: { ...dto, amount },
+			})
+
+			// apply new balance
+			const newType = dto.type ?? oldTransaction.type
+			const newAmount = amount ?? oldTransaction.amount
+			const newChange =
+				newType === 'INCOME' ? Number(newAmount) : -Number(newAmount)
+
+			await tx.bankAccount.update({
+				where: { id: updated.bankAccountId },
+				data: { balance: { increment: newChange } },
+			})
+
+			return updated
 		})
 	}
 
