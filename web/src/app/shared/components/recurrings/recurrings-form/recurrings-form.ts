@@ -1,4 +1,5 @@
 import { Component, computed, inject } from '@angular/core'
+import { toSignal } from '@angular/core/rxjs-interop'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import {
 	FrequencyType,
@@ -47,7 +48,6 @@ export class RecurringsForm {
 
 	readonly isEditMode = computed(() => !!this.zData?.id)
 
-	readonly categories = this.categoriesService.categories
 	readonly accounts = this.bankAccountsService.bankAccounts
 	readonly cards = this.cardsService.cards
 	readonly selectedDate: Date | null = new Date()
@@ -69,6 +69,16 @@ export class RecurringsForm {
 		startDate: ['', [Validators.required]],
 		endDate: [''],
 	})
+
+	private readonly selectedType = toSignal(
+		this.form.controls.type.valueChanges,
+		{ initialValue: this.form.controls.type.value },
+	)
+	readonly filteredCategories = computed(() =>
+		this.selectedType() === RecurringType.INCOME
+			? this.categoriesService.incomeCategories()
+			: this.categoriesService.expenseCategories(),
+	)
 
 	constructor() {
 		this.categoriesService.loadCategories().subscribe()
