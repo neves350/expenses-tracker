@@ -158,7 +158,7 @@ export class RecurringService {
 				}
 
 				await tx.transaction.deleteMany({ where: { recurringId } })
-				await tx.transaction.delete({ where: { id: recurringId } })
+				await tx.recurring.delete({ where: { id: recurringId } })
 			})
 		} else {
 			// transactions stay, recurringId stay null (onDelete: SetNull)

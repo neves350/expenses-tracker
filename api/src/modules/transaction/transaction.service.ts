@@ -295,10 +295,6 @@ export class TransactionService {
 		if (transaction.bankAccount.userId !== userId)
 			throw new ForbiddenException('You cannot delete this transaction')
 
-		await this.prisma.transaction.delete({
-			where: { id: transactionId },
-		})
-
 		await this.prisma.$transaction(async (tx) => {
 			await tx.transaction.delete({ where: { id: transactionId } })
 
