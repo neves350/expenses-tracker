@@ -55,9 +55,7 @@ export class IconPicker implements ControlValueAccessor {
 	}
 
 	writeValue(value: string): void {
-		if (value) {
-			this.selectedIcon.set(value)
-		}
+		this.selectedIcon.set(value ?? '')
 	}
 
 	registerOnChange(fn: (value: string) => void): void {

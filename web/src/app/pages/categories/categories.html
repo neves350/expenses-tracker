@@ -8,24 +8,22 @@
         </span>
       </h1>
 
-      <div class="justify-end">
-        <z-button class="cursor-pointer" zType="outline" (click)="openDialog()">
-          <i-lucide [img]="PlusIcon" />
-          Add category
-        </z-button>
-      </div>
     </div>
+
+    <app-categories-form [category]="editingCategory()" (editDone)="onEditDone()" />
 
     <div class="grid grid-cols-2 gap-6">
       <app-categories-list
         [categories]="expenseCategories()"
         title="Expense Categories"
         dotColor="bg-red-500"
+        (edit)="onEdit($event)"
       />
       <app-categories-list
         [categories]="incomeCategories()"
         title="Income Categories"
         dotColor="bg-emerald-500"
+        (edit)="onEdit($event)"
       />
     </div>
   </div>

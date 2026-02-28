@@ -1,11 +1,20 @@
-import { Component, computed, inject } from '@angular/core'
+import { Component, computed, inject, input, output } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { CategoryType } from '@core/api/categories.interface'
+import type { Category } from '@core/api/categories.interface'
 import { CategoriesService } from '@core/services/categories.service'
-import { Z_MODAL_DATA, ZardDialogRef } from '../../ui/dialog'
+import {
+	CirclePlusIcon,
+	LucideAngularModule,
+	SaveIcon,
+	XIcon,
+} from 'lucide-angular'
+import { toast } from 'ngx-sonner'
+import { ZardButtonComponent } from '../../ui/button'
+import { ZardCardComponent } from '../../ui/card'
+import { ZardInputDirective } from '../../ui/input'
 import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
 import { IconPicker } from '../icon-picker/icon-picker'
-import type { iCategorySheetData } from './categories-form.interface'
 
 @Component({
 	selector: 'app-categories-form',
@@ -14,14 +23,23 @@ import type { iCategorySheetData } from './categories-form.interface'
 		ZardSelectItemComponent,
 		ZardSelectComponent,
 		IconPicker,
+		ZardButtonComponent,
+		LucideAngularModule,
+		ZardCardComponent,
+		ZardInputDirective,
 	],
 	templateUrl: './categories-form.html',
 })
 export class CategoriesForm {
 	private readonly categoriesService = inject(CategoriesService)
-	private readonly zData: iCategorySheetData = inject(Z_MODAL_DATA)
-	private readonly dialogRef = inject(ZardDialogRef)
 	private readonly fb = inject(FormBuilder)
+
+	readonly category = input<Category | null>(null)
+	readonly editDone = output<void>()
+
+	readonly CirclePlusIcon = CirclePlusIcon
+	readonly SaveIcon = SaveIcon
+	readonly XIcon = XIcon
 
 	form = this.fb.nonNullable.group({
 		title: ['', [Validators.required]],
@@ -29,18 +47,7 @@ export class CategoriesForm {
 		type: [CategoryType.EXPENSE, [Validators.required]],
 	})
 
-	constructor() {
-		if (this.zData?.id) {
-			this.form.patchValue({
-				title: this.zData.title ?? '',
-				icon: this.zData.icon ?? '',
-				type: this.zData.type ?? CategoryType.EXPENSE,
-			})
-		}
-	}
-
-	readonly isEditMode = computed(() => !!this.zData?.id)
-
+	readonly isEditMode = computed(() => !!this.category()?.id)
 	readonly categoryTypes = Object.values(CategoryType)
 
 	readonly typeLabels: Record<CategoryType, string> = {
@@ -50,6 +57,19 @@ export class CategoriesForm {
 
 	getTypeLabel(type: CategoryType): string {
 		return this.typeLabels[type]
+	}
+
+	fillForm(category: Category): void {
+		this.form.patchValue({
+			title: category.title ?? '',
+			icon: category.icon ?? '',
+			type: category.type ?? CategoryType.EXPENSE,
+		})
+	}
+
+	cancelEdit(): void {
+		this.resetForm()
+		this.editDone.emit()
 	}
 
 	submit(): void {
@@ -65,12 +85,32 @@ export class CategoriesForm {
 			type: formValue.type,
 		}
 
-		const request$ = this.zData?.id
-			? this.categoriesService.update(this.zData.id, payload)
+		const categoryId = this.category()?.id
+		const request$ = categoryId
+			? this.categoriesService.update(categoryId, payload)
 			: this.categoriesService.create(payload)
 
+		const action = this.isEditMode() ? 'updated' : 'created'
+
 		request$.subscribe({
-			next: () => this.dialogRef.close(),
+			next: () => {
+				toast.success(`Category ${action} successfully`)
+				this.resetForm()
+				this.editDone.emit()
+			},
+			error: () => {
+				toast.error(
+					`Failed to ${this.isEditMode() ? 'update' : 'create'} category`,
+				)
+			},
+		})
+	}
+
+	private resetForm(): void {
+		this.form.reset({
+			title: '',
+			icon: '',
+			type: CategoryType.EXPENSE,
 		})
 	}
 }
