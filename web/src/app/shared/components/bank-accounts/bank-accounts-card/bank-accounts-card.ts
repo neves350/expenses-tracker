@@ -12,6 +12,8 @@ import { BankAccount, BankType } from '@core/api/bank-accounts.interface'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
 import { CardsService } from '@core/services/cards.service'
 import {
+	CircleArrowDownIcon,
+	CircleArrowUpIcon,
 	CoinsIcon,
 	CreditCardIcon,
 	EllipsisVerticalIcon,
@@ -66,16 +68,61 @@ export class BankAccountsCard {
 	private readonly bankAccountsService = inject(BankAccountsService)
 	private readonly cardsService = inject(CardsService)
 
-	readonly HandCoinsIcon = HandCoinsIcon
-	readonly CreditCardIcon = CreditCardIcon
-	readonly LandmarkIcon = LandmarkIcon
-	readonly WalletMinimalIcon = WalletMinimalIcon
-	readonly CoinsIcon = CoinsIcon
 	readonly EllipsisVerticalIcon = EllipsisVerticalIcon
-
 	readonly SquarePenIcon = SquarePenIcon
 	readonly Trash2Icon = Trash2Icon
 	readonly EyeIcon = EyeIcon
+
+	readonly badgeType = computed(() => {
+		const balance = Number(this.account().balance)
+		if (balance < 0) return 'negative'
+		if (balance === 0) return 'unavailable'
+		return 'available'
+	})
+	readonly badgeLabel = computed(() => {
+		const balance = Number(this.account().balance)
+		if (balance < 0) return 'Negative'
+		if (balance === 0) return 'Unavailable'
+		return 'Available'
+	})
+
+	private readonly balanceDelta = computed(() => {
+		const { balance, initialBalance } = this.account()
+		return Number(balance) - Number(initialBalance ?? 0)
+	})
+	readonly hasBalanceChange = computed(() => this.balanceDelta() !== 0)
+	readonly balanceSinceStart = computed(() => {
+		return new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: this.account().currency,
+			signDisplay: 'always',
+		}).format(this.balanceDelta())
+	})
+	readonly trendIcon = computed(() =>
+		this.balanceDelta() >= 0 ? CircleArrowUpIcon : CircleArrowDownIcon,
+	)
+	readonly trendColorClass = computed(() =>
+		this.balanceDelta() < 0
+			? 'text-expense-foreground'
+			: 'text-income-foreground',
+	)
+	readonly lastMovementRelative = computed(() => {
+		const updatedAt = this.account().updatedAt
+		if (!updatedAt) return null
+		const now = Date.now()
+		const then = new Date(updatedAt).getTime()
+		const diffMs = now - then
+		const diffSec = Math.floor(diffMs / 1000)
+		const diffMin = Math.floor(diffSec / 60)
+		const diffHour = Math.floor(diffMin / 60)
+		const diffDay = Math.floor(diffHour / 24)
+
+		const rtf = new Intl.RelativeTimeFormat('en-US', { numeric: 'auto' })
+		if (diffDay > 0) return rtf.format(-diffDay, 'day')
+		if (diffHour > 0) return rtf.format(-diffHour, 'hour')
+		if (diffMin > 0) return rtf.format(-diffMin, 'minute')
+		return rtf.format(-diffSec, 'second')
+	})
 
 	private readonly typeLabels: Record<BankType, string> = {
 		[BankType.WALLET]: 'Wallet',
@@ -86,10 +133,10 @@ export class BankAccountsCard {
 
 	readonly bankAccountIcon = computed(() => {
 		const iconMap: Record<BankType, typeof CreditCardIcon> = {
-			[BankType.WALLET]: this.WalletMinimalIcon,
-			[BankType.CHECKING]: this.LandmarkIcon,
-			[BankType.SAVINGS]: this.HandCoinsIcon,
-			[BankType.INVESTMENT]: this.CoinsIcon,
+			[BankType.WALLET]: WalletMinimalIcon,
+			[BankType.CHECKING]: LandmarkIcon,
+			[BankType.SAVINGS]: HandCoinsIcon,
+			[BankType.INVESTMENT]: CoinsIcon,
 		}
 		return iconMap[this.account().type]
 	})

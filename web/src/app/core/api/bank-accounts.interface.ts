@@ -25,6 +25,7 @@ export interface BankAccount {
 	initialBalance?: number
 	totalMovements?: number
 	createdAt?: string
+	updatedAt?: string
 }
 
 /**

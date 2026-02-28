@@ -15,8 +15,8 @@
 
     <!-- Popover Option -->
     <div class="flex items-center gap-1">
-      <z-badge [zType]="account().balance > 0 ? 'available' : 'unavailable'" class="h-5">
-        {{ account().balance > 0 ? 'Available' : 'Unavailable' }}
+      <z-badge [zType]="badgeType()" class="h-5">
+        {{ badgeLabel() }}
       </z-badge>
 
       <z-button zPopover [zContent]="popoverContent" zType="ghost">
@@ -33,7 +33,13 @@
           Edit
         </z-button>
 
-        <z-button zPopoverClose zType="ghost" zSize="sm" zFull [routerLink]="['/account-details', account().id]">
+        <z-button
+          zPopoverClose
+          zType="ghost"
+          zSize="sm"
+          zFull
+          [routerLink]="['/account-details', account().id]"
+        >
           <i-lucide [img]="EyeIcon" class="size-5 mr-2" />
           Details
         </z-button>
@@ -62,7 +68,21 @@
     </span>
   </div>
 
+  @if (hasBalanceChange()) {
+    <div class="flex items-center gap-1 mt-1">
+      <i-lucide [img]="trendIcon()" class="size-4" [class]="trendColorClass()" />
+      <span class="text-sm font-semibold" [class]="trendColorClass()">
+        {{ balanceSinceStart() }}
+      </span>
+      <span class="text-sm text-muted-foreground">since start</span>
+    </div>
+  }
+
   <z-divider />
 
-  <p class="text-xs text-muted-foreground mb-1">No confirmed movements.</p>
+  @if (lastMovementRelative()) {
+    <p class="text-xs text-muted-foreground mb-1">Last movement: {{ lastMovementRelative() }}</p>
+  } @else {
+    <p class="text-xs text-muted-foreground mb-1">No confirmed movements.</p>
+  }
 </z-card>
