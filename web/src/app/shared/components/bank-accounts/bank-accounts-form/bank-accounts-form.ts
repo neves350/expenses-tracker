@@ -8,9 +8,10 @@ import { toSignal } from '@angular/core/rxjs-interop'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { BankCurrency, BankType } from '@core/api/bank-accounts.interface'
 import { BankAccountsService } from '@core/services/bank-accounts.service'
+import { EuroIcon, LucideAngularModule } from 'lucide-angular'
+import { Z_MODAL_DATA, ZardDialogRef } from '../../ui/dialog'
 import { ZardDividerComponent } from '../../ui/divider'
 import { ZardSelectComponent, ZardSelectItemComponent } from '../../ui/select'
-import { Z_SHEET_DATA, ZardSheetRef } from '../../ui/sheet'
 import type { iSheetData } from './bank-account-form.interface'
 
 @Component({
@@ -20,15 +21,18 @@ import type { iSheetData } from './bank-account-form.interface'
 		ZardSelectComponent,
 		ZardSelectItemComponent,
 		ReactiveFormsModule,
+		LucideAngularModule,
 	],
 	templateUrl: './bank-accounts-form.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BankAccountsForm {
-	private readonly zData: iSheetData = inject(Z_SHEET_DATA)
+	private readonly zData: iSheetData = inject(Z_MODAL_DATA)
 	private readonly fb = inject(FormBuilder)
 	private readonly bankAccountsService = inject(BankAccountsService)
-	private readonly sheetRef = inject(ZardSheetRef)
+	private readonly dialogRef = inject(ZardDialogRef)
+
+	readonly EuroIcon = EuroIcon
 
 	// Form with default values
 	form = this.fb.nonNullable.group({
@@ -109,7 +113,7 @@ export class BankAccountsForm {
 			: this.bankAccountsService.create(payload)
 
 		request$.subscribe({
-			next: () => this.sheetRef.close(),
+			next: () => this.dialogRef.close(),
 		})
 	}
 }

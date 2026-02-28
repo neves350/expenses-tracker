@@ -37,7 +37,6 @@ import {
 	ZardPopoverComponent,
 	ZardPopoverDirective,
 } from '../../ui/popover'
-import { ZardSheetService } from '../../ui/sheet'
 import type { iSheetData } from '../bank-accounts-form/bank-account-form.interface'
 import { BankAccountsForm } from '../bank-accounts-form/bank-accounts-form'
 
@@ -64,7 +63,6 @@ export class BankAccountsCard {
 	readonly account = input.required<BankAccount>()
 
 	private readonly dialogService = inject(ZardDialogService)
-	private readonly sheetService = inject(ZardSheetService)
 	private readonly bankAccountsService = inject(BankAccountsService)
 	private readonly cardsService = inject(CardsService)
 
@@ -180,19 +178,18 @@ export class BankAccountsCard {
 	}
 
 	updateCard() {
-		this.sheetService.create({
-			zTitle: 'Edit Bank Account',
+		this.dialogService.create({
+			zTitle: 'Edit Account',
 			zContent: BankAccountsForm,
-			zSide: 'right',
 			zWidth: '500px',
 			zHideFooter: false,
 			zOkText: 'Save Changes',
 			zOnOk: (instance: BankAccountsForm) => {
 				instance.submit()
-				return false // submit() handle close
+				return false
 			},
 			zCustomClasses:
-				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
+				'rounded-2xl border-4 [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 			zData: {
 				id: this.account().id,
 				name: this.account().name,
@@ -208,10 +205,11 @@ export class BankAccountsCard {
 		if (!bankAccountId) return
 
 		return this.dialogService.create({
-			zTitle: `Remove ${this.account().name}?`,
-			zDescription: 'This action cannot be undone.',
+			zTitle: 'Remove account?',
+			zDescription: `This action cannot be undone, you sure that want remove ${this.account().name}.`,
 			zCancelText: 'Cancel',
-			zOkText: 'Delete Bank Account',
+			zWidth: '450px',
+			zOkText: 'Delete Account',
 			zOkDestructive: true,
 			zOnOk: async () => {
 				try {
@@ -223,10 +221,12 @@ export class BankAccountsCard {
 					return true
 				} catch (err: unknown) {
 					const error = err as { error?: { message?: string } }
-					toast.error(error.error?.message || 'Failed to delete bank account')
+					toast.error(error.error?.message || 'Failed to delete account')
 					return false
 				}
 			},
+			zCustomClasses:
+				'rounded-2xl border-4 [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 		})
 	}
 }

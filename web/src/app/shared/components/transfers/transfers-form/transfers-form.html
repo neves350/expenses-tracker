@@ -3,33 +3,40 @@
 <form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4 py-4">
   <!-- Amount Input -->
   <div class="grid gap-2">
-    <label for="amount">Amount</label>
-    <input
-      z-input
-      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
-      formControlName="amount"
-      placeholder="90"
-    />
+    <label for="amount" class="text-sm">Amount</label>
+    <div class="relative">
+      <span
+        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+      >
+        <i-lucide [img]="EuroIcon" class="size-4" />
+      </span>
+      <input
+        z-input
+        class="w-full rounded-md border border-zinc-400/50 py-2 pl-10 pr-4 text-sm text-muted-foreground"
+        formControlName="amount"
+        placeholder="90"
+      />
+    </div>
     @if (form.controls.amount.touched && form.controls.amount.errors?.['required']) {
-    <span class="text-xs text-destructive">Amount is required</span>
+      <span class="text-xs text-destructive">Amount is required</span>
     }
   </div>
 
   <!-- Form Account Select -->
   <div class="grid gap-2">
-    <label for="fromAccountId">From</label>
-    <z-select class="w-full" formControlName="fromAccountId">
+    <label for="fromAccountId" class="text-sm">From</label>
+    <z-select class="w-full" formControlName="fromAccountId" zPlaceholder="Select a source account">
       @for (account of accounts; track account.id) {
-      <z-select-item [zValue]="account.id!">
-        <span class="flex w-full justify-between gap-4">
-          <span>{{ account.name }}</span>
-          <span class="text-xs text-muted-foreground">{{ formatBalance(account) }}</span>
-        </span>
-      </z-select-item>
+        <z-select-item [zValue]="account.id!">
+          <span class="flex w-full justify-between gap-4">
+            <span>{{ account.name }}</span>
+            <span class="text-xs text-muted-foreground">{{ formatBalance(account) }}</span>
+          </span>
+        </z-select-item>
       }
     </z-select>
     @if (form.controls.fromAccountId.touched && form.controls.fromAccountId.errors?.['required']) {
-    <span class="text-xs text-destructive">Source account is required</span>
+      <span class="text-xs text-destructive">Source account is required</span>
     }
   </div>
 
@@ -43,24 +50,29 @@
 
   <!-- To Account Select -->
   <div class="grid gap-2">
-    <label for="toAccountId">To</label>
-    <z-select class="w-full" formControlName="toAccountId">
+    <label for="toAccountId" class="text-sm">To</label>
+    <z-select
+      class="w-full"
+      formControlName="toAccountId"
+      zPlaceholder="Select a destination account"
+    >
       @for (account of accounts; track account.id) {
-      <z-select-item [zValue]="account.id!">
-        <span class="flex w-full justify-between gap-4">
-          <span>{{ account.name }}</span>
-          <span class="text-xs text-muted-foreground">{{ formatBalance(account) }}</span>
-        </span>
-      </z-select-item>
-      } @if (form.controls.toAccountId.touched && form.controls.toAccountId.errors?.['required']) {
-      <span class="text-xs text-destructive">Destination account is required</span>
+        <z-select-item [zValue]="account.id!">
+          <span class="flex w-full justify-between gap-4">
+            <span>{{ account.name }}</span>
+            <span class="text-xs text-muted-foreground">{{ formatBalance(account) }}</span>
+          </span>
+        </z-select-item>
+      }
+      @if (form.controls.toAccountId.touched && form.controls.toAccountId.errors?.['required']) {
+        <span class="text-xs text-destructive">Destination account is required</span>
       }
     </z-select>
   </div>
 
   <!-- Date Picker -->
   <div class="grid gap-2">
-    <label for="date">Date</label>
+    <label for="date" class="text-sm">Date</label>
     <z-date-picker
       placeholder="Pick a date"
       zSize="sm"
@@ -71,7 +83,7 @@
 
   <!-- Description Input -->
   <div class="grid gap-2">
-    <label for="description">Description (optional)</label>
+    <label for="description" class="text-sm">Description (optional)</label>
     <input
       z-input
       class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
