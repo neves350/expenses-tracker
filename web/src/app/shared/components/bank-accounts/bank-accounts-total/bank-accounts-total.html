@@ -1,26 +1,42 @@
-<z-card class="h-full flex flex-col mb-8 bg-total/30">
+<z-card class="h-full flex flex-col mb-8" [class]="totalStyle().card">
   <div class="flex items-start justify-between">
-    <div class="size-10 flex items-center justify-center rounded-lg text-white bg-accent">
-      <i-lucide [img]="WalletMinimalIcon" class="size-5 text-accent-foreground" />
+    <div
+      class="size-10 flex items-center justify-center rounded-lg text-white"
+      [class]="totalStyle().iconBg"
+    >
+      <i-lucide [img]="WalletMinimalIcon" class="size-5" [class]="totalStyle().iconText" />
     </div>
 
     <div class="ml-4 grid flex-1 text-left text-sm leading-tight">
       <span class="truncate text-xs text-muted-foreground">
         Total Assets · Sum of all accounts
       </span>
-      <span class="text-xl font-bold text-primary">{{ totalBalance() }}€</span>
+      <span class="text-xl font-bold" [class]="totalStyle().balance"
+        >{{ isNegative() ? '' : '+' }}{{ totalBalance() | currency: 'EUR' }}</span
+      >
     </div>
 
-    <!-- Edit & Delete Buttons -->
+    <!-- Trend -->
     <div class="flex gap-1">
-      <i-lucide [img]="TrendingUpIcon" class="size-4 text-income-foreground" />
-      <span class="text-sm font-bold text-primary">{{ totalBalance() }}€</span>
+      <i-lucide [img]="totalStyle().trendIcon" class="size-4" [class]="totalStyle().trendText" />
+      <span class="text-sm font-bold" [class]="totalStyle().trendText"
+        >{{ isNegative() ? '' : '+' }}{{ totalBalance() | currency: 'EUR' }}</span
+      >
     </div>
   </div>
 
   <z-divider />
 
-  <div>
-    <p class="text-sm text-muted-foreground mb-1">{{ accountCount() }} accounts with a balance</p>
+  <div class="flex gap-4">
+    <p class="text-sm text-muted-foreground mb-1">
+      {{ accountCount() }} {{ accountCount() === 1 ? 'account' : 'accounts' }} with a balance
+    </p>
+    @if (negativeAccountCount()) {
+      <z-divider zOrientation="vertical" class="h-5" />
+      <p class="text-sm text-expense-foreground/70 mb-1">
+        {{ negativeAccountCount() }} negative
+        {{ negativeAccountCount() === 1 ? 'account' : 'accounts' }}
+      </p>
+    }
   </div>
 </z-card>
