@@ -14,6 +14,7 @@ import {
 	ArrowDownIcon,
 	ArrowUpIcon,
 	CoinsIcon,
+	EuroIcon,
 	LucideAngularModule,
 	type LucideIconData,
 	WalletIcon,
@@ -55,6 +56,8 @@ export class RecurringsForm {
 	readonly recurringTypes = Object.values(RecurringType)
 	readonly frequencyTypes = Object.values(FrequencyType)
 	readonly paymentMethodTypes = Object.values(PaymentMethodType)
+
+	readonly EuroIcon = EuroIcon
 
 	form = this.fb.nonNullable.group({
 		type: [RecurringType.EXPENSE, [Validators.required]],

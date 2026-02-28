@@ -98,7 +98,7 @@ export class RecurringsCard {
 		this.dialogService.create({
 			zTitle: 'Edit Recurring Transaction',
 			zContent: RecurringsForm,
-			zWidth: '700px',
+			zWidth: '600px',
 			zHideFooter: false,
 			zOkText: 'Save Changes',
 			zOnOk: (instance: RecurringsForm) => {
@@ -129,12 +129,13 @@ export class RecurringsCard {
 		if (!recurringId) return
 
 		return this.dialogService.create({
-			zTitle: `Remove ${recurring.description}?`,
+			zTitle: 'Remove recurring transaction',
 			zContent: DeleteRecurringDialog,
 			zCancelText: 'Cancel',
 			zOkText: 'Delete Recurring',
-			zWidth: '450px',
+			zWidth: '500px',
 			zOkDestructive: true,
+			zData: { description: recurring.description },
 			zOnOk: async (instance: DeleteRecurringDialog) => {
 				try {
 					const message = await lastValueFrom(
@@ -154,6 +155,8 @@ export class RecurringsCard {
 					return false
 				}
 			},
+			zCustomClasses:
+				'rounded-2xl border-4 [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 		})
 	}
 }

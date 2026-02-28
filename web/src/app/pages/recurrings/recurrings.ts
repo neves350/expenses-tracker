@@ -53,7 +53,7 @@ export class Recurrings {
 		this.dialogService.create({
 			zTitle: 'New Recurring Transaction',
 			zContent: RecurringsForm,
-			zWidth: '700px',
+			zWidth: '600px',
 			zHideFooter: false,
 			zOkText: 'Create recurring',
 			zOnOk: (instance: RecurringsForm) => {
