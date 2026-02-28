@@ -14,6 +14,7 @@ import { TransactionsService } from '@core/services/transactions.service'
 import {
 	ArrowDownIcon,
 	ArrowUpIcon,
+	EuroIcon,
 	LucideAngularModule,
 	type LucideIconData,
 } from 'lucide-angular'
@@ -58,6 +59,7 @@ export class TransactionsForm {
 
 	readonly ArrowDownIcon = ArrowDownIcon
 	readonly ArrowUpIcon = ArrowUpIcon
+	readonly EuroIcon = EuroIcon
 
 	form = this.fb.nonNullable.group({
 		title: ['', [Validators.required]],

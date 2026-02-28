@@ -66,7 +66,7 @@ export class Transactions {
 		this.dialogService.create({
 			zTitle: 'New Transaction',
 			zContent: TransactionsForm,
-			zWidth: '600px',
+			zWidth: '500px',
 			zHideFooter: false,
 			zOkText: 'Create Transaction',
 			zOnOk: (instance: TransactionsForm) => {

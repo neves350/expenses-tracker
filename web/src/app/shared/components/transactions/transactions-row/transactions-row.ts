@@ -23,7 +23,6 @@ import { ZardButtonComponent } from '../../ui/button'
 import { ZardDialogService } from '../../ui/dialog'
 import { ZardDividerComponent } from '../../ui/divider'
 import { ZardPopoverComponent, ZardPopoverDirective } from '../../ui/popover'
-import { ZardSheetService } from '../../ui/sheet'
 import type { iTransactionData } from '../transactions-form/transactions-form.interface'
 
 @Component({
@@ -42,7 +41,6 @@ import type { iTransactionData } from '../transactions-form/transactions-form.in
 })
 export class TransactionsRow {
 	private readonly transactionsService = inject(TransactionsService)
-	private readonly sheetService = inject(ZardSheetService)
 	private readonly dialogService = inject(ZardDialogService)
 
 	readonly transaction = input.required<Transaction>()
@@ -107,10 +105,9 @@ export class TransactionsRow {
 			'../transactions-form/transactions-form'
 		)
 
-		this.sheetService.create({
+		this.dialogService.create({
 			zTitle: 'Edit Transaction',
 			zContent: TransactionsForm,
-			zSide: 'right',
 			zWidth: '500px',
 			zHideFooter: false,
 			zOkText: 'Save Changes',
@@ -119,7 +116,7 @@ export class TransactionsRow {
 				return false // submit() handle close
 			},
 			zCustomClasses:
-				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
+				'rounded-2xl border-4 [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 			zData: {
 				id: this.transaction().id,
 				title: this.transaction().title,
@@ -138,10 +135,9 @@ export class TransactionsRow {
 			'../transactions-form/transactions-form'
 		)
 
-		this.sheetService.create({
+		this.dialogService.create({
 			zTitle: 'Duplicate Transaction',
 			zContent: TransactionsForm,
-			zSide: 'right',
 			zWidth: '500px',
 			zHideFooter: false,
 			zOkText: 'Create Transaction',
@@ -150,7 +146,7 @@ export class TransactionsRow {
 				return false
 			},
 			zCustomClasses:
-				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
+				'rounded-2xl border-4 [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
 			zData: {
 				title: this.transaction().title,
 				isPaid: this.transaction().isPaid,
@@ -168,10 +164,11 @@ export class TransactionsRow {
 		if (!transactionId) return
 
 		return this.dialogService.create({
-			zTitle: `Remove ${this.transaction().title}?`,
-			zDescription: 'This action cannot be undone.',
+			zTitle: `Remove transaction`,
+			zDescription: `Are you sure you want to delete the recurring entry "${this.transaction().title}"? This action cannot be undone.`,
 			zCancelText: 'Cancel',
 			zOkText: 'Delete Transaction',
+			zWidth: '500px',
 			zOkDestructive: true,
 			zOnOk: async () => {
 				try {

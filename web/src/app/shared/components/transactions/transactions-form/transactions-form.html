@@ -23,12 +23,19 @@
 
   <div class="grid gap-2">
     <label for="amount" class="text-sm">Amount</label>
-    <input
-      z-input
-      class="rounded-md bg-input/30 border border-input p-2 text-sm text-muted-foreground"
-      formControlName="amount"
-      placeholder="90"
-    />
+    <div class="relative">
+      <span
+        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+      >
+        <i-lucide [img]="EuroIcon" class="size-4" />
+      </span>
+      <input
+        z-input
+        class="w-full rounded-md border border-zinc-400/50 py-2 pl-10 pr-4 text-sm text-muted-foreground"
+        formControlName="amount"
+        placeholder="90"
+      />
+    </div>
     @if (form.controls.amount.touched && form.controls.amount.errors?.['required']) {
       <span class="text-xs text-destructive">Amount is required</span>
     }
