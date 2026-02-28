@@ -1,39 +1,54 @@
-<form [formGroup]="form">
-  <!-- Title Input -->
-  <div class="grid gap-2 mt-4">
-    <label for="title">Name</label>
-    <input
-      z-input
-      class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
-      formControlName="title"
-      placeholder="E.g: Restaurant"
-    />
-    @if (form.controls.title.touched && form.controls.title.errors?.['required']) {
-      <span class="text-xs text-destructive">Name is required</span>
-    }
+<z-card class="p-4 space-y-4 mb-6">
+  <div class="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-4">
+    <i-lucide [img]="isEditMode() ? SaveIcon : CirclePlusIcon" class="size-4" />
+    {{ isEditMode() ? 'Edit Category' : 'New Category' }}
   </div>
 
-  <!-- Icon Picker -->
-  <div class="grid gap-2 mt-4">
-    <label>Icon</label>
-    <app-icon-picker formControlName="icon" />
-    @if (form.controls.icon.touched && form.controls.icon.errors?.['required']) {
-      <span class="text-xs text-destructive">Icon is required</span>
-    }
-  </div>
+  <form [formGroup]="form">
+    <div class="flex gap-4 items-end">
+      <div class="flex-1 space-y-2">
+        <label for="title" class="text-sm">Name</label>
+        <input
+          z-input
+          class="rounded-md border border-zinc-400/50 p-2 text-sm text-muted-foreground"
+          formControlName="title"
+          placeholder="E.g: Restaurant"
+        />
+        @if (form.controls.title.touched && form.controls.title.errors?.['required']) {
+          <span class="text-xs text-destructive">Name is required</span>
+        }
+      </div>
 
-  <!-- Type Select -->
-  <div class="grid gap-2 mt-4">
-    <label for="type">Type</label>
-    <z-select class="w-full" formControlName="type">
-      @for (categoryType of categoryTypes; track categoryType) {
-        <z-select-item [zValue]="categoryType">
-          <span>{{ getTypeLabel(categoryType) }}</span>
-        </z-select-item>
+      <div class="grid gap-1">
+        <label for="type" class="text-sm">Type</label>
+        <z-select class="w-32" formControlName="type">
+          @for (categoryType of categoryTypes; track categoryType) {
+            <z-select-item [zValue]="categoryType">
+              <span>{{ getTypeLabel(categoryType) }}</span>
+            </z-select-item>
+          }
+        </z-select>
+      </div>
+
+      <div class="space-y-2">
+        <label class="text-sm">Icon</label>
+        <app-icon-picker formControlName="icon" />
+      </div>
+
+      @if (isEditMode()) {
+        <z-button zType="outline" (click)="cancelEdit()">
+          <i-lucide [img]="XIcon" class="size-4" />
+        </z-button>
+        <z-button (click)="submit()">
+          <i-lucide [img]="SaveIcon" class="size-4" />
+          Save
+        </z-button>
+      } @else {
+        <z-button (click)="submit()">
+          <i-lucide [img]="CirclePlusIcon" class="size-4" />
+          Add
+        </z-button>
       }
-    </z-select>
-    @if (form.controls.type.touched && form.controls.type.errors?.['required']) {
-      <span class="text-xs text-destructive">Type is required</span>
-    }
-  </div>
-</form>
+    </div>
+  </form>
+</z-card>

@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core'
+import { Component, inject, input, output } from '@angular/core'
 import type { Category } from '@core/api/categories.interface'
 import { CategoriesService } from '@core/services/categories.service'
 import { LucideAngularModule, SquarePenIcon, Trash2Icon } from 'lucide-angular'
@@ -8,8 +8,6 @@ import { ZardBadgeComponent } from '../../ui/badge'
 import { ZardButtonComponent } from '../../ui/button'
 import { ZardCardComponent } from '../../ui/card'
 import { ZardDialogService } from '../../ui/dialog'
-import { CategoriesForm } from '../categories-form/categories-form'
-import type { iCategorySheetData } from '../categories-form/categories-form.interface'
 import { CATEGORY_ICON_MAP } from '../category-icons'
 
 @Component({
@@ -28,6 +26,8 @@ export class CategoriesList {
 	readonly dotColor = input<string>('bg-red-500')
 	readonly iconMap = CATEGORY_ICON_MAP
 
+	readonly edit = output<Category>()
+
 	private readonly dialogService = inject(ZardDialogService)
 	private readonly categoriesService = inject(CategoriesService)
 
@@ -35,24 +35,7 @@ export class CategoriesList {
 	readonly Trash2Icon = Trash2Icon
 
 	editCategory(category: Category) {
-		this.dialogService.create({
-			zTitle: 'Edit Category',
-			zContent: CategoriesForm,
-			zHideFooter: false,
-			zOkText: 'Save Changes',
-			zOnOk: (instance: CategoriesForm) => {
-				instance.submit()
-				return false // submit() handle close
-			},
-			zCustomClasses:
-				'rounded-2xl [&_[data-slot=sheet-header]]:mt-4 [&>button:first-child]:top-5',
-			zData: {
-				id: category.id,
-				title: category.title,
-				type: category.type,
-				icon: category.icon,
-			} as iCategorySheetData,
-		})
+		this.edit.emit(category)
 	}
 
 	deleteCategory(category: Category) {
@@ -60,11 +43,12 @@ export class CategoriesList {
 		if (!categoryId) return
 
 		return this.dialogService.create({
-			zTitle: `Remove ${category.title}?`,
-			zDescription: 'This action cannot be undone.',
+			zTitle: `Remove category`,
+			zDescription: `Are you sure you want to delete the recurring entry "${category.title}"? This action cannot be undone.`,
 			zCancelText: 'Cancel',
 			zOkText: 'Delete Category',
 			zOkDestructive: true,
+			zWidth: '500px',
 			zOnOk: async () => {
 				try {
 					const message = await lastValueFrom(
