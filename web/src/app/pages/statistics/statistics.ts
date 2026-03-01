@@ -11,6 +11,7 @@ import { StatisticsInsights } from '@/shared/components/statistics/statistics-in
 import { StatisticsPeriod } from '@/shared/components/statistics/statistics-period/statistics-period'
 import { StatisticsSummary } from '@/shared/components/statistics/statistics-summary/statistics-summary'
 import { ZardCardComponent } from '@/shared/components/ui/card'
+import { ZardLoaderComponent } from '@/shared/components/ui/loader'
 
 @Component({
 	selector: 'app-statistics',
@@ -23,6 +24,7 @@ import { ZardCardComponent } from '@/shared/components/ui/card'
 		StatisticsPeriod,
 		StatisticsBreakdown,
 		StatisticsInsights,
+		ZardLoaderComponent,
 	],
 	templateUrl: './statistics.html',
 })
@@ -34,6 +36,7 @@ export class Statistics {
 	readonly categories = this.categoriesService.categories
 	readonly accounts = this.bankAccountsService.bankAccounts
 	readonly hasData = this.statisticsService.hasData
+	readonly isLoading = this.statisticsService.loading
 	readonly ChartPieIcon = ChartPieIcon
 
 	constructor() {

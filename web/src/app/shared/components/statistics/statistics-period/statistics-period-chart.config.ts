@@ -73,8 +73,8 @@ export function createGroupedBarOptions(
 		plotOptions: {
 			bar: {
 				horizontal: false,
-				columnWidth: '50%',
-				borderRadius: 6,
+				columnWidth: '30%',
+				borderRadius: 10,
 				borderRadiusApplication: 'end',
 			},
 		},
